@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Trapezoid Border & Fill -->
+    <item>
+        <shape>
+            <corners
+                android:topLeftRadius="18dp"
+                android:bottomLeftRadius="18dp"
+                android:topRightRadius="0dp"
+                android:bottomRightRadius="0dp"/>
+            <solid
+                android:color="@color/selected_toggle"/>
+            <stroke
+                android:width="2dp"
+                android:color="@color/selected_toggle"/>
+        </shape>
+    </item>
+
+    <!-- Rotate Rectangle to Create Trapezoid Shape -->
+    <item
+        android:top="-10dp"
+        android:right="-10dp"
+        android:bottom="-20dp"
+        android:left="140dp">
+        <rotate
+            android:fromDegrees="30">
+            <shape
+                android:shape="rectangle">
+                <solid
+                    android:color="@color/toggle_bg" />
+            </shape>
+        </rotate>
+    </item>
+</layer-list>

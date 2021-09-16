@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Input Default Border-->
+    <item
+        android:state_focused="false">
+        <shape>
+            <corners
+                android:radius="18dp"/>
+            <stroke
+                android:width="2dp"
+                android:color="@color/input_border"/>
+        </shape>
+    </item>
+
+    <!-- Selected Input Border & Box Shadow -->
+    <item
+        android:drawable="@drawable/selected_input_styles"
+        android:state_focused="true"/>
+</selector>
+

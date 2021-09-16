@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/auth_nav"
+    app:startDestination="@id/MainActivity">
+<!--    Nav Not Working Between Pages -->
+<!--    <fragment-->
+<!--        android:id="@+id/MainActivity"-->
+<!--        android:name="com.example.miniCapstone390.MainActivity"-->
+<!--        android:label="@string/start_screen"-->
+<!--        tools:layout="@layout/activity_main">-->
+<!--        <action-->
+<!--            android:id="@+id/action_MainActivity_to_SignUpPage"-->
+<!--            app:destination="@id/SignUpPage" />-->
+<!--    </fragment>-->
+<!--    <fragment-->
+<!--        android:id="@+id/SignUpPage"-->
+<!--        android:name="com.example.miniCapstone390.SignUpPage"-->
+<!--        android:label="@string/sign_up_screen"-->
+<!--        tools:layout="@layout/sign_up_page">-->
+<!--        <action-->
+<!--            android:id="@+id/action_SignUpPage_to_MainActivity"-->
+<!--            app:destination="@id/MainActivity" />-->
+<!--    </fragment>-->
+</navigation>
