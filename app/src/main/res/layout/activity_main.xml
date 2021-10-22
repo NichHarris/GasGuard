@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/g_guard_theme"
     tools:context=".MainActivity">
     <!-- App Title   -->
     <TextView
@@ -133,11 +134,20 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginVertical="20dp"
+            <!-- HOW DO I CHANGE THE COLOR OF THE DRAWABLE? -->
             android:background="@drawable/auth_button_styles"
             android:text="@string/signup"
             android:textColor="@color/white"
             android:textSize="16sp"
             android:textStyle="bold" />
     </LinearLayout>
-<!--    Home, Data, Add, Notifications, Settings -->
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/gg_corner"
+        tools:layout_editor_absoluteX="20dp"
+        tools:layout_editor_absoluteY="472dp" />
+    <!--    Home, Data, Add, Notifications, Settings -->
 </androidx.constraintlayout.widget.ConstraintLayout>
