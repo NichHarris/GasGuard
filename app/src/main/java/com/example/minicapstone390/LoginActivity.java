@@ -18,7 +18,7 @@ import com.google.firebase.auth.FirebaseAuth;
 public class LoginActivity extends AppCompatActivity {
 
     private FirebaseAuth auth;
-    protected Button loginButton;
+    protected Button loginButton, signupButton;
     protected EditText usernameET, passwordET;
 
     @Override
@@ -31,14 +31,15 @@ public class LoginActivity extends AppCompatActivity {
         usernameET = (EditText) findViewById(R.id.usernameInput);
         passwordET = (EditText) findViewById(R.id.passwordInput);
 
+        signupButton = (Button) findViewById(R.id.signUpPage);
         loginButton = (Button) findViewById(R.id.loginButton);
-        loginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                userLogin();
-            }
-        });
+        loginButton.setOnClickListener(view -> userLogin());
+
+        signupButton.setOnClickListener(view -> openSignupActivity());
+
     }
+
+
 
     private void userLogin() {
         String username = usernameET.getText().toString();
@@ -48,6 +49,7 @@ public class LoginActivity extends AppCompatActivity {
         // (1) All Inputs Must Be Filled
         if (username.equals("") || password.equals("")) {
             Toast.makeText(getApplicationContext(), "All Inputs Must Be Filled!", Toast.LENGTH_LONG).show();
+            return;
         }
 
         // (2) Username Must Exist
@@ -72,6 +74,11 @@ public class LoginActivity extends AppCompatActivity {
 
     private void openHomeActivity() {
         Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+    }
+
+    private void openSignupActivity() {
+        Intent intent = new Intent(this, SignupActivity.class);
         startActivity(intent);
     }
 }

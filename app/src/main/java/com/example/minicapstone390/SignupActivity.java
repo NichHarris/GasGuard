@@ -1,18 +1,13 @@
 package com.example.minicapstone390;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -22,10 +17,10 @@ import java.util.regex.Pattern;
 public class SignupActivity extends AppCompatActivity {
 
     private FirebaseAuth auth;
-    private String emailRegex = "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$";
+    private String emailRegex = "^(([^<>()\\[\\]\\\\.,;:\\s@\"]+(\\.[^<>()\\[\\]\\\\.,;:\\s@\"]+)*)|(\".+\"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$";
     private String passwordRegex = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$";
     private Pattern pattern;
-    protected Button signUpButton;
+    protected Button signUpButton, loginButton;
     protected EditText usernameET, emailET, passwordET, confirmPasswordET;
 
     @Override
@@ -40,13 +35,11 @@ public class SignupActivity extends AppCompatActivity {
         passwordET = (EditText) findViewById(R.id.password);
         confirmPasswordET = (EditText) findViewById(R.id.confirmPassword);
 
+        loginButton = (Button) findViewById(R.id.loginPage);
         signUpButton = (Button) findViewById(R.id.signUpButton);
-        signUpButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                userSignup();
-            }
-        });
+        signUpButton.setOnClickListener(view -> userSignup());
+
+        loginButton.setOnClickListener(view -> openLoginActivity());
     }
 
     private void userSignup() {
@@ -103,6 +96,11 @@ public class SignupActivity extends AppCompatActivity {
 
     private void openHomeActivity() {
         Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+    }
+
+    private void openLoginActivity() {
+        Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
     }
 }
