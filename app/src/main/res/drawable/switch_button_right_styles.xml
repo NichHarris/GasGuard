@@ -3,11 +3,12 @@
     <!-- Trapezoid Border & Fill -->
     <item>
         <shape>
-            <corners
-                android:topLeftRadius="0dp"
-                android:bottomLeftRadius="0dp"
-                android:topRightRadius="18dp"
-                android:bottomRightRadius="18dp"/>
+            <corners android:radius="18dp"/>
+<!--            <corners-->
+<!--                android:topLeftRadius="0dp"-->
+<!--                android:bottomLeftRadius="0dp"-->
+<!--                android:topRightRadius="18dp"-->
+<!--                android:bottomRightRadius="18dp"/>-->
             <solid
                 android:color="@color/selected_toggle"/>
             <stroke
@@ -17,18 +18,18 @@
     </item>
 
     <!-- Rotate Rectangle to Create Trapezoid Shape -->
-    <item
-        android:top="-20dp"
-        android:right="140dp"
-        android:bottom="-10dp"
-        android:left="-10dp">
-        <rotate
-            android:fromDegrees="30">
-            <shape
-                android:shape="rectangle">
-                <solid
-                    android:color="@color/toggle_bg"/>
-            </shape>
-        </rotate>
-    </item>
+<!--    <item-->
+<!--        android:top="-20dp"-->
+<!--        android:right="140dp"-->
+<!--        android:bottom="-10dp"-->
+<!--        android:left="-10dp">-->
+<!--        <rotate-->
+<!--            android:fromDegrees="30">-->
+<!--            <shape-->
+<!--                android:shape="rectangle">-->
+<!--                <solid-->
+<!--                    android:color="@color/toggle_bg"/>-->
+<!--            </shape>-->
+<!--        </rotate>-->
+<!--    </item>-->
 </layer-list>
