@@ -2,9 +2,10 @@ package com.example.minicapstone390;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -23,36 +24,27 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        db = FirebaseDatabase.getInstance();
-        ref =db.getReference("sensors");
+//        DAOSensor dao = new DAOSensor();
+//        Sensor sensor = new Sensor(2, 3.5, "1998-12-12 11:11", "temp");
+//        String key = dao.add(sensor);
+//        System.out.println(key);
+//
+//        Device device = new Device("3", "Test2", false);
+//        DAODevice daoDevice = new DAODevice();
+//        daoDevice.add(device);
+
 
         // get the current user
         user = FirebaseAuth.getInstance().getCurrentUser();
 
         // condition is user is null on loading screen
         if (user == null) {
-            // go to login
+            openLoginActivity();
         }
+    }
 
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot snapS: snapshot.getChildren()) {
-                    Object value = snapS.child("value").getValue();
-                    Object date = snapS.child("date").getValue();
-
-
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
-        loginView = findViewById(R.id.loginPage);
-
-    //  loginView.setOnClickListener();
+    private void openLoginActivity() {
+        Intent intent = new Intent(this, SignupActivity.class);
+        startActivity(intent);
     }
 }

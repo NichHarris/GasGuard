@@ -40,12 +40,12 @@
             android:id="@+id/loginPage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/switch_button_left_styles"
+            android:background="@drawable/switch_button_left"
             android:paddingVertical="10dp"
             android:paddingStart="45dp"
             android:paddingEnd="60dp"
             android:text="@string/login"
-            android:textColor="@color/white"
+            android:textColor="@color/unfocused_text"
             android:textSize="20sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
@@ -55,12 +55,12 @@
             android:id="@+id/signUpPage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/switch_button_left"
+            android:background="@drawable/switch_button_right_styles"
             android:paddingVertical="10dp"
             android:paddingStart="50dp"
             android:paddingEnd="40dp"
             android:text="@string/signup"
-            android:textColor="@color/unfocused_text"
+            android:textColor="@color/white"
             android:textSize="20sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
@@ -68,7 +68,7 @@
             app:layout_constraintTop_toTopOf="parent" />
     </LinearLayout>
 
-    <!--  Login Form: Input Fields & Signup Button  -->
+    <!--  Signup Form: Input Fields & Signup Button  -->
     <LinearLayout
         android:id="@+id/signup_form"
         android:layout_width="match_parent"
@@ -81,7 +81,7 @@
         app:layout_constraintEnd_toEndOf="parent">
 
         <EditText
-            android:id="@+id/userNameInput"
+            android:id="@+id/username"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:hint="@string/username"
@@ -93,10 +93,34 @@
             android:autofillHints="username"/>
 
         <EditText
-            android:id="@+id/passwordInput"
+            android:id="@+id/email"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/email"
+            android:paddingVertical="8dp"
+            android:paddingHorizontal="15dp"
+            android:layout_marginVertical="10dp"
+            android:background="@drawable/input_styles"
+            android:inputType="textEmailAddress"
+            android:autofillHints="emailAddress"/>
+
+        <EditText
+            android:id="@+id/password"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:hint="@string/password"
+            android:paddingVertical="8dp"
+            android:paddingHorizontal="15dp"
+            android:layout_marginVertical="10dp"
+            android:background="@drawable/input_styles"
+            android:inputType="textPassword"
+            android:autofillHints="password"/>
+
+        <EditText
+            android:id="@+id/confirmPassword"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/confirm_password"
             android:paddingVertical="8dp"
             android:paddingHorizontal="15dp"
             android:layout_marginVertical="10dp"
@@ -110,7 +134,7 @@
             android:layout_height="wrap_content"
             android:layout_marginVertical="20dp"
             android:background="@drawable/auth_button_styles"
-            android:text="@string/login"
+            android:text="@string/signup"
             android:textColor="@color/white"
             android:textSize="16sp"
             android:textStyle="bold" />
