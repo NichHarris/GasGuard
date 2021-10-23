@@ -4,12 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
-    <!-- App Title   -->
+    tools:context=".HomeActivity">
+    <!-- Welcome Message   -->
     <TextView
+        android:id="@+id/welcomeUserMessage"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/app_title"
+        android:text="@string/welcome_user"
         android:paddingVertical="8dp"
         android:paddingHorizontal="15dp"
         android:textSize="25sp"
@@ -21,7 +22,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- Welcome Message   -->
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
