@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "348314729637",
+    "firebase_url": "https://gasguard-ae330-default-rtdb.firebaseio.com",
+    "project_id": "gasguard-ae330",
+    "storage_bucket": "gasguard-ae330.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:348314729637:android:613f4e8704590d417da14c",
+        "android_client_info": {
+          "package_name": "com.example.minicapstone390"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "348314729637-fhlfu2pt5sg771vpbo8jsge7aggiijgh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCRrnjoxOVdwNYIwTRsQw6VUYZUD6ns9kM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "348314729637-fhlfu2pt5sg771vpbo8jsge7aggiijgh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
