@@ -31,12 +31,13 @@ public class LoginActivity extends AppCompatActivity {
         usernameET = (EditText) findViewById(R.id.usernameInput);
         passwordET = (EditText) findViewById(R.id.passwordInput);
 
-        signupButton = (Button) findViewById(R.id.signUpPage);
+        // Login And Continue to Home Page on Success
         loginButton = (Button) findViewById(R.id.loginButton);
         loginButton.setOnClickListener(view -> userLogin());
 
+        // Switch to Sign Up Page
+        signupButton = (Button) findViewById(R.id.signUpPage);
         signupButton.setOnClickListener(view -> openSignupActivity());
-
     }
 
 

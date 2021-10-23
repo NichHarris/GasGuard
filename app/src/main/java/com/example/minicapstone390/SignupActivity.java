@@ -35,10 +35,12 @@ public class SignupActivity extends AppCompatActivity {
         passwordET = (EditText) findViewById(R.id.password);
         confirmPasswordET = (EditText) findViewById(R.id.confirmPassword);
 
-        loginButton = (Button) findViewById(R.id.loginPage);
+        // Sign Up And Continue to Home Page on Success
         signUpButton = (Button) findViewById(R.id.signUpButton);
         signUpButton.setOnClickListener(view -> userSignup());
 
+        // Switch to Login Page
+        loginButton = (Button) findViewById(R.id.loginPage);
         loginButton.setOnClickListener(view -> openLoginActivity());
     }
 
@@ -76,6 +78,7 @@ public class SignupActivity extends AppCompatActivity {
             return;
         }
 
+        // Create User using Firebase
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
