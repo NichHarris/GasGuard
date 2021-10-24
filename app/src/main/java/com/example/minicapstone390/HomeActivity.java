@@ -63,6 +63,12 @@ public class HomeActivity extends AppCompatActivity {
             //goToSensorActivity(...);
         });
 
+        addNewDeviceButton = findViewById(R.id.addDeviceButton);
+        addNewDeviceButton.setOnClickListener(view -> goToAddDeviceActivity());
+
+        logoutButton = findViewById(R.id.logoutButton);
+        logoutButton.setOnClickListener(view -> logoutUser());
+
     }
 
     // Get, Initialize, and Update Devices
@@ -78,6 +84,13 @@ public class HomeActivity extends AppCompatActivity {
         deviceList.setAdapter(new ArrayAdapter(getApplicationContext(), android.R.layout.simple_list_item_1, devices));
     }
 
+    //Update User Message
+    private void updateUserMessage() {
+        String defaultMessage = getResources().getString(R.string.welcome_user);
+        String newMessage = defaultMessage.replace("{0}", userName);
+        welcomeUserMessage.setText(newMessage);
+    }
+
     // Navigation to Sensor Activity
     private void goToSensorActivity(int deviceId) {
         //Intent intent = new Intent(this, SensorActivity.class);
@@ -87,10 +100,14 @@ public class HomeActivity extends AppCompatActivity {
         //startActivity(intent);
     }
 
-    //Update User Message
-    private void updateUserMessage() {
-        String defaultMessage = getResources().getString(R.string.welcome_user);
-        String newMessage = defaultMessage.replace("{0}", userName);
-        welcomeUserMessage.setText(newMessage);
+    // Navigation to Add Device Activity
+    private void goToAddDeviceActivity() {
+        //Intent intent = new Intent(this, SensorActivity.class);
+        //startActivity(intent);
+    }
+
+    // Navigation to Add Device Activity
+    private void logoutUser() {
+        // TODO: Logout User
     }
 }
