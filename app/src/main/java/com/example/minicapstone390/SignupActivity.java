@@ -10,7 +10,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Objects;
@@ -19,11 +18,8 @@ import java.util.regex.Pattern;
 public class SignupActivity extends AppCompatActivity {
 
     private FirebaseAuth auth;
-
-    // Regex for Password: Must Contain At Least 1 Lower and 1 Upper Case Character, 1 Number, 1 Special Characters, and Be 8 Characters Long
+    private String passwordRegex = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$";
     private Pattern pattern;
-    private String passwordRegex = "^(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[`~!@#$%^&*()\\-=_+\\[\\]\\\\{}|;:'\",.\\/<>? ]).{8,}$";
-
     protected Button signUpButton, loginButton;
     protected EditText usernameET, emailET, passwordET, confirmPasswordET;
 
@@ -82,28 +78,21 @@ public class SignupActivity extends AppCompatActivity {
             return;
         }
 
-        // Create User using Firebase Auth
+        // Create User using Firebase
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     User user = new User(username, email);
 
-                    // Get current User Id
-                    String currentUserId = auth.getCurrentUser().getUid();
-
-                    // Get Users DB Reference
-                    DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("Users");
-
-                    // Also Add User to Realtime DB And Open Home Activity on Success
-                    usersRef.child(currentUserId).setValue(user)
-                            .addOnCompleteListener(t -> {
-                                if (t.isSuccessful()) {
-                                    Toast.makeText(getApplicationContext(), "User Registered Successfully!", Toast.LENGTH_SHORT).show();
-                                    openHomeActivity();
-                                } else {
-                                    Toast.makeText(getApplicationContext(), "Failed to Register User!", Toast.LENGTH_SHORT).show();
-                                }
-                            });
+                    // Get Users from DB
+                    FirebaseDatabase.getInstance().getReference("Users").child(Objects.requireNonNull(Objects.requireNonNull(auth.getCurrentUser()).getUid())).setValue(user).addOnCompleteListener(task1 -> {
+                        if (task1.isSuccessful()) {
+                            Toast.makeText(getApplicationContext(), "User Registered", Toast.LENGTH_SHORT).show();
+                            openHomeActivity();
+                        } else {
+                            Toast.makeText(getApplicationContext(), "User failed to register", Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
             });
     }

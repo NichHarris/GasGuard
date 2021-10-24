@@ -1,13 +1,18 @@
 package com.example.minicapstone390;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class LoginActivity extends AppCompatActivity {
@@ -57,13 +62,15 @@ public class LoginActivity extends AppCompatActivity {
         // Login User Using Firebase Auth
         auth.signInWithEmailAndPassword(username, password)
             .addOnCompleteListener(this, task -> {
+
                 if (task.isSuccessful()) {
                     Toast.makeText(getApplicationContext(), "Successfully Logged In!", Toast.LENGTH_SHORT).show();
                     openHomeActivity();
                 } else {
-                    Toast.makeText(getApplicationContext(), "Login failed. Try again!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(LoginActivity.this, "Login failed. Try again!", Toast.LENGTH_LONG).show();
                 }
-        });
+                }
+            );
     }
 
     private void openHomeActivity() {

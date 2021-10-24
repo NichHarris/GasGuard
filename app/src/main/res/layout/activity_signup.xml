@@ -36,11 +36,11 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-        <android.widget.Button
+        <Button
             android:id="@+id/loginPage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/switch_button_off"
+            android:background="@drawable/switch_button_left"
             android:paddingVertical="10dp"
             android:paddingStart="45dp"
             android:paddingEnd="60dp"
@@ -52,11 +52,11 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
         
-        <android.widget.Button
+        <Button
             android:id="@+id/signUpPage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/switch_button_on"
+            android:background="@drawable/switch_button_right_styles"
             android:paddingVertical="10dp"
             android:paddingStart="50dp"
             android:paddingEnd="40dp"
@@ -129,7 +129,7 @@
             android:inputType="textPassword"
             android:autofillHints="password"/>
 
-        <android.widget.Button
+        <Button
             android:id="@+id/signUpButton"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"

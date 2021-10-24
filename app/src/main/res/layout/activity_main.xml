@@ -4,9 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/g_guard_theme"
     tools:context=".MainActivity">
-
     <!-- App Title   -->
     <TextView
         android:layout_width="fill_parent"
@@ -16,40 +14,27 @@
         android:paddingHorizontal="15dp"
         android:textSize="25sp"
         android:textStyle="bold"
-        android:textColor="@color/white"
+        android:textColor="@color/black"
         android:layout_marginStart="20dp"
         android:layout_marginTop="50dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- TODO: Logo Top   -->
-
-    <!-- Loading...   -->
+    <!-- Welcome Message   -->
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/loading"
-        android:paddingTop="200dp"
+        android:text="@string/welcome_message"
+        android:paddingVertical="28dp"
         android:paddingHorizontal="15dp"
-        android:gravity="center"
         android:textSize="25sp"
         android:textStyle="bold"
-        android:textColor="@color/white"
+        android:textColor="@color/black"
         android:layout_marginStart="20dp"
         android:layout_marginTop="50dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- TODO: Loading Bar   -->
-
-    <!-- TODO: Logo Bottom   -->
-    <ImageView
-        android:id="@+id/imageView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:srcCompat="@drawable/gg_corner"
-        tools:layout_editor_absoluteX="20dp"
-        tools:layout_editor_absoluteY="472dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>
