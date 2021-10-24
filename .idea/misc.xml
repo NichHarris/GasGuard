@@ -3,16 +3,23 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Users/Nick/Desktop/Programing/coen-elec390-project/app/src/main/res/drawable/switch_button_right.xml" value="0.275" />
-        <entry key="..\:/Users/Nick/Desktop/Programing/coen-elec390-project/app/src/main/res/layout/activitiy_login.xml" value="0.47703180212014135" />
-        <entry key="..\:/Users/Nick/Desktop/Programing/coen-elec390-project/app/src/main/res/layout/activity_login.xml" value="0.2684903748733536" />
-        <entry key="..\:/Users/Nick/Desktop/Programing/coen-elec390-project/app/src/main/res/layout/activity_main.xml" value="0.15217391304347827" />
-        <entry key="..\:/Users/Nick/Desktop/Programing/coen-elec390-project/app/src/main/res/layout/activity_signup.xml" value="0.22181818181818183" />
-        <entry key="..\:/Users/Nick/Desktop/Programing/coen-elec390-project/app/src/main/res/layout/sign_up_page.xml" value="0.10777385159010601" />
+        <entry key="app/src/main/res/drawable/auth_button_styles.xml" value="0.16979166666666667" />
+        <entry key="app/src/main/res/drawable/selected_input_styles.xml" value="0.16979166666666667" />
+        <entry key="app/src/main/res/drawable/switch_button.xml" value="0.16979166666666667" />
+        <entry key="app/src/main/res/drawable/switch_button_left.xml" value="0.16979166666666667" />
+        <entry key="app/src/main/res/drawable/switch_button_off.xml" value="0.16979166666666667" />
+        <entry key="app/src/main/res/drawable/switch_button_on.xml" value="0.16979166666666667" />
+        <entry key="app/src/main/res/drawable/switch_button_right.xml" value="0.16979166666666667" />
+        <entry key="app/src/main/res/drawable/switch_button_right_styles.xml" value="0.16979166666666667" />
+        <entry key="app/src/main/res/drawable/switch_buttons_styles.xml" value="0.16979166666666667" />
+        <entry key="app/src/main/res/layout/activity_home.xml" value="0.15364583333333334" />
+        <entry key="app/src/main/res/layout/activity_login.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.19298245614035087" />
+        <entry key="app/src/main/res/layout/activity_signup.xml" value="0.33" />
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">
