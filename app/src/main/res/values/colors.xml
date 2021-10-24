@@ -7,7 +7,15 @@
     <color name="input_shadow">#D3E5F2</color>
     <color name="selected_input_border">#61ADE8</color>
     <color name="selected_toggle">#379EE3</color>
+    <color name="auth_button"> #005FB0 </color>
+    <color name="auth_button_border"> #005ea0 </color>
     <color name="toggle_bg">#F2F8FF</color>
+
+    <color name="g_guard_theme">#A3E5D4</color>
+    <color name="g_guard_button_theme">#47CAA8</color>
+    <color name="g_guard_shield">#0084A4</color>
+    <color name="g_guard_banner">#47CAA8</color>
+    <color name="g_guard_font">#03468F</color>
 
     <color name="purple_200">#FFBB86FC</color>
     <color name="purple_500">#FF6200EE</color>
