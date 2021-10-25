@@ -15,4 +15,8 @@
     <string name="devices"> Devices </string>
     <string name="logOut">Log Out</string>
     <string name="addDeviceButton">Add Device</string>
+    <string name="device_name">Device Name</string>
+    <string name="device_id">Device ID</string>
+    <string name="save">SAVE</string>
+    <string name="cancel">CANCEL</string>
 </resources>

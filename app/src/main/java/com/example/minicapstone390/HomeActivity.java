@@ -64,7 +64,10 @@ public class HomeActivity extends AppCompatActivity {
         });
 
         addNewDeviceButton = findViewById(R.id.addDeviceButton);
-        addNewDeviceButton.setOnClickListener(view -> goToAddDeviceActivity());
+        addNewDeviceButton.setOnClickListener(view -> {
+            DeviceFragment dialog = new DeviceFragment();
+            dialog.show(getSupportFragmentManager(), "Add Device Fragment");
+        });
 
         logoutButton = findViewById(R.id.logoutButton);
         logoutButton.setOnClickListener(view -> logoutUser());
