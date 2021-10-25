@@ -43,7 +43,7 @@ public class HomeActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 //TODO: Not Working, Getting User Name Locally But Not Updating Globally
                 User user = dataSnapshot.getValue(User.class);
-                userName = user.getUserName();
+                //userName = user.getUserName();
             }
 
             @Override
@@ -53,7 +53,7 @@ public class HomeActivity extends AppCompatActivity {
         });
 
         welcomeUserMessage = (TextView) findViewById(R.id.welcomeUserMessage);
-        updateUserMessage();
+        //updateUserMessage();
 
         deviceList = (ListView) findViewById(R.id.deviceDataList);
         // TODO: Call loadDeviceView(...)
@@ -75,11 +75,12 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     // Get, Initialize, and Update Devices
-    protected void loadDeviceView(boolean orderByName) {
-        //TODO: Get List of Devices from DB
-
-        // Display List of Devices
+    protected void loadDeviceView(boolean orderByName) {        // Display List of Devices
         List<String> devices = new ArrayList<>();
+
+        //TODO: Get List of Devices from DB
+        FirebaseDatabase db = FirebaseDatabase.getInstance();
+//        DatabaseReference ref = db.getReference("Devices")
 
         //TODO: Format List from DB for Adapter
 

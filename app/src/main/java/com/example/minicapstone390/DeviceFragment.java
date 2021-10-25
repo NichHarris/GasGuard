@@ -60,9 +60,12 @@ public class DeviceFragment extends DialogFragment {
                 // add the device, then add its deviceId to the user
                 DatabaseReference devicesRef = FirebaseDatabase.getInstance().getReference("Devices");
                 devicesRef.push().setValue(device);
-                // add some try to catch error cases
+                // TODO: add some try to catch error cases
                 String deviceKey = devicesRef.getKey();
-                // add device to the sensors that are part of the device
+                // TODO: add device to the sensors that are part of the device
+                
+                // Close Fragment
+                dismiss();
             }
         });
         return view;
