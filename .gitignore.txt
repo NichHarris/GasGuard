@@ -12,3 +12,6 @@
 /.idea/jarRepositories.xml
 .DS_Store
 /build
+.gradle
+**/build/
+!src/**/build/

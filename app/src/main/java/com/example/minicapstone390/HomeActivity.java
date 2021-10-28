@@ -3,7 +3,9 @@ package com.example.minicapstone390;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
@@ -112,6 +114,12 @@ public class HomeActivity extends AppCompatActivity {
 
     // Navigation to Add Device Activity
     private void logoutUser() {
-        // TODO: Logout User
+        FirebaseAuth.getInstance().signOut();
+        goToLoginActivity();
+    }
+
+    private void goToLoginActivity() {
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
     }
 }
