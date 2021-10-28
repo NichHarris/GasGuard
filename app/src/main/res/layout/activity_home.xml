@@ -39,15 +39,17 @@
         app:layout_constraintEnd_toEndOf="parent"/>
 
     <!-- Device ListView -->
+
+    <!-- Add Device Button -->
     <ListView
         android:id="@+id/deviceDataList"
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
         android:layout_marginVertical="20dp"
         android:textStyle="normal"
-        />
+        tools:layout_editor_absoluteX="42dp"
+        tools:layout_editor_absoluteY="25dp" />
 
-    <!-- Add Device Button -->
     <Button
         android:id="@+id/addDeviceButton"
         android:layout_width="wrap_content"
