@@ -1,5 +1,6 @@
 package com.example.minicapstone390;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -9,6 +10,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -18,11 +21,8 @@ import java.util.regex.Pattern;
 
 public class SignupActivity extends AppCompatActivity {
 
-    private FirebaseAuth auth;
-
-    // Regex for Password: Must Contain At Least 1 Lower and 1 Upper Case Character, 1 Number, 1 Special Characters, and Be 8 Characters Long
-    private Pattern pattern;
-    private String passwordRegex = "^(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[`~!@#$%^&*()\\-=_+\\[\\]\\\\{}|;:'\",.\\/<>? ]).{8,}$";
+    private final FirebaseAuth auth = FirebaseAuth.getInstance();
+    private final String passwordRegex = "^(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[`~!@#$%^&*()\\-=_+\\[\\]\\\\{}|;:'\",.\\/<>? ]).{8,}$";
 
     protected Button signUpButton, loginButton;
     protected EditText usernameET, emailET, passwordET, confirmPasswordET;
@@ -31,8 +31,6 @@ public class SignupActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
-
-        auth = FirebaseAuth.getInstance();
 
         usernameET = (EditText) findViewById(R.id.username);
         emailET = (EditText) findViewById(R.id.email);
@@ -61,8 +59,6 @@ public class SignupActivity extends AppCompatActivity {
             return;
         }
 
-        // (2) Username Must Be Unique
-
         // (3) Email Must Be a Valid Email and Unique
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             Toast.makeText(getApplicationContext(), "Email Must Be Valid!", Toast.LENGTH_LONG).show();
@@ -70,7 +66,8 @@ public class SignupActivity extends AppCompatActivity {
         }
 
         // (4) Password Must Be at Least 8 Characters with at least one Capitalized, one Number, one Special Character
-        pattern = Pattern.compile(passwordRegex);
+        // Regex for Password: Must Contain At Least 1 Lower and 1 Upper Case Character, 1 Number, 1 Special Characters, and Be 8 Characters Long
+        Pattern pattern = Pattern.compile(passwordRegex);
         if (!pattern.matcher(password).matches()) {
             Toast.makeText(getApplicationContext(), "Password Must Be Solid!", Toast.LENGTH_LONG).show();
             return;
@@ -89,7 +86,7 @@ public class SignupActivity extends AppCompatActivity {
                     User user = new User(username, email);
 
                     // Get current User Id
-                    String currentUserId = auth.getCurrentUser().getUid();
+                    String currentUserId = Objects.requireNonNull(auth.getCurrentUser()).getUid();
 
                     // Get Users DB Reference
                     DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("Users");

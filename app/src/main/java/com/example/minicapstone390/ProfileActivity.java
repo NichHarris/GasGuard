@@ -13,10 +13,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+
 public class ProfileActivity extends AppCompatActivity {
 
-    protected FirebaseDatabase dB = FirebaseDatabase.getInstance();
-    protected FirebaseAuth auth = FirebaseAuth.getInstance();
+    private final FirebaseDatabase dB = FirebaseDatabase.getInstance();
+    private final FirebaseAuth auth = FirebaseAuth.getInstance();
     protected String userId;
     protected TextView profileName, profileEmail;
     public String userName, userEmail, userPhone;
@@ -31,6 +35,10 @@ public class ProfileActivity extends AppCompatActivity {
 
         userId = auth.getUid();
         DatabaseReference userRef = dB.getReference("Users").child(userId);
+
+        Map<String, Object> phone = new HashMap<>();
+        phone.put("phoneNumber", "438-832-7376");
+        userRef.updateChildren(phone);
 
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

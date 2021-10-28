@@ -1,26 +1,18 @@
 package com.example.minicapstone390;
 
 import java.util.List;
+import java.util.Map;
 
 public class Device {
-    private String userId, deviceName;
+    private String deviceName;
     private boolean status;
-    private List<Sensor> sensors;
+    private Map<String, Sensor> sensors;
 
     public Device() {}
 
-    public Device(String userId, String deviceName, boolean status) {
-        this.userId = userId;
+    public Device( String deviceName, boolean status) {
         this.deviceName = deviceName;
         this.status = status;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String profileId) {
-        this.userId = userId;
     }
 
     public String getDeviceName() {

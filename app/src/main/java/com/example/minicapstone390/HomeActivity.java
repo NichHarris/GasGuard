@@ -23,14 +23,19 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 public class HomeActivity extends AppCompatActivity {
 
+    private final FirebaseDatabase dB = FirebaseDatabase.getInstance();;
+    private final FirebaseAuth auth = FirebaseAuth.getInstance();
     protected TextView welcomeUserMessage;
     protected Button addNewDeviceButton, logoutButton, testButton;
     protected ListView deviceList;
-
+    protected String userId;
     public String userName;
 
     @Override
@@ -38,10 +43,15 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        //TODO: Help Get Authenticated User's Name
-        userName = "User";
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Users").child(currentUser.getUid());
+        FirebaseUser currentUser = auth.getCurrentUser();
+        userId = currentUser.getUid();
+        DatabaseReference userRef = dB.getReference("Users").child(userId);
+
+        // for updating users with a device
+        Map<String, Object> keys = new HashMap<>();
+        keys.put("3","-Mmp8L5ajMh3q6W8wcVV");
+
+        userRef.child("devices").updateChildren(keys);
 
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -56,6 +66,25 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
+        // check if devices are part of the user
+        DatabaseReference deviceRef = dB.getReference("Devices").child("-Mmp8L5ajMh3q6W8wcnm");
+        deviceRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                System.out.println(snapshot.child("deviceName").getValue(String.class));
+                if (snapshot.child("userId").getValue(String.class).equals(userId)) {
+                    System.out.println(userId);
+                } else {
+                    System.out.println(userId);
+                    System.out.println(snapshot.child("userId").getValue(String.class));
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
         welcomeUserMessage = (TextView) findViewById(R.id.welcomeUserMessage);
 
         deviceList = (ListView) findViewById(R.id.deviceDataList);
@@ -66,6 +95,7 @@ public class HomeActivity extends AppCompatActivity {
             //goToSensorActivity(...);
         });
 
+        // This will be changed to
         addNewDeviceButton = findViewById(R.id.addDeviceButton);
         addNewDeviceButton.setOnClickListener(view -> {
             DeviceFragment dialog = new DeviceFragment();
@@ -103,12 +133,6 @@ public class HomeActivity extends AppCompatActivity {
         //Bundle b = new Bundle();
         //b.putInt("deviceId", deviceId);
         //intent.putExtras(b);
-        //startActivity(intent);
-    }
-
-    // Navigation to Add Device Activity
-    private void goToAddDeviceActivity() {
-        //Intent intent = new Intent(this, SensorActivity.class);
         //startActivity(intent);
     }
 
