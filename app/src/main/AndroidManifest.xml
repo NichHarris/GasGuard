@@ -10,6 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MiniCapstone390">
         <activity
+            android:name=".DeviceActivity"
+            android:exported="false" />
+        <activity
             android:name=".SensorActivity"
             android:exported="false" />
         <activity
