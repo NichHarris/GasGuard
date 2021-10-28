@@ -3,18 +3,37 @@ package com.example.minicapstone390;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.view.View;
+import android.content.Intent;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity {
-    private View loginView, signupView;
+    protected FirebaseUser user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        loginView = findViewById(R.id.loginPage);
+        // Get the current user
+        user = FirebaseAuth.getInstance().getCurrentUser();
 
-    //  loginView.setOnClickListener();
+        // If Not Authenticated, Send to Login Page
+        if (user == null) {
+            openLoginActivity();
+        } else {
+            openHomeActivity();
+        }
+    }
+
+    private void openLoginActivity() {
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
+    }
+
+    private void openHomeActivity() {
+        Intent intent = new Intent(this, HomeActivity.class);
+        startActivity(intent);
     }
 }

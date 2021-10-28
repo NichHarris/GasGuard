@@ -1,10 +1,22 @@
 <resources>
     <string name="app_name">miniCapstone390</string>
-    <string name="app_title">App Title</string>
+    <string name="loading"> LOADING ... </string>
+
+    <string name="app_title"> gasGuard </string>
     <string name="login">Login</string>
     <string name="signup">Sign Up</string>
     <string name="username">Username</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
-    <string name="conf_pass">Confirm Password</string>
+    <string name="confirm_password">Confirm Password</string>
+
+    <string name="welcome_message"> Welcome to gasGuard </string>
+    <string name="welcome_user"> Welcome {0}! </string>
+    <string name="devices"> Devices </string>
+    <string name="logOut">Log Out</string>
+    <string name="addDeviceButton">Add Device</string>
+    <string name="device_name">Device Name</string>
+    <string name="device_id">Device ID</string>
+    <string name="save">SAVE</string>
+    <string name="cancel">CANCEL</string>
 </resources>

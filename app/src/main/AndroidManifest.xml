@@ -18,6 +18,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".LoginActivity"
+            android:label="Login Activity"
+            android:exported="true" />
+        <activity
+            android:name=".SignupActivity"
+            android:label="Signup Activity"
+            android:exported="true" />
+        <activity
+            android:name=".HomeActivity"
+            android:label="Home Activity"
+            android:exported="true" />
     </application>
 
 </manifest>

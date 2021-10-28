@@ -3,9 +3,5 @@
     <corners
         android:radius="18dp"/>
     <solid
-        android:color="@color/auth_button_border"/>
-    <stroke
-        android:width="2dp"
-        android:color="@color/auth_button"/>
+        android:color="@color/selected_toggle"/>
 </shape>
-
