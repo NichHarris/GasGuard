@@ -12,6 +12,8 @@ import android.widget.TextView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -40,22 +42,21 @@ public class HomeActivity extends AppCompatActivity {
         userName = "User";
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Users").child(currentUser.getUid());
-        userRef.addValueEventListener(new ValueEventListener() {
+
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                //TODO: Not Working, Getting User Name Locally But Not Updating Globally
-                User user = dataSnapshot.getValue(User.class);
-                //userName = user.getUserName();
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                userName = snapshot.child("userName").getValue(String.class);
+                updateUserMessage();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(getApplicationContext(), "Failed to Read from Realtime DB!", Toast.LENGTH_LONG).show();
+                throw error.toException();
             }
         });
 
         welcomeUserMessage = (TextView) findViewById(R.id.welcomeUserMessage);
-        //updateUserMessage();
 
         deviceList = (ListView) findViewById(R.id.deviceDataList);
         // TODO: Call loadDeviceView(...)
@@ -92,9 +93,8 @@ public class HomeActivity extends AppCompatActivity {
 
     //Update User Message
     private void updateUserMessage() {
-        String defaultMessage = getResources().getString(R.string.welcome_user);
-        String newMessage = defaultMessage.replace("{0}", userName);
-        welcomeUserMessage.setText(newMessage);
+        String defaultMessage = getResources().getString(R.string.welcome_user).replace("{0}", userName);
+        welcomeUserMessage.setText(defaultMessage);
     }
 
     // Navigation to Sensor Activity
