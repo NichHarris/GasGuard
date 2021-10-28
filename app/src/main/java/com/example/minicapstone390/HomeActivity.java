@@ -28,7 +28,7 @@ import java.util.List;
 public class HomeActivity extends AppCompatActivity {
 
     protected TextView welcomeUserMessage;
-    protected Button addNewDeviceButton, logoutButton;
+    protected Button addNewDeviceButton, logoutButton, testButton;
     protected ListView deviceList;
 
     public String userName;
