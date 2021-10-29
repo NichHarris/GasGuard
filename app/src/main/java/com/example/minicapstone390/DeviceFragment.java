@@ -83,14 +83,13 @@ public class DeviceFragment extends DialogFragment {
                 userRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        deviceCount = Integer.parseInt(Objects.requireNonNull(snapshot.child("deviceCount").getValue(String.class))) + 1;
+                        
+                        deviceCount = (int) snapshot.getChildrenCount();
                         // for updating users with a device
 
                         Map<String, Object> keys = new HashMap<>();
                         keys.put(Integer.toString(deviceCount), deviceKey);
                         userRef.child("devices").updateChildren(keys);
-
-                        userRef.child("deviceCount").setValue(Integer.toString(deviceCount));
                     }
 
                     @Override

@@ -35,8 +35,7 @@ public class HomeActivity extends AppCompatActivity {
     protected TextView welcomeUserMessage;
     protected Button addNewDeviceButton, logoutButton, testButton;
     protected ListView deviceList;
-    protected String userId;
-    public String userName;
+    protected String userId, userName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,17 +59,16 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
-        // check if devices are part of the user
+        //TODO: check if devices are part of the user
         DatabaseReference deviceRef = dB.getReference("Devices").child("-Mmp8L5ajMh3q6W8wcnm");
         deviceRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 System.out.println(snapshot.child("deviceName").getValue(String.class));
                 if (snapshot.child("userId").getValue(String.class).equals(userId)) {
-                    System.out.println(userId);
+                    //System.out.println(userId);
                 } else {
-                    System.out.println(userId);
-                    System.out.println(snapshot.child("userId").getValue(String.class));
+                    //System.out.println(snapshot.child("userId").getValue(String.class));
                 }
             }
 
@@ -82,7 +80,7 @@ public class HomeActivity extends AppCompatActivity {
         welcomeUserMessage = (TextView) findViewById(R.id.welcomeUserMessage);
 
         deviceList = (ListView) findViewById(R.id.deviceDataList);
-        // TODO: Call loadDeviceView(...)
+        loadDeviceView(true);
 
         deviceList.setOnItemClickListener((parent, view, position, id) -> {
             // TODO: Navigate to Sensor Activity of Selected Profile By Id
@@ -98,20 +96,37 @@ public class HomeActivity extends AppCompatActivity {
 
         logoutButton = findViewById(R.id.logoutButton);
         logoutButton.setOnClickListener(view -> logoutUser());
-
     }
 
-    // Get, Initialize, and Update Devices
-    protected void loadDeviceView(boolean orderByName) {        // Display List of Devices
+    // Get, Initialize, and Update Devices - Display List of Devices
+    protected void loadDeviceView(boolean orderByName) {
+        //Get List of Devices from DB
+        DatabaseReference usersRef = dB.getReference("Users").child(userId).child("devices");
+
         List<String> devices = new ArrayList<>();
+        usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<String> deviceIds = new ArrayList<>();
+                // Format List from DB for Adapter
+                for (DataSnapshot ds : snapshot.getChildren()) {
+                    deviceIds.add(ds.getValue(String.class));
+                }
+                getDeviceNames(deviceIds);
+            }
 
-        //TODO: Get List of Devices from DB
-        DatabaseReference userRef = dB.getReference("Users").child(userId);
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
 
-        //TODO: Format List from DB for Adapter
+            }
+        });
 
+
+        System.out.println(devices);
+        devices.add("Nick");
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, devices);
         // Add Devices to ListView
-        deviceList.setAdapter(new ArrayAdapter(getApplicationContext(), android.R.layout.simple_list_item_1, devices));
+        deviceList.setAdapter(adapter);
     }
 
     //Update User Message
@@ -129,10 +144,39 @@ public class HomeActivity extends AppCompatActivity {
         //startActivity(intent);
     }
 
+    private void getDeviceNames(List<String> devices) {
+        //DatabaseReference deviceRef = dB.getReference("Devices");
+        List<String> deviceNames = new ArrayList<>();
+
+        for (String id: devices) {
+            //TODO: check if devices are part of the user
+            DatabaseReference deviceRef = dB.getReference("Devices").child(id);
+            deviceRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    deviceNames.add(snapshot.child("deviceName").getValue(String.class));
+                    setDeviceList(deviceNames);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+        }
+        setDeviceList(deviceNames);
+    }
+
     // Navigation to Add Device Activity
     private void logoutUser() {
         FirebaseAuth.getInstance().signOut();
         goToLoginActivity();
+    }
+
+    private void setDeviceList(List<String> devices) {
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, devices);
+        // Add Devices to ListView
+        deviceList.setAdapter(adapter);
     }
 
     private void goToLoginActivity() {

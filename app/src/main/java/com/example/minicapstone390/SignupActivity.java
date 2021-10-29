@@ -91,15 +91,12 @@ public class SignupActivity extends AppCompatActivity {
                     String currentUserId = Objects.requireNonNull(auth.getCurrentUser()).getUid();
 
                     DatabaseReference userRef = dB.getReference("Users").child(currentUserId);
-                    // Get Users DB Reference
-                    DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("Users");
 
                     // Also Add User to Realtime DB And Open Home Activity on Success
-                    usersRef.child(currentUserId).setValue(user)
+                    userRef.child(currentUserId).setValue(user)
                             .addOnCompleteListener(t -> {
                                 if (t.isSuccessful()) {
                                     Toast.makeText(getApplicationContext(), "User Registered Successfully!", Toast.LENGTH_SHORT).show();
-                                    userRef.child("deviceCount").setValue("0");
                                     openHomeActivity();
                                 } else {
                                     Toast.makeText(getApplicationContext(), "Failed to Register User!", Toast.LENGTH_SHORT).show();

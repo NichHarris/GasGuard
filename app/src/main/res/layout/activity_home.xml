@@ -41,9 +41,9 @@
     <!-- Device ListView -->
     <ListView
         android:id="@+id/deviceDataList"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginVertical="20dp"
+        android:layout_marginVertical="200dp"
         android:textStyle="normal" />
 
     <!-- Add Device Button -->
