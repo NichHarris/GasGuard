@@ -53,11 +53,11 @@ public class ProfileActivity extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError error) {
 
             }
-        });
-    }
 
-    private void updateProfile() {
-        profileName.setText(userName);
-        profileEmail.setText(userEmail);
+            private void updateProfile() {
+                profileName.setText(userName);
+                profileEmail.setText(userEmail);
+            }
+        });
     }
 }
