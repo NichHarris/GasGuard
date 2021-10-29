@@ -1,4 +1,4 @@
-package com.example.minicapstone390;
+package com.example.minicapstone390.Controllers;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;

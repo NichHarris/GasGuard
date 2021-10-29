@@ -1,4 +1,4 @@
-package com.example.minicapstone390;
+package com.example.minicapstone390.Models;
 
 import java.util.ArrayList;
 import java.util.List;

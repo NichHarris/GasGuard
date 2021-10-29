@@ -1,10 +1,11 @@
-package com.example.minicapstone390;
+package com.example.minicapstone390.Views;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.content.Intent;
 
+import com.example.minicapstone390.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 

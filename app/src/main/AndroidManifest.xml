@@ -10,13 +10,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MiniCapstone390">
         <activity
-            android:name=".DeviceActivity"
+            android:name=".Views.DeviceActivity"
             android:exported="false" />
         <activity
-            android:name=".ProfileActivity"
+            android:name=".Views.ProfileActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".Views.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,15 +25,15 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".LoginActivity"
+            android:name=".Views.LoginActivity"
             android:exported="true"
             android:label="Login Activity" />
         <activity
-            android:name=".SignupActivity"
+            android:name=".Views.SignupActivity"
             android:exported="true"
             android:label="Signup Activity" />
         <activity
-            android:name=".HomeActivity"
+            android:name=".Views.HomeActivity"
             android:exported="true"
             android:label="Home Activity" />
     </application>
