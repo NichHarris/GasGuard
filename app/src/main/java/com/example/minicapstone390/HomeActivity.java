@@ -80,7 +80,7 @@ public class HomeActivity extends AppCompatActivity {
         welcomeUserMessage = (TextView) findViewById(R.id.welcomeUserMessage);
 
         deviceList = (ListView) findViewById(R.id.deviceDataList);
-        loadDeviceView(true);
+        loadDeviceList();
 
         deviceList.setOnItemClickListener((parent, view, position, id) -> {
             // TODO: Navigate to Sensor Activity of Selected Profile By Id
@@ -99,7 +99,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     // Get, Initialize, and Update Devices - Display List of Devices
-    protected void loadDeviceView(boolean orderByName) {
+    protected void loadDeviceList() {
         //Get List of Devices from DB
         DatabaseReference usersRef = dB.getReference("Users").child(userId).child("devices");
 
@@ -145,7 +145,6 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void getDeviceNames(List<String> devices) {
-        //DatabaseReference deviceRef = dB.getReference("Devices");
         List<String> deviceNames = new ArrayList<>();
 
         for (String id: devices) {
