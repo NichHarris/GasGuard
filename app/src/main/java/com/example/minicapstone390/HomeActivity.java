@@ -42,7 +42,6 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-
         deviceIds = new ArrayList<>();
         FirebaseUser currentUser = auth.getCurrentUser();
         userId = currentUser.getUid();
@@ -52,7 +51,8 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 userName = snapshot.child("userName").getValue(String.class);
-                updateUserMessage();
+                System.out.println(userName);
+                updateUserMessage(userName);
             }
 
             @Override
@@ -137,7 +137,8 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     //Update User Message
-    private void updateUserMessage() {
+    private void updateUserMessage(String userName) {
+        System.out.println(userName);
         String defaultMessage = getResources().getString(R.string.welcome_user).replace("{0}", userName);
         welcomeUserMessage.setText(defaultMessage);
     }

@@ -90,7 +90,7 @@ public class SignupActivity extends AppCompatActivity {
                     // Get current User Id
                     String currentUserId = Objects.requireNonNull(auth.getCurrentUser()).getUid();
 
-                    DatabaseReference userRef = dB.getReference("Users").child(currentUserId);
+                    DatabaseReference userRef = dB.getReference("Users");
 
                     // Also Add User to Realtime DB And Open Home Activity on Success
                     userRef.child(currentUserId).setValue(user)
