@@ -36,12 +36,14 @@ public class HomeActivity extends AppCompatActivity {
     protected Button addNewDeviceButton, logoutButton, testButton;
     protected ListView deviceList;
     protected String userId, userName;
+    protected List<String> deviceIds;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        deviceIds = new ArrayList<>();
         FirebaseUser currentUser = auth.getCurrentUser();
         userId = currentUser.getUid();
         DatabaseReference userRef = dB.getReference("Users").child(userId);
@@ -60,6 +62,8 @@ public class HomeActivity extends AppCompatActivity {
         });
 
         //TODO: check if devices are part of the user
+        //TODO: Put id list in sharedpred to avoid out of scope issue (asynch issue)
+
         DatabaseReference deviceRef = dB.getReference("Devices").child("-Mmp8L5ajMh3q6W8wcnm");
         deviceRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -83,8 +87,8 @@ public class HomeActivity extends AppCompatActivity {
         loadDeviceList();
 
         deviceList.setOnItemClickListener((parent, view, position, id) -> {
-            // TODO: Navigate to Sensor Activity of Selected Profile By Id
-            //goToSensorActivity(...);
+            // TODO: Navigate to Device Activity of Selected Profile By Id
+            //goToDeviceActivity(...);
         });
 
         // This will be changed to
@@ -111,7 +115,15 @@ public class HomeActivity extends AppCompatActivity {
                 // Format List from DB for Adapter
                 for (DataSnapshot ds : snapshot.getChildren()) {
                     deviceIds.add(ds.getValue(String.class));
+                    addToDeviceList(ds.getValue(String.class));
                 }
+
+                deviceList.setOnItemClickListener((parent, view, position, id) -> {
+                    // TODO: Navigate to Device Activity of Selected Profile By Id
+                    System.out.println(deviceIds.get(position));
+                    goToDeviceActivity();
+                });
+
                 getDeviceNames(deviceIds);
             }
 
@@ -121,12 +133,7 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
-
-        System.out.println(devices);
-        devices.add("Nick");
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, devices);
-        // Add Devices to ListView
-        deviceList.setAdapter(adapter);
+        System.out.println(deviceIds);
     }
 
     //Update User Message
@@ -136,12 +143,12 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     // Navigation to Sensor Activity
-    private void goToSensorActivity(int deviceId) {
-        //Intent intent = new Intent(this, SensorActivity.class);
+    private void goToDeviceActivity() {
+        Intent intent = new Intent(this, DeviceActivity.class);
         //Bundle b = new Bundle();
         //b.putInt("deviceId", deviceId);
         //intent.putExtras(b);
-        //startActivity(intent);
+        startActivity(intent);
     }
 
     private void getDeviceNames(List<String> devices) {
@@ -176,6 +183,10 @@ public class HomeActivity extends AppCompatActivity {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, devices);
         // Add Devices to ListView
         deviceList.setAdapter(adapter);
+    }
+
+    public void addToDeviceList(String id) {
+        deviceIds.add(id);
     }
 
     private void goToLoginActivity() {
