@@ -22,6 +22,8 @@ import java.util.regex.Pattern;
 public class SignupActivity extends AppCompatActivity {
 
     private final FirebaseAuth auth = FirebaseAuth.getInstance();
+    private final FirebaseDatabase dB = FirebaseDatabase.getInstance();
+
     private final String passwordRegex = "^(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[`~!@#$%^&*()\\-=_+\\[\\]\\\\{}|;:'\",.\\/<>? ]).{8,}$";
 
     protected Button signUpButton, loginButton;
@@ -88,6 +90,7 @@ public class SignupActivity extends AppCompatActivity {
                     // Get current User Id
                     String currentUserId = Objects.requireNonNull(auth.getCurrentUser()).getUid();
 
+                    DatabaseReference userRef = dB.getReference("Users").child(currentUserId);
                     // Get Users DB Reference
                     DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("Users");
 
@@ -96,6 +99,7 @@ public class SignupActivity extends AppCompatActivity {
                             .addOnCompleteListener(t -> {
                                 if (t.isSuccessful()) {
                                     Toast.makeText(getApplicationContext(), "User Registered Successfully!", Toast.LENGTH_SHORT).show();
+                                    userRef.child("deviceCount").setValue("0");
                                     openHomeActivity();
                                 } else {
                                     Toast.makeText(getApplicationContext(), "Failed to Register User!", Toast.LENGTH_SHORT).show();

@@ -74,8 +74,10 @@ public class DeviceFragment extends DialogFragment {
                 // add the device, then add its deviceId to the user
                 DatabaseReference devicesRef = dB.getReference("Devices").push();
                 devicesRef.setValue(device);
+
                 // TODO: add some try to catch error cases
                 deviceKey = devicesRef.getKey();
+
                 // TODO: add device to the sensors that are part of the device
                 DatabaseReference userRef = dB.getReference("Users").child(currentUser.getUid());
                 userRef.addListenerForSingleValueEvent(new ValueEventListener() {

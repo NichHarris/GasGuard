@@ -47,12 +47,6 @@ public class HomeActivity extends AppCompatActivity {
         userId = currentUser.getUid();
         DatabaseReference userRef = dB.getReference("Users").child(userId);
 
-        // for updating users with a device
-        Map<String, Object> keys = new HashMap<>();
-        keys.put("3","-Mmp8L5ajMh3q6W8wcVV");
-
-        userRef.child("devices").updateChildren(keys);
-
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -112,8 +106,7 @@ public class HomeActivity extends AppCompatActivity {
         List<String> devices = new ArrayList<>();
 
         //TODO: Get List of Devices from DB
-        FirebaseDatabase db = FirebaseDatabase.getInstance();
-//        DatabaseReference ref = db.getReference("Devices")
+        DatabaseReference userRef = dB.getReference("Users").child(userId);
 
         //TODO: Format List from DB for Adapter
 

@@ -36,6 +36,7 @@ public class ProfileActivity extends AppCompatActivity {
         userId = auth.getUid();
         DatabaseReference userRef = dB.getReference("Users").child(userId);
 
+        // code to add user data
         Map<String, Object> phone = new HashMap<>();
         phone.put("phoneNumber", "438-832-7376");
         userRef.updateChildren(phone);
