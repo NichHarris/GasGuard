@@ -1,8 +1,10 @@
-package com.example.minicapstone390;
+package com.example.minicapstone390.Views;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
+import com.example.minicapstone390.R;
 
 public class DeviceActivity extends AppCompatActivity {
 

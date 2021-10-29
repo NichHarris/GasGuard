@@ -1,4 +1,4 @@
-package com.example.minicapstone390;
+package com.example.minicapstone390.Models;
 
 public class Sensor {
     private int sensorType;

@@ -1,4 +1,4 @@
-package com.example.minicapstone390;
+package com.example.minicapstone390.Views;
 
 import android.os.Bundle;
 
@@ -14,19 +14,18 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.minicapstone390.Models.Device;
+import com.example.minicapstone390.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.MutableData;
-import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 // Device Fragment
 public class DeviceFragment extends DialogFragment {

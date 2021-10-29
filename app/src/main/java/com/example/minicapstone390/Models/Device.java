@@ -1,6 +1,7 @@
-package com.example.minicapstone390;
+package com.example.minicapstone390.Models;
 
-import java.util.List;
+import com.example.minicapstone390.Models.Sensor;
+
 import java.util.Map;
 
 public class Device {
