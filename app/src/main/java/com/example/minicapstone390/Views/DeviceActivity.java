@@ -10,6 +10,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.minicapstone390.Controllers.Database;
 import com.example.minicapstone390.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -26,12 +27,12 @@ import java.util.List;
 
 public class DeviceActivity extends AppCompatActivity {
 
-    private final FirebaseDatabase dB = FirebaseDatabase.getInstance();;
-    private final FirebaseAuth auth = FirebaseAuth.getInstance();
+    // Initialize variables
+    private final Database dB = new Database();
 
-    protected String userId, deviceId;
+    protected String deviceId;
     protected ListView sensorList;
-    protected TextView deviceName;
+    protected TextView deviceName; //TODO
     protected List<String> sensorIds;
 
     @Override
@@ -50,8 +51,6 @@ public class DeviceActivity extends AppCompatActivity {
             openHomeActivity();
         }
 
-        FirebaseUser currentUser = auth.getCurrentUser();
-        userId = currentUser.getUid();
     }
 
     private void openHomeActivity() {
@@ -60,7 +59,7 @@ public class DeviceActivity extends AppCompatActivity {
     }
 
     private void displayDeviceInfo(String deviceId) {
-        DatabaseReference deviceRef = dB.getReference("Devices").child(deviceId).child("sensors");
+        DatabaseReference deviceRef = dB.getDeviceChild(deviceId).child("sensors");
 
         deviceRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -82,7 +81,7 @@ public class DeviceActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                // TODO: Add error catch
             }
         });
 
@@ -93,7 +92,7 @@ public class DeviceActivity extends AppCompatActivity {
         List<String> sensorNames = new ArrayList<>();
 
         for (String id: sensors) {
-            DatabaseReference sensorRef = dB.getReference("Sensors").child(id);
+            DatabaseReference sensorRef = dB.getSensorChild(id);
             sensorRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -103,7 +102,7 @@ public class DeviceActivity extends AppCompatActivity {
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
-
+                    // TODO: Add error catch
                 }
             });
         }

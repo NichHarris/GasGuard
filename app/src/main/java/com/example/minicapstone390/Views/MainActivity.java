@@ -5,23 +5,21 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.content.Intent;
 
+import com.example.minicapstone390.Controllers.Database;
 import com.example.minicapstone390.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity {
-    protected FirebaseUser user;
+    private final Database dB = new Database();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Get the current user
-        user = FirebaseAuth.getInstance().getCurrentUser();
-
         // If Not Authenticated, Send to Login Page
-        if (user == null) {
+        if (dB.getUser() == null) {
             openLoginActivity();
         } else {
             openHomeActivity();

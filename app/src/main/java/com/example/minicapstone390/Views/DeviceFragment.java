@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.minicapstone390.Controllers.Database;
 import com.example.minicapstone390.Models.Device;
 import com.example.minicapstone390.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -30,8 +31,8 @@ import java.util.Map;
 // Device Fragment
 public class DeviceFragment extends DialogFragment {
 
-    private final FirebaseDatabase dB = FirebaseDatabase.getInstance();;
-    private final FirebaseAuth auth = FirebaseAuth.getInstance();
+    // Initialize variables
+    private final Database dB = new Database();
 
     protected Button cancelButton, saveButton;
     protected EditText deviceIdInput, deviceNameInput;
@@ -64,21 +65,17 @@ public class DeviceFragment extends DialogFragment {
             if (deviceName.isEmpty()) {
                 Toast.makeText(getActivity().getApplicationContext(), "Must Fill All Input Fields!", Toast.LENGTH_LONG).show();
             } else {
-                // Get Users DB Reference
-                FirebaseUser currentUser = auth.getCurrentUser();
-                assert currentUser != null;
-
                 Device device = new Device(deviceName, true);
 
                 // add the device, then add its deviceId to the user
-                DatabaseReference devicesRef = dB.getReference("Devices").push();
+                DatabaseReference devicesRef = dB.getDeviceRef().push();
                 devicesRef.setValue(device);
 
                 // TODO: add some try to catch error cases
                 deviceKey = devicesRef.getKey();
 
                 // TODO: add device to the sensors that are part of the device
-                DatabaseReference userRef = dB.getReference("Users").child(currentUser.getUid());
+                DatabaseReference userRef = dB.getUserChild(dB.getUserId());
                 userRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -93,7 +90,7 @@ public class DeviceFragment extends DialogFragment {
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
-                        dismiss();
+                        dismiss(); // TODO: Add error catch
                     }
                 });
                 // Close Fragment

@@ -1,20 +1,58 @@
 package com.example.minicapstone390.Controllers;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class Database {
+    private FirebaseDatabase database;
+    private FirebaseAuth auth;
+    private FirebaseUser user;
 
-    FirebaseDatabase db = FirebaseDatabase.getInstance();
-    DatabaseReference ref =db.getReference("sensors");
+    public Database() {
+        this.auth = FirebaseAuth.getInstance();
+        this.database = FirebaseDatabase.getInstance();
+        this.user = auth.getCurrentUser();
+    }
 
-    //        DAOSensor dao = new DAOSensor();
-//        Sensor sensor = new Sensor(2, 3.5, "1998-12-12 11:11", "temp");
-//        String key = dao.add(sensor);
-//        System.out.println(key);
-//
-//        Device device = new Device("3", "Test2", false);
-//        DAODevice daoDevice = new DAODevice();
-//        daoDevice.add(device);
+    public FirebaseUser getUser() {
+        return this.user;
+    }
 
+    public FirebaseAuth getAuth() {
+        return this.auth;
+    }
+
+    public FirebaseDatabase getDatabase() {
+        return this.database;
+    }
+
+    public DatabaseReference getUserRef() {
+        return this.database.getReference("Users");
+    }
+
+    public DatabaseReference getUserChild(String node) {
+        return getUserRef().child(node);
+    }
+
+    public DatabaseReference getDeviceRef() {
+        return this.database.getReference("Devices");
+    }
+
+    public DatabaseReference getDeviceChild(String node) {
+        return getDeviceRef().child(node);
+    }
+
+    public DatabaseReference getSensorRef() {
+        return this.database.getReference("Sensors");
+    }
+
+    public DatabaseReference getSensorChild(String node) {
+        return getSensorRef().child(node);
+    }
+
+    public String getUserId() {
+        return this.user.getUid();
+    }
 }

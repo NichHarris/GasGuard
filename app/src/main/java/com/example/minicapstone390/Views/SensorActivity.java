@@ -9,6 +9,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.minicapstone390.Controllers.Database;
 import com.example.minicapstone390.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -19,8 +20,8 @@ import com.google.firebase.database.ValueEventListener;
 
 public class SensorActivity extends AppCompatActivity {
 
-    private final FirebaseDatabase dB = FirebaseDatabase.getInstance();;
-    private final FirebaseAuth auth = FirebaseAuth.getInstance();
+    // Initialize variables
+    private final Database dB = new Database();
 
     protected TextView sensorName;
     protected String sensorId;
@@ -44,7 +45,7 @@ public class SensorActivity extends AppCompatActivity {
     }
 
     private void displaySensorInfo(String sensorId) {
-        DatabaseReference sensorRef = dB.getReference("Sensors").child(sensorId);
+        DatabaseReference sensorRef = dB.getSensorChild(sensorId);
 
         sensorRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -54,7 +55,7 @@ public class SensorActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                // TODO: Add error catch
             }
         });
     }

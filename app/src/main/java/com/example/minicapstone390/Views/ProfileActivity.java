@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.minicapstone390.Controllers.Database;
 import com.example.minicapstone390.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -20,9 +21,10 @@ import java.util.Map;
 import java.util.Objects;
 
 public class ProfileActivity extends AppCompatActivity {
-    private final FirebaseDatabase dB = FirebaseDatabase.getInstance();
-    private final FirebaseAuth auth = FirebaseAuth.getInstance();
-    protected String userId;
+
+    // Initialize variables
+    private final Database dB = new Database();
+
     protected TextView profileName, profileEmail, profilePhone, profileFirstName, profileLastName;
     protected Button updateInfo;
     public String userName, userEmail, userPhone, userFirstName, userLastName;
@@ -44,8 +46,7 @@ public class ProfileActivity extends AppCompatActivity {
             dialog.show(getSupportFragmentManager(), "Update Info");
         });
 
-        userId = auth.getUid();
-        DatabaseReference userRef = dB.getReference("Users").child(userId);
+        DatabaseReference userRef = dB.getUserChild(dB.getUserId());
         updateAllInfo(userRef);
     }
 
@@ -63,7 +64,7 @@ public class ProfileActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                // TODO: Add error catch
             }
 
             private void updateProfile() {

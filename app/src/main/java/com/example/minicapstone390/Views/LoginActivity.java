@@ -8,12 +8,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.minicapstone390.Controllers.Database;
 import com.example.minicapstone390.R;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private final FirebaseAuth auth = FirebaseAuth.getInstance();
+    // Initialize variables
+    private final Database dB = new Database();
     protected Button loginButton, signupButton;
     protected EditText userEmailET, passwordET;
 
@@ -48,7 +50,7 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         // Login User Using Firebase Auth
-        auth.signInWithEmailAndPassword(userEmail, password)
+        dB.getAuth().signInWithEmailAndPassword(userEmail, password)
             .addOnCompleteListener(this, task -> {
                 if (task.isSuccessful()) {
                     Toast.makeText(getApplicationContext(), "Successfully Logged In!", Toast.LENGTH_SHORT).show();

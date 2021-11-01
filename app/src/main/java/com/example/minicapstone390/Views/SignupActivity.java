@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.minicapstone390.Controllers.Database;
 import com.example.minicapstone390.Models.User;
 import com.example.minicapstone390.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -20,9 +21,8 @@ import java.util.regex.Pattern;
 
 public class SignupActivity extends AppCompatActivity {
 
-    private final FirebaseAuth auth = FirebaseAuth.getInstance();
-    private final FirebaseDatabase dB = FirebaseDatabase.getInstance();
-
+    // Initialize variables
+    private final Database dB = new Database();
     private final String passwordRegex = "^(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[`~!@#$%^&*()\\-=_+\\[\\]\\\\{}|;:'\",.\\/<>? ]).{8,}$";
 
     protected Button signUpButton, loginButton;
@@ -81,15 +81,15 @@ public class SignupActivity extends AppCompatActivity {
         }
 
         // Create User using Firebase Auth
-        auth.createUserWithEmailAndPassword(email, password)
+        dB.getAuth().createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     User user = new User(username, email);
 
                     // Get current User Id
-                    String currentUserId = Objects.requireNonNull(auth.getCurrentUser()).getUid();
+                    String currentUserId = Objects.requireNonNull(dB.getAuth().getCurrentUser()).getUid();
 
-                    DatabaseReference userRef = dB.getReference("Users");
+                    DatabaseReference userRef = dB.getUserRef();
 
                     // Also Add User to Realtime DB And Open Home Activity on Success
                     userRef.child(currentUserId).setValue(user)

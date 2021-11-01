@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.ListView;
 
+import com.example.minicapstone390.Controllers.Database;
 import com.example.minicapstone390.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -24,12 +25,10 @@ import java.util.List;
 
 public class HomeActivity extends AppCompatActivity {
 
-    private final FirebaseDatabase dB = FirebaseDatabase.getInstance();;
-    private final FirebaseAuth auth = FirebaseAuth.getInstance();
+    private final Database dB = new Database();
     protected TextView welcomeUserMessage;
     protected Button addNewDeviceButton, logoutButton, profileButton;
     protected ListView deviceList;
-    protected String userId;
     protected List<String> deviceIds;
 
     @Override
@@ -37,9 +36,7 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         deviceIds = new ArrayList<>();
-        FirebaseUser currentUser = auth.getCurrentUser();
-        userId = currentUser.getUid();
-        DatabaseReference userRef = dB.getReference("Users").child(userId);
+        DatabaseReference userRef = dB.getUserChild(dB.getUserId());
 
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -56,12 +53,12 @@ public class HomeActivity extends AppCompatActivity {
 
         //TODO: check if devices are part of the user
         //TODO: Put id list in sharedpred to avoid out of scope issue (asynch issue)
-        DatabaseReference deviceRef = dB.getReference("Devices").child("-Mmp8L5ajMh3q6W8wcnm");
+        DatabaseReference deviceRef = dB.getDeviceRef().child("-Mmp8L5ajMh3q6W8wcnm");
         deviceRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 System.out.println(snapshot.child("deviceName").getValue(String.class));
-                if (snapshot.child("userId").getValue(String.class).equals(userId)) {
+                if (snapshot.child("userId").getValue(String.class).equals(dB.getUserId())) {
                     //System.out.println(userId);
                 } else {
                     //System.out.println(snapshot.child("userId").getValue(String.class));
@@ -70,9 +67,10 @@ public class HomeActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                // TODO: Add error catch
             }
         });
+
         welcomeUserMessage = (TextView) findViewById(R.id.welcomeUserMessage);
 
         deviceList = (ListView) findViewById(R.id.deviceDataList);
@@ -100,7 +98,7 @@ public class HomeActivity extends AppCompatActivity {
     // Get, Initialize, and Update Devices - Display List of Devices
     protected void loadDeviceList() {
         //Get List of Devices from DB
-        DatabaseReference usersRef = dB.getReference("Users").child(userId).child("devices");
+        DatabaseReference usersRef = dB.getUserChild(dB.getUserId()).child("devices");
 
         usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -123,7 +121,7 @@ public class HomeActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                // TODO: Add error catch
             }
         });
 
@@ -154,7 +152,7 @@ public class HomeActivity extends AppCompatActivity {
 
         for (String id: devices) {
             //TODO: check if devices are part of the user
-            DatabaseReference deviceRef = dB.getReference("Devices").child(id);
+            DatabaseReference deviceRef = dB.getDeviceRef().child(id);
             deviceRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -164,7 +162,7 @@ public class HomeActivity extends AppCompatActivity {
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
-
+                    // TODO: Add error catch
                 }
             });
         }

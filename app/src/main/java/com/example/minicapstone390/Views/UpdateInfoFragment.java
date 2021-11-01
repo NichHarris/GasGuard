@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+import com.example.minicapstone390.Controllers.Database;
 import com.example.minicapstone390.Models.Device;
 import com.example.minicapstone390.Models.User;
 import com.example.minicapstone390.R;
@@ -30,10 +31,9 @@ import java.util.Map;
 // Device Fragment
 public class UpdateInfoFragment extends DialogFragment {
 
-    private final FirebaseDatabase dB = FirebaseDatabase.getInstance();;
-    private final FirebaseAuth auth = FirebaseAuth.getInstance();
+    // Initialize variables
+    private final Database dB = new Database();
 
-    protected String userId;
     protected Button cancelButton, saveButton;
     protected EditText userNameInput, userEmailInput, userPhoneInput, userFirstNameInput, userLastNameInput;
 
@@ -58,13 +58,8 @@ public class UpdateInfoFragment extends DialogFragment {
         cancelButton.setOnClickListener(v -> dismiss());
 
         saveButton.setOnClickListener(view1 -> {
-            // Get Users DB Reference
-            FirebaseUser currentUser = auth.getCurrentUser();
-            assert currentUser != null;
-            userId = currentUser.getUid();
 
-            DatabaseReference userRef = dB.getReference("Users").child(userId);
-
+            DatabaseReference userRef = dB.getUserChild(dB.getUserId());
 
             userRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -87,7 +82,7 @@ public class UpdateInfoFragment extends DialogFragment {
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
-                    dismiss();
+                    dismiss(); // TODO: Add error catch
                 }
             });
         });
