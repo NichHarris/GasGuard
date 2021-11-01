@@ -6,13 +6,23 @@ import java.util.Map;
 import java.util.Objects;
 
 public class User {
-    private String userName, userEmail;
+    private String userName, userEmail, userPhone, userFirstName, userLastName;
     private Map<String, Object> deviceKeys;
     public User() { }
 
+    // Signup user call
     public User(String userName, String userEmail) {
         this.userName = userName;
         this.userEmail = userEmail;
+    }
+
+    // Update user call
+    public User(String userName, String userEmail, String userPhone, String userFirstName, String userLastName) {
+        this.userName = userName;
+        this.userEmail = userEmail;
+        this.userPhone = userPhone;
+        this.userFirstName = userFirstName;
+        this.userLastName = userLastName;
     }
 
     public Map<String, Object> getDeviceKeys() { return deviceKeys; }

@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.minicapstone390.R;
@@ -19,12 +20,12 @@ import java.util.Map;
 import java.util.Objects;
 
 public class ProfileActivity extends AppCompatActivity {
-
     private final FirebaseDatabase dB = FirebaseDatabase.getInstance();
     private final FirebaseAuth auth = FirebaseAuth.getInstance();
     protected String userId;
-    protected TextView profileName, profileEmail;
-    public String userName, userEmail, userPhone;
+    protected TextView profileName, profileEmail, profilePhone, profileFirstName, profileLastName;
+    protected Button updateInfo;
+    public String userName, userEmail, userPhone, userFirstName, userLastName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,20 +34,38 @@ public class ProfileActivity extends AppCompatActivity {
 
         profileEmail = (TextView) findViewById(R.id.profile_email);
         profileName = (TextView) findViewById(R.id.profile_name);
+        profilePhone = (TextView) findViewById(R.id.profile_phone);
+        profileFirstName = (TextView) findViewById(R.id.profileFirstName);
+        profileLastName = (TextView) findViewById(R.id.profileLastName);
+
+        updateInfo = (Button) findViewById(R.id.profileUpdateButton);
+        updateInfo.setOnClickListener(view -> {
+            UpdateInfoFragment dialog = new UpdateInfoFragment();
+            dialog.show(getSupportFragmentManager(), "Update Info");
+        });
 
         userId = auth.getUid();
         DatabaseReference userRef = dB.getReference("Users").child(userId);
 
         // code to add user data
         Map<String, Object> phone = new HashMap<>();
-        phone.put("phoneNumber", "438-832-7376");
+        phone.put("userPhone", "438-832-7376");
         userRef.updateChildren(phone);
 
-        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        updateAllInfo(userRef);
+
+
+    }
+
+    public void updateAllInfo(DatabaseReference ref) {
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 userName = snapshot.child("userName").getValue(String.class);
                 userEmail = snapshot.child("userEmail").getValue(String.class);
+                userPhone = snapshot.child("userPhone").getValue(String.class);
+                userFirstName = snapshot.child("userFirstName").getValue(String.class);
+                userLastName = snapshot.child("userLastName").getValue(String.class);
                 updateProfile();
             }
 
@@ -56,8 +75,11 @@ public class ProfileActivity extends AppCompatActivity {
             }
 
             private void updateProfile() {
-                profileName.setText(userName);
-                profileEmail.setText(userEmail);
+                profileName.setText(String.format("Username: %s", userName));
+                profileEmail.setText(String.format("Email: %s", userEmail));
+                profilePhone.setText(String.format("Phone Number: %s", userPhone));
+                profileFirstName.setText(String.format("First Name: %s", userFirstName));
+                profileLastName.setText(String.format("Last Name: %s", userLastName));
             }
         });
     }

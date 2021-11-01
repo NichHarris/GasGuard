@@ -27,7 +27,7 @@ public class HomeActivity extends AppCompatActivity {
     private final FirebaseDatabase dB = FirebaseDatabase.getInstance();;
     private final FirebaseAuth auth = FirebaseAuth.getInstance();
     protected TextView welcomeUserMessage;
-    protected Button addNewDeviceButton, logoutButton, testButton;
+    protected Button addNewDeviceButton, logoutButton, profileButton;
     protected ListView deviceList;
     protected String userId;
     protected List<String> deviceIds;
@@ -93,6 +93,9 @@ public class HomeActivity extends AppCompatActivity {
 
         logoutButton = findViewById(R.id.logoutButton);
         logoutButton.setOnClickListener(view -> logoutUser());
+
+        profileButton = (Button) findViewById(R.id.profileButton);
+        profileButton.setOnClickListener(view -> goToProfileActivity());
     }
 
     // Get, Initialize, and Update Devices - Display List of Devices
@@ -134,6 +137,11 @@ public class HomeActivity extends AppCompatActivity {
         System.out.println(userName);
         String defaultMessage = getResources().getString(R.string.welcome_user).replace("{0}", userName);
         welcomeUserMessage.setText(defaultMessage);
+    }
+
+    private void goToProfileActivity() {
+        Intent intent = new Intent(this, ProfileActivity.class);
+        startActivity(intent);
     }
 
     // Navigation to Sensor Activity

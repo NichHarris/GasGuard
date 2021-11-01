@@ -23,4 +23,45 @@
         android:textColor="@color/black"
         android:layout_marginTop="40dp"
         android:layout_marginStart="40dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/profile_phone"
+        android:textSize="16sp"
+        android:textColor="@color/black"
+        android:layout_marginTop="60dp"
+        android:layout_marginStart="40dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/profileFirstName"
+        android:textSize="16sp"
+        android:textColor="@color/black"
+        android:layout_marginTop="80dp"
+        android:layout_marginStart="40dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/profileLastName"
+        android:textSize="16sp"
+        android:textColor="@color/black"
+        android:layout_marginTop="100dp"
+        android:layout_marginStart="40dp" />
+
+    <!-- Log Out Button -->
+    <Button
+        android:id="@+id/profileUpdateButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginVertical="650dp"
+        android:backgroundTint="@color/selected_toggle"
+        android:text="@string/update_info"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_marginStart="20dp" />
 </RelativeLayout>

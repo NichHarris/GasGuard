@@ -19,4 +19,9 @@
     <string name="device_id">Device ID</string>
     <string name="save">SAVE</string>
     <string name="cancel">CANCEL</string>
+    <string name="update_info">UPDATE INFO</string>
+    <string name="profile">Profile</string>
+    <string name="phone">Phone</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
 </resources>
