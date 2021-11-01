@@ -7,8 +7,9 @@ import java.util.Objects;
 
 public class User {
     private String userName, userEmail, userPhone, userFirstName, userLastName;
-    private Map<String, Object> deviceKeys;
-    public User() { }
+    private Map<String, Object> devices;
+
+    public User() {}
 
     // Signup user call
     public User(String userName, String userEmail) {
@@ -20,12 +21,13 @@ public class User {
     }
 
     // Update user call
-    public User(String userName, String userEmail, String userPhone, String userFirstName, String userLastName) {
+    public User(String userName, String userEmail, String userPhone, String userFirstName, String userLastName, Map<String, Object> devices) {
         this.userName = userName;
         this.userEmail = userEmail;
         this.userPhone = userPhone;
         this.userFirstName = userFirstName;
         this.userLastName = userLastName;
+        this.devices = devices;
     }
 
     public String getUserPhone() {
@@ -52,9 +54,9 @@ public class User {
         this.userLastName = userLastName;
     }
 
-    public Map<String, Object> getDeviceKeys() { return deviceKeys; }
+    public Map<String, Object> getDeviceKeys() { return devices; }
 
-    public void setDeviceKeys(Map<String, Object> deviceKeys) { this.deviceKeys = deviceKeys; }
+    public void setDeviceKeys(Map<String, Object> devices) { this.devices = devices; }
 
     public String getUserName() {
         return userName;

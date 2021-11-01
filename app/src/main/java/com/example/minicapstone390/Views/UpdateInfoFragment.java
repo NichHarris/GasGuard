@@ -25,7 +25,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 // Device Fragment
@@ -71,11 +73,34 @@ public class UpdateInfoFragment extends DialogFragment {
                     userFirstName = userFirstNameInput.getText().toString().equals("") ? snapshot.child("userFirstName").getValue(String.class) : userFirstNameInput.getText().toString();
                     userLastName = userLastNameInput.getText().toString().equals("") ? snapshot.child("userLastName").getValue(String.class) : userLastNameInput.getText().toString();
 
+                    DatabaseReference devicesRef = userRef.child("devices");
+
+                    devicesRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            Map<String, Object> keys = new HashMap<>();
+                            for (DataSnapshot ds : snapshot.getChildren()) {
+                                keys.put(ds.getKey().toString(), ds.getValue(String.class));
+                            }
+
+                            // Can add validation after
+                            User user = new User(userName, userEmail, userPhone, userFirstName, userLastName, keys);
+                            userRef.setValue(user);
+                            //noinspection ConstantConditions
+                            ((ProfileActivity)getActivity()).updateAllInfo(userRef);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+                    // TODO ADD TO USER CLASS THE ADD DEVICES STUFF
                     // Can add validation after
-                    User user = new User(userName, userEmail, userPhone, userFirstName, userLastName);
-                    userRef.setValue(user);
+//                    User user = new User(userName, userEmail, userPhone, userFirstName, userLastName);
+//                    userRef.setValue(user);
                     //noinspection ConstantConditions
-                    ((ProfileActivity)getActivity()).updateAllInfo(userRef);
+//                    ((ProfileActivity)getActivity()).updateAllInfo(userRef);
                     // Close Fragment
                     dismiss();
                 }
