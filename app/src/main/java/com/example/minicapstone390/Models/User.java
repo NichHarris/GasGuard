@@ -14,6 +14,9 @@ public class User {
     public User(String userName, String userEmail) {
         this.userName = userName;
         this.userEmail = userEmail;
+        this.userPhone = "";
+        this.userFirstName = "";
+        this.userLastName = "";
     }
 
     // Update user call
@@ -22,6 +25,30 @@ public class User {
         this.userEmail = userEmail;
         this.userPhone = userPhone;
         this.userFirstName = userFirstName;
+        this.userLastName = userLastName;
+    }
+
+    public String getUserPhone() {
+        return userPhone;
+    }
+
+    public void setUserPhone(String userPhone) {
+        this.userPhone = userPhone;
+    }
+
+    public String getUserFirstName() {
+        return userFirstName;
+    }
+
+    public void setUserFirstName(String userFirstName) {
+        this.userFirstName = userFirstName;
+    }
+
+    public String getUserLastName() {
+        return userLastName;
+    }
+
+    public void setUserLastName(String userLastName) {
         this.userLastName = userLastName;
     }
 

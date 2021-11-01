@@ -57,7 +57,6 @@ public class UpdateInfoFragment extends DialogFragment {
 
         cancelButton.setOnClickListener(v -> dismiss());
 
-        // Not working right now
         saveButton.setOnClickListener(view1 -> {
             // Get Users DB Reference
             FirebaseUser currentUser = auth.getCurrentUser();
@@ -66,20 +65,30 @@ public class UpdateInfoFragment extends DialogFragment {
 
             DatabaseReference userRef = dB.getReference("Users").child(userId);
 
-            // Get Input Responses
-            String userName = userNameInput.getText().toString() == null ? userRef.child("userName").toString() : userNameInput.getText().toString();
-            String userEmail = userEmailInput.getText().toString() == null ? userRef.child("userEmail").toString() : userEmailInput.getText().toString();
-            String userPhone = userPhoneInput.getText().toString() == null ? userRef.child("userPhone").toString() : userPhoneInput.getText().toString();
-            String userFirstName = userFirstNameInput.getText().toString() == null ? userRef.child("userFirstName").toString() : userFirstNameInput.getText().toString();
-            String userLastName = userLastNameInput.getText().toString() == null ? userRef.child("userLastName").toString() : userLastNameInput.getText().toString();
 
+            userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    String userName, userEmail, userPhone, userFirstName, userLastName;
+                    userName = userNameInput.getText().toString().equals("") ? snapshot.child("userName").getValue(String.class) : userNameInput.getText().toString();
+                    userEmail = userEmailInput.getText().toString().equals("") ? snapshot.child("userEmail").getValue(String.class) : userEmailInput.getText().toString();
+                    userPhone = userPhoneInput.getText().toString().equals("") ? snapshot.child("userPhone").getValue(String.class) : userPhoneInput.getText().toString();
+                    userFirstName = userFirstNameInput.getText().toString().equals("") ? snapshot.child("userFirstName").getValue(String.class) : userFirstNameInput.getText().toString();
+                    userLastName = userLastNameInput.getText().toString().equals("") ? snapshot.child("userLastName").getValue(String.class) : userLastNameInput.getText().toString();
 
-            // Can add validation after
-            User user = new User(userName, userEmail, userPhone, userFirstName, userLastName);
-            userRef.setValue(user);
-            ((ProfileActivity)getActivity()).updateAllInfo(userRef);
-            // Close Fragment
-            dismiss();
+                    // Can add validation after
+                    User user = new User(userName, userEmail, userPhone, userFirstName, userLastName);
+                    userRef.setValue(user);
+                    ((ProfileActivity)getActivity()).updateAllInfo(userRef);
+                    // Close Fragment
+                    dismiss();
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    dismiss();
+                }
+            });
         });
         return view;
     }
