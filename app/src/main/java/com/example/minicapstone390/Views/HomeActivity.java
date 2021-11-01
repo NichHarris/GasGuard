@@ -1,0 +1,192 @@
+package com.example.minicapstone390.Views;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.ListView;
+
+import com.example.minicapstone390.Controllers.Database;
+import com.example.minicapstone390.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class HomeActivity extends AppCompatActivity {
+
+    private final Database dB = new Database();
+    protected TextView welcomeUserMessage;
+    protected Button addNewDeviceButton, logoutButton, profileButton;
+    protected ListView deviceList;
+    protected List<String> deviceIds;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_home);
+        deviceIds = new ArrayList<>();
+        DatabaseReference userRef = dB.getUserChild(dB.getUserId());
+
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String username = snapshot.child("userName").getValue(String.class);
+                updateUserMessage(username);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                throw error.toException();
+            }
+        });
+
+        //TODO: check if devices are part of the user
+        //TODO: Put id list in sharedpred to avoid out of scope issue (asynch issue)
+        DatabaseReference deviceRef = dB.getDeviceRef().child("-Mmp8L5ajMh3q6W8wcnm");
+        deviceRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                System.out.println(snapshot.child("deviceName").getValue(String.class));
+                if (snapshot.child("userId").getValue(String.class).equals(dB.getUserId())) {
+                    //System.out.println(userId);
+                } else {
+                    //System.out.println(snapshot.child("userId").getValue(String.class));
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // TODO: Add error catch
+            }
+        });
+
+        welcomeUserMessage = (TextView) findViewById(R.id.welcomeUserMessage);
+
+        deviceList = (ListView) findViewById(R.id.deviceDataList);
+        loadDeviceList();
+
+        deviceList.setOnItemClickListener((parent, view, position, id) -> {
+            // TODO: Navigate to Device Activity of Selected Profile By Id
+            //goToDeviceActivity(...);
+        });
+
+        // This will be changed to
+        addNewDeviceButton = findViewById(R.id.addDeviceButton);
+        addNewDeviceButton.setOnClickListener(view -> {
+            DeviceFragment dialog = new DeviceFragment();
+            dialog.show(getSupportFragmentManager(), "Add Device Fragment");
+        });
+
+        logoutButton = findViewById(R.id.logoutButton);
+        logoutButton.setOnClickListener(view -> logoutUser());
+
+        profileButton = (Button) findViewById(R.id.profileButton);
+        profileButton.setOnClickListener(view -> goToProfileActivity());
+    }
+
+    // Get, Initialize, and Update Devices - Display List of Devices
+    protected void loadDeviceList() {
+        //Get List of Devices from DB
+        DatabaseReference usersRef = dB.getUserChild(dB.getUserId()).child("devices");
+
+        usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<String> deviceIds = new ArrayList<>();
+                // Format List from DB for Adapter
+                for (DataSnapshot ds : snapshot.getChildren()) {
+                    deviceIds.add(ds.getValue(String.class));
+                    addToDeviceList(ds.getValue(String.class));
+                }
+
+                deviceList.setOnItemClickListener((parent, view, position, id) -> {
+                    // TODO: Navigate to Device Activity of Selected Profile By Id
+                    System.out.println(deviceIds.get(position));
+                    goToDeviceActivity(deviceIds.get(position));
+                });
+
+                getDeviceNames(deviceIds);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // TODO: Add error catch
+            }
+        });
+
+        System.out.println(deviceIds);
+    }
+
+    //Update User Message
+    private void updateUserMessage(String userName) {
+        System.out.println(userName);
+        String defaultMessage = getResources().getString(R.string.welcome_user).replace("{0}", userName);
+        welcomeUserMessage.setText(defaultMessage);
+    }
+
+    private void goToProfileActivity() {
+        Intent intent = new Intent(this, ProfileActivity.class);
+        startActivity(intent);
+    }
+
+    // Navigation to Sensor Activity
+    private void goToDeviceActivity(String deviceId) {
+        Intent intent = new Intent(this, DeviceActivity.class);
+        intent.putExtra("deviceId", deviceId);
+        startActivity(intent);
+    }
+
+    private void getDeviceNames(List<String> devices) {
+        List<String> deviceNames = new ArrayList<>();
+
+        for (String id: devices) {
+            //TODO: check if devices are part of the user
+            DatabaseReference deviceRef = dB.getDeviceRef().child(id);
+            deviceRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    deviceNames.add(snapshot.child("deviceName").getValue(String.class));
+                    setDeviceList(deviceNames);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    // TODO: Add error catch
+                }
+            });
+        }
+        setDeviceList(deviceNames);
+    }
+
+    // Navigation to Add Device Activity
+    private void logoutUser() {
+        FirebaseAuth.getInstance().signOut();
+        goToLoginActivity();
+    }
+
+    private void setDeviceList(List<String> devices) {
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, devices);
+        // Add Devices to ListView
+        deviceList.setAdapter(adapter);
+    }
+
+    public void addToDeviceList(String id) {
+        deviceIds.add(id);
+    }
+
+    private void goToLoginActivity() {
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
+    }
+}

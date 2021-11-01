@@ -10,7 +10,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MiniCapstone390">
         <activity
-            android:name=".MainActivity"
+            android:name=".Views.SensorActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Views.DeviceActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Views.ProfileActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Views.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -19,17 +28,17 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".LoginActivity"
-            android:label="Login Activity"
-            android:exported="true" />
+            android:name=".Views.LoginActivity"
+            android:exported="true"
+            android:label="Login Activity" />
         <activity
-            android:name=".SignupActivity"
-            android:label="Signup Activity"
-            android:exported="true" />
+            android:name=".Views.SignupActivity"
+            android:exported="true"
+            android:label="Signup Activity" />
         <activity
-            android:name=".HomeActivity"
-            android:label="Home Activity"
-            android:exported="true" />
+            android:name=".Views.HomeActivity"
+            android:exported="true"
+            android:label="Home Activity" />
     </application>
 
 </manifest>
