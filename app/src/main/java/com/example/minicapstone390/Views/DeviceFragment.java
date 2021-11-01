@@ -1,4 +1,4 @@
-package com.example.minicapstone390;
+package com.example.minicapstone390.Views;
 
 import android.os.Bundle;
 
@@ -14,6 +14,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.minicapstone390.Controllers.Database;
+import com.example.minicapstone390.Models.Device;
+import com.example.minicapstone390.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -22,10 +25,20 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.HashMap;
+import java.util.Map;
+
 // Device Fragment
 public class DeviceFragment extends DialogFragment {
+
+    // Initialize variables
+    private final Database dB = new Database();
+
     protected Button cancelButton, saveButton;
     protected EditText deviceIdInput, deviceNameInput;
+
+    public int deviceCount;
+    public String deviceKey;
 
     @Nullable
     @Override
@@ -52,22 +65,39 @@ public class DeviceFragment extends DialogFragment {
             if (deviceName.isEmpty()) {
                 Toast.makeText(getActivity().getApplicationContext(), "Must Fill All Input Fields!", Toast.LENGTH_LONG).show();
             } else {
-                // Get Users DB Reference
-                FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-                assert currentUser != null;
+                Device device = new Device(deviceName, true);
 
-                Device device = new Device(currentUser.getUid(), deviceName, true);
                 // add the device, then add its deviceId to the user
-                DatabaseReference devicesRef = FirebaseDatabase.getInstance().getReference("Devices");
-                devicesRef.push().setValue(device);
+                DatabaseReference devicesRef = dB.getDeviceRef().push();
+                devicesRef.setValue(device);
+
                 // TODO: add some try to catch error cases
-                String deviceKey = devicesRef.getKey();
+                deviceKey = devicesRef.getKey();
+
                 // TODO: add device to the sensors that are part of the device
-                
+                DatabaseReference userRef = dB.getUserChild(dB.getUserId());
+                userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        
+                        deviceCount = (int) snapshot.getChildrenCount();
+                        // for updating users with a device
+
+                        Map<String, Object> keys = new HashMap<>();
+                        keys.put(Integer.toString(deviceCount), deviceKey);
+                        userRef.child("devices").updateChildren(keys);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        dismiss(); // TODO: Add error catch
+                    }
+                });
                 // Close Fragment
                 dismiss();
             }
         });
         return view;
     }
+
 }

@@ -1,5 +1,6 @@
-package com.example.minicapstone390;
+package com.example.minicapstone390.Controllers;
 
+import com.example.minicapstone390.Models.Device;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;

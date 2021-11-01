@@ -1,4 +1,4 @@
-package com.example.minicapstone390;
+package com.example.minicapstone390.Views;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -8,22 +8,23 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.minicapstone390.Controllers.Database;
+import com.example.minicapstone390.R;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private FirebaseAuth auth;
+    // Initialize variables
+    private final Database dB = new Database();
     protected Button loginButton, signupButton;
-    protected EditText usernameET, passwordET;
+    protected EditText userEmailET, passwordET;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        auth = FirebaseAuth.getInstance();
-
-        usernameET = (EditText) findViewById(R.id.usernameInput);
+        userEmailET = (EditText) findViewById(R.id.usernameInput);
         passwordET = (EditText) findViewById(R.id.passwordInput);
 
         // Login And Continue to Home Page on Success
@@ -38,24 +39,18 @@ public class LoginActivity extends AppCompatActivity {
 
 
     private void userLogin() {
-        String username = usernameET.getText().toString();
+        String userEmail = userEmailET.getText().toString();
         String password = passwordET.getText().toString();
 
         // Validation
         // (1) All Inputs Must Be Filled
-        if (username.equals("") || password.equals("")) {
+        if (userEmail.equals("") || password.equals("")) {
             Toast.makeText(getApplicationContext(), "All Inputs Must Be Filled!", Toast.LENGTH_LONG).show();
             return;
         }
 
-        // (2) Username Must Exist
-
-
-        // (3) Password Must Match Stored Password
-
-
         // Login User Using Firebase Auth
-        auth.signInWithEmailAndPassword(username, password)
+        dB.getAuth().signInWithEmailAndPassword(userEmail, password)
             .addOnCompleteListener(this, task -> {
                 if (task.isSuccessful()) {
                     Toast.makeText(getApplicationContext(), "Successfully Logged In!", Toast.LENGTH_SHORT).show();
