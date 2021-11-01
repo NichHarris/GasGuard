@@ -1,9 +1,6 @@
 package com.example.minicapstone390.Models;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 public class User {
     private String userName, userEmail, userPhone, userFirstName, userLastName;
@@ -21,13 +18,17 @@ public class User {
     }
 
     // Update user call
-    public User(String userName, String userEmail, String userPhone, String userFirstName, String userLastName, Map<String, Object> devices) {
+    public User(String userName, String userEmail, String userPhone, String userFirstName, String userLastName) {
         this.userName = userName;
         this.userEmail = userEmail;
         this.userPhone = userPhone;
         this.userFirstName = userFirstName;
         this.userLastName = userLastName;
-        this.devices = devices;
+//        this.devices = devices;
+    }
+
+    public String print() {
+        return String.format("username: %s, email: %s, phone %s, first: %s, last: %s", userName, userEmail, userPhone, userFirstName, userLastName);
     }
 
     public String getUserPhone() {

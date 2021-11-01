@@ -16,6 +16,7 @@ import androidx.fragment.app.DialogFragment;
 import com.example.minicapstone390.Controllers.Database;
 import com.example.minicapstone390.Models.Device;
 import com.example.minicapstone390.Models.User;
+import com.example.minicapstone390.Views.ProfileActivity;
 import com.example.minicapstone390.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -29,6 +30,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 // Device Fragment
 public class UpdateInfoFragment extends DialogFragment {
@@ -78,30 +80,31 @@ public class UpdateInfoFragment extends DialogFragment {
                     devicesRef.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            Map<String, Object> keys = new HashMap<>();
+                            Map<String, Object> devices = new HashMap<>();
                             for (DataSnapshot ds : snapshot.getChildren()) {
-                                keys.put(ds.getKey().toString(), ds.getValue(String.class));
+                                devices.put(ds.getKey(), ds.getValue(String.class));
                             }
 
                             // Can add validation after
-                            User user = new User(userName, userEmail, userPhone, userFirstName, userLastName, keys);
-                            userRef.setValue(user);
+                            Map<String, Object> userInfo = new HashMap<>();
+                            userInfo.put("userName", userName);
+                            userInfo.put("userEmail", userEmail);
+                            userInfo.put("userPhone", userPhone);
+                            userInfo.put("userFirstName", userFirstName);
+                            userInfo.put("userLastName", userLastName);
+                            userInfo.put("devices", devices);
+                            userRef.updateChildren(userInfo);
+
                             //noinspection ConstantConditions
-                            ((ProfileActivity)getActivity()).updateAllInfo(userRef);
+                            // TODO: Causing profile to crash
+                            ((ProfileActivity)requireActivity()).updateAllInfo();
                         }
 
                         @Override
                         public void onCancelled(@NonNull DatabaseError error) {
-
+                            dismiss(); // TODO: Add error catch
                         }
                     });
-                    // TODO ADD TO USER CLASS THE ADD DEVICES STUFF
-                    // Can add validation after
-//                    User user = new User(userName, userEmail, userPhone, userFirstName, userLastName);
-//                    userRef.setValue(user);
-                    //noinspection ConstantConditions
-//                    ((ProfileActivity)getActivity()).updateAllInfo(userRef);
-                    // Close Fragment
                     dismiss();
                 }
 

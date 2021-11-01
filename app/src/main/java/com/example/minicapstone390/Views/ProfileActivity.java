@@ -45,13 +45,11 @@ public class ProfileActivity extends AppCompatActivity {
             UpdateInfoFragment dialog = new UpdateInfoFragment();
             dialog.show(getSupportFragmentManager(), "Update Info");
         });
-
-        DatabaseReference userRef = dB.getUserChild(dB.getUserId());
-        updateAllInfo(userRef);
+        updateAllInfo();
     }
 
-    public void updateAllInfo(DatabaseReference ref) {
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+    public void updateAllInfo() {
+        dB.getUserChild(dB.getUserId()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 userName = snapshot.child("userName").getValue(String.class);
