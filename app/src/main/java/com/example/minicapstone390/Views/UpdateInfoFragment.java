@@ -79,6 +79,7 @@ public class UpdateInfoFragment extends DialogFragment {
                     // Can add validation after
                     User user = new User(userName, userEmail, userPhone, userFirstName, userLastName);
                     userRef.setValue(user);
+                    //noinspection ConstantConditions
                     ((ProfileActivity)getActivity()).updateAllInfo(userRef);
                     // Close Fragment
                     dismiss();

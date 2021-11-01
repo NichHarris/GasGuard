@@ -56,7 +56,6 @@ public class HomeActivity extends AppCompatActivity {
 
         //TODO: check if devices are part of the user
         //TODO: Put id list in sharedpred to avoid out of scope issue (asynch issue)
-
         DatabaseReference deviceRef = dB.getReference("Devices").child("-Mmp8L5ajMh3q6W8wcnm");
         deviceRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -103,7 +102,6 @@ public class HomeActivity extends AppCompatActivity {
         //Get List of Devices from DB
         DatabaseReference usersRef = dB.getReference("Users").child(userId).child("devices");
 
-        List<String> devices = new ArrayList<>();
         usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -117,7 +115,7 @@ public class HomeActivity extends AppCompatActivity {
                 deviceList.setOnItemClickListener((parent, view, position, id) -> {
                     // TODO: Navigate to Device Activity of Selected Profile By Id
                     System.out.println(deviceIds.get(position));
-                    goToDeviceActivity();
+                    goToDeviceActivity(deviceIds.get(position));
                 });
 
                 getDeviceNames(deviceIds);
@@ -145,11 +143,9 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     // Navigation to Sensor Activity
-    private void goToDeviceActivity() {
+    private void goToDeviceActivity(String deviceId) {
         Intent intent = new Intent(this, DeviceActivity.class);
-        //Bundle b = new Bundle();
-        //b.putInt("deviceId", deviceId);
-        //intent.putExtras(b);
+        intent.putExtra("deviceId", deviceId);
         startActivity(intent);
     }
 

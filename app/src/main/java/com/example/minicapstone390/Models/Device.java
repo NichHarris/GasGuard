@@ -7,7 +7,7 @@ import java.util.Map;
 public class Device {
     private String deviceName;
     private boolean status;
-    private Map<String, Sensor> sensors;
+    private Map<String, Sensor> sensorKeys;
 
     public Device() {}
 
@@ -15,6 +15,10 @@ public class Device {
         this.deviceName = deviceName;
         this.status = status;
     }
+
+    public Map<String, Sensor> getSensorKeys() { return sensorKeys; }
+
+    public void setSensorKeys(Map<String, Sensor> sensorKeys) { this.sensorKeys = sensorKeys; }
 
     public String getDeviceName() {
         return deviceName;

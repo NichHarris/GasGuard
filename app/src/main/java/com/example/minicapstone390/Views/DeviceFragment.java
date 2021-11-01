@@ -93,7 +93,7 @@ public class DeviceFragment extends DialogFragment {
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
-
+                        dismiss();
                     }
                 });
                 // Close Fragment

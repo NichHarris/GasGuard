@@ -3,15 +3,14 @@ package com.example.minicapstone390.Models;
 public class Sensor {
     private int sensorType;
     private double sensorData;
-    private String timeStamp, deviceId;
+    private String timeStamp;
 
     public Sensor(){}
 
-    public Sensor(int sensorType, double sensorData, String timeStamp, String deviceId) {
+    public Sensor(int sensorType, double sensorData, String timeStamp) {
         this.sensorType = sensorType;
         this.sensorData = sensorData;
         this.timeStamp = timeStamp;
-        this.deviceId = deviceId;
     }
 
     public int getSensorType() {
@@ -36,13 +35,5 @@ public class Sensor {
 
     public void setTimeStamp(String timeStamp) {
         this.timeStamp = timeStamp;
-    }
-
-    public String getDeviceId() {
-        return deviceId;
-    }
-
-    public void setDeviceId(String deviceId) {
-        this.deviceId = deviceId;
     }
 }
