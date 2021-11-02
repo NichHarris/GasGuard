@@ -4,6 +4,38 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".DeviceActivity">
+    tools:context=".Views.DeviceActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/device_name"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="20dp"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/sensorsTitle"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/sensors"
+        android:paddingTop="100dp"
+        android:paddingHorizontal="15dp"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="50dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Sensor ListView -->
+    <ListView
+        android:id="@+id/sensorList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginVertical="200dp"
+        android:textStyle="normal" />
 
 </RelativeLayout>
