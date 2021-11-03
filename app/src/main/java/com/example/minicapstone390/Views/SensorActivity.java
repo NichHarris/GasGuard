@@ -23,7 +23,7 @@ public class SensorActivity extends AppCompatActivity {
     // Initialize variables
     private final Database dB = new Database();
 
-    protected TextView sensorName;
+    protected TextView sensorName, liveData;
     protected String sensorId;
 
 
@@ -33,6 +33,7 @@ public class SensorActivity extends AppCompatActivity {
         setContentView(R.layout.activity_sensor);
 
         sensorName = (TextView) findViewById(R.id.sensor_name);
+        liveData = (TextView) findViewById(R.id.live_data);
 
         Bundle carryOver = getIntent().getExtras();
         if (carryOver != null) {
@@ -51,6 +52,7 @@ public class SensorActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 sensorName.setText(snapshot.child("sensorName").getValue(String.class));
+                liveData.setText(getResources().getString(R.string.live_data_0).replace("{0}", snapshot.child("sensorValue").getValue(Double.class).toString()));
             }
 
             @Override
