@@ -1,13 +1,17 @@
 #include <WiFiNINA.h>
+#include <SPI.h>
+#include "FlashAsEEPROM.h"
 #include "Firebase_Arduino_WiFiNINA.h"
 
 // UPDATE FIREBASE URL AND PASSWORD BEFORE RUNNING
-#define DATABASE_URL "URL"
-#define DATABASE_SECRET "PASSWORD"
+#define DATABASE_URL "gasguard-ae330-default-rtdb.firebaseio.com"
+#define DATABASE_SECRET "sef3dUyAPbvVrI6ANAIz3ikrSyg0mLXS7FPbXhHe"
 
 // UPDATE WIFI SSID AND PASSWORD BEFORE RUNNING 
-#define WIFI_SSID "Wifi Name"
-#define WIFI_PASSWORD "Wifi Password"
+// #define WIFI_SSID "VIRGIN188"
+// #define WIFI_PASSWORD "KhaledWIFI"
+#define WIFI_SSID "Khaled's hotspot"
+#define WIFI_PASSWORD "hellohello"
 
 FirebaseData fbdo;
 int dPinMQ2 = 15;
@@ -26,6 +30,7 @@ float MQ135value;
 
 void setup() {
   Serial.begin(115200);
+
   delay(100);
   Serial.println();
 
@@ -41,25 +46,35 @@ void setup() {
   Serial.print("Connected with IP: ");
   Serial.println(WiFi.localIP());
   Serial.println();
-
+  
   //Provide the autntication data
   Firebase.begin(DATABASE_URL, DATABASE_SECRET, WIFI_SSID, WIFI_PASSWORD);
   Firebase.reconnectWiFi(true);
-    // Upload Device Data to Firebase
-  if(Firebase.setFloat(fbdo, "/Test/sensor_1_data", 10.0)) {
-    // On Success
-    Serial.println(fbdo.floatData());
-  } else {
-    // On Fail
-    Serial.println(fbdo.errorReason());
-  }
 
+//  String sensorType = "0"; String sensorData = "123"; String timeStamp = "\"Today\""; 
+//  String JSONsensorData = "{\"sensorType\": " + sensorType + ", \"sensorData\": " + sensorData + ", \"timeStamp\": " + timeStamp + "}";
+//  Serial.println(JSONsensorData);
+//  //String JSONsensorData = "{\"sensorType\":\"value1\", \"sensorData\":{\"_data2\":\"_value2\"}}";
+//  if(Firebase.setJSON(fbdo, "/Sensors", JSONsensorData)){
+//    Serial.println(fbdo.pushName());
+//  } else {
+//    // On Fail
+//   Serial.println(fbdo.errorReason());
+//  }
+//
   pinMode(dPinMQ2, INPUT);
   pinMode(dPinMQ4, INPUT);
   pinMode(dPinMQ6, INPUT);
   pinMode(dPinMQ7, INPUT);
   pinMode(dPinMQ8, INPUT);
   pinMode(dPinMQ135, INPUT);
+
+  Firebase.setString(fbdo, "/Sensors/Sensor1/sensorName", "MQ2");
+  Firebase.setString(fbdo, "/Sensors/Sensor2/sensorName", "MQ4");
+  Firebase.setString(fbdo, "/Sensors/Sensor3/sensorName", "MQ6");
+  Firebase.setString(fbdo, "/Sensors/Sensor4/sensorName", "MQ7");
+  Firebase.setString(fbdo, "/Sensors/Sensor5/sensorName", "MQ8");
+  Firebase.setString(fbdo, "/Sensors/Sensor6/sensorName", "MQ135");
 }
 
 void loop() {
@@ -100,6 +115,52 @@ void loop() {
    Serial.print("MQ7: ");Serial.println(MQ7value);
    Serial.print("MQ8: ");Serial.println(MQ8value);
    Serial.print("MQ135: ");Serial.println(MQ135value);
-   Serial.print("");
-   delay(1000);
+   Serial.println("");
+   
+   if(Firebase.setFloat(fbdo, "/Sensors/Sensor1/sensorValue", MQ2value)) {
+    Serial.println(fbdo.floatData());
+  } else {
+    Serial.println(fbdo.errorReason());
+  }
+  
+  if(Firebase.setFloat(fbdo, "/Sensors/Sensor2/sensorValue", MQ4value)) {
+    Serial.println(fbdo.floatData());
+  } else {
+    Serial.println(fbdo.errorReason());
+  }
+     
+  if(Firebase.setFloat(fbdo, "/Sensors/Sensor3/sensorValue", MQ6value)) {
+    Serial.println(fbdo.floatData());
+  } else {
+    Serial.println(fbdo.errorReason());
+  }
+  
+  if(Firebase.setFloat(fbdo, "/Sensors/Sensor4/sensorValue", MQ7value)) {
+    Serial.println(fbdo.floatData());
+  } else {
+    Serial.println(fbdo.errorReason());
+  }
+  
+  if(Firebase.setFloat(fbdo, "/Sensors/Sensor5/sensorValue", MQ8value)) {
+    Serial.println(fbdo.floatData());
+  } else {
+    Serial.println(fbdo.errorReason());
+  }
+
+  if(Firebase.setFloat(fbdo, "/Sensors/Sensor6/sensorValue", MQ135value)) {
+    Serial.println(fbdo.floatData());
+  } else {
+    Serial.println(fbdo.errorReason());
+  }
+
+  if( Firebase.pushFloat(fbdo, "/Sensors/Sensor1/sensorData", MQ2value)
+   ) {
+     Firebase.pushTimestamp(fbdo, fbdo.dataPath()+ + "/"+ fbdo.pushName() + "/Timestamp");
+    Serial.println(fbdo.floatData());
+  } else {
+    Serial.println(fbdo.errorReason());
+  }
+
+  
+   delay(5000);
 }
