@@ -48,7 +48,7 @@ public class SensorActivity extends AppCompatActivity {
     private void displaySensorInfo(String sensorId) {
         DatabaseReference sensorRef = dB.getSensorChild(sensorId);
 
-        sensorRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        sensorRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 sensorName.setText(snapshot.child("sensorName").getValue(String.class));
