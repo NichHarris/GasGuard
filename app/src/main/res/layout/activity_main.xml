@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/g_guard_theme"
-    tools:context=".MainActivity">
+    tools:context=".Views.MainActivity">
 
     <!-- App Title   -->
     <TextView
@@ -26,23 +26,34 @@
 
     <!-- TODO: Logo Top   -->
 
-    <!-- Loading...   -->
+    <!-- TODO: Loading Bar   -->
+
+    <!-- TODO: Logo Bottom   -->
     <TextView
         android:id="@+id/textView"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
+<<<<<<< HEAD
         android:layout_marginTop="300dp"
+=======
+        android:layout_marginTop="50dp"
+>>>>>>> 3b7790f72f29651137a813968701e3e6fc5f586a
         android:gravity="center"
         android:paddingHorizontal="15dp"
         android:paddingTop="200dp"
         android:text="@string/loading"
+<<<<<<< HEAD
         android:textColor="@color/g_guard_font"
+=======
+        android:textColor="@color/white"
+>>>>>>> 3b7790f72f29651137a813968701e3e6fc5f586a
         android:textSize="25sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+<<<<<<< HEAD
 
     <!-- TODO: Loading Bar   -->
 
@@ -92,3 +103,14 @@
         app:layout_constraintVertical_bias="0.44"
         app:srcCompat="@drawable/gg_logo" />
 </androidx.constraintlayout.widget.ConstraintLayout>
+=======
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="312dp"
+        android:layout_height="122dp"
+        app:srcCompat="@drawable/gg_corner"
+        tools:layout_editor_absoluteX="113dp"
+        tools:layout_editor_absoluteY="612dp" />
+</RelativeLayout>
+>>>>>>> 3b7790f72f29651137a813968701e3e6fc5f586a

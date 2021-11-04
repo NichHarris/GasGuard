@@ -1,27 +1,24 @@
-package com.example.minicapstone390;
+package com.example.minicapstone390.Models;
 
-import java.util.List;
+import com.example.minicapstone390.Models.Sensor;
+
+import java.util.Map;
 
 public class Device {
-    private String userId, deviceName;
+    private String deviceName;
     private boolean status;
-    private List<Sensor> sensors;
+    private Map<String, Sensor> sensorKeys;
 
     public Device() {}
 
-    public Device(String userId, String deviceName, boolean status) {
-        this.userId = userId;
+    public Device( String deviceName, boolean status) {
         this.deviceName = deviceName;
         this.status = status;
     }
 
-    public String getUserId() {
-        return userId;
-    }
+    public Map<String, Sensor> getSensorKeys() { return sensorKeys; }
 
-    public void setUserId(String profileId) {
-        this.userId = userId;
-    }
+    public void setSensorKeys(Map<String, Sensor> sensorKeys) { this.sensorKeys = sensorKeys; }
 
     public String getDeviceName() {
         return deviceName;
