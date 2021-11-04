@@ -4,12 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-<<<<<<< HEAD
     android:background="@color/g_guard_theme"
     tools:context=".MainActivity">
-=======
-    tools:context=".Views.MainActivity">
->>>>>>> 3b7790f72f29651137a813968701e3e6fc5f586a
     <!-- App Title   -->
     <TextView
         android:layout_width="fill_parent"

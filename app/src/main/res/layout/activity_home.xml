@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-<<<<<<< HEAD
     android:background="@color/g_guard_theme"
     tools:context=".HomeActivity">
 
@@ -18,9 +17,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/gg_corner" />
-=======
-    tools:context=".Views.HomeActivity">
->>>>>>> 3b7790f72f29651137a813968701e3e6fc5f586a
     <!-- Welcome Message   -->
     <TextView
         android:id="@+id/welcomeUserMessage"
@@ -59,7 +55,6 @@
         android:id="@+id/deviceDataList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-<<<<<<< HEAD
         android:layout_marginVertical="20dp"
         android:layout_marginTop="14dp"
         android:layout_marginBottom="20dp"
@@ -71,10 +66,6 @@
 
 
     </ListView>
-=======
-        android:layout_marginVertical="200dp"
-        android:textStyle="normal" />
->>>>>>> 3b7790f72f29651137a813968701e3e6fc5f586a
 
     <!-- Add Device Button -->
     <Button
@@ -89,26 +80,9 @@
         android:textColor="@color/white"
         android:textSize="16sp"
         android:textStyle="bold"
-<<<<<<< HEAD
         app:layout_constraintBottom_toTopOf="@+id/deviceDataList"
         app:layout_constraintTop_toTopOf="@id/GG_Shield_Clouds_Home"
         tools:layout_editor_absoluteX="275dp" />
-=======
-        android:layout_marginStart="250dp" />
-
-    <!-- Add Device Button -->
-    <Button
-        android:id="@+id/profileButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginVertical="600dp"
-        android:layout_centerHorizontal="true"
-        android:backgroundTint="@color/selected_toggle"
-        android:text="@string/profile"
-        android:textColor="@color/white"
-        android:textSize="16sp"
-        android:textStyle="bold" />
->>>>>>> 3b7790f72f29651137a813968701e3e6fc5f586a
 
     <!-- Log Out Button -->
     <Button
@@ -125,13 +99,9 @@
         android:textColor="@color/white"
         android:textSize="16sp"
         android:textStyle="bold"
-<<<<<<< HEAD
         app:layout_constraintBottom_toTopOf="@+id/deviceDataList"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/deviceDataList"
         app:layout_constraintTop_toTopOf="@id/GG_Shield_Clouds_Home" />
-=======
-        android:layout_marginStart="20dp" />
->>>>>>> 3b7790f72f29651137a813968701e3e6fc5f586a
 
 </RelativeLayout>
