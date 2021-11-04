@@ -4,7 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/g_guard_theme"
     tools:context=".HomeActivity">
+
+    <ImageView
+        android:id="@+id/GG_Shield_Clouds_Home"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1280dp"
+        app:layout_constraintBottom_toTopOf="@+id/deviceDataList"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/gg_corner" />
     <!-- Welcome Message   -->
     <TextView
         android:id="@+id/welcomeUserMessage"
@@ -15,7 +27,7 @@
         android:paddingHorizontal="15dp"
         android:textSize="25sp"
         android:textStyle="bold"
-        android:textColor="@color/black"
+        android:textColor="@color/g_guard_font"
         android:layout_marginStart="20dp"
         android:layout_marginTop="50dp"
         app:layout_constraintTop_toTopOf="parent"
@@ -31,7 +43,7 @@
         android:paddingHorizontal="15dp"
         android:textSize="25sp"
         android:textStyle="bold"
-        android:textColor="@color/black"
+        android:textColor="@color/g_guard_font"
         android:layout_marginStart="20dp"
         android:layout_marginTop="50dp"
         app:layout_constraintTop_toTopOf="parent"
@@ -44,8 +56,16 @@
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
         android:layout_marginVertical="20dp"
+        android:layout_marginTop="14dp"
+        android:layout_marginBottom="20dp"
         android:textStyle="normal"
-        />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/addDeviceButton" >
+
+
+    </ListView>
 
     <!-- Add Device Button -->
     <Button
@@ -53,13 +73,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginVertical="20dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginBottom="24dp"
         android:backgroundTint="@color/selected_toggle"
         android:text="@string/addDeviceButton"
         android:textColor="@color/white"
         android:textSize="16sp"
         android:textStyle="bold"
-        tools:layout_editor_absoluteX="145dp"
-        tools:layout_editor_absoluteY="541dp" />
+        app:layout_constraintBottom_toTopOf="@+id/deviceDataList"
+        app:layout_constraintTop_toTopOf="@id/GG_Shield_Clouds_Home"
+        tools:layout_editor_absoluteX="275dp" />
 
     <!-- Log Out Button -->
     <Button
@@ -67,12 +90,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginVertical="20dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="500dp"
+        android:layout_marginEnd="500dp"
+        android:layout_marginBottom="10dp"
         android:backgroundTint="@color/selected_toggle"
         android:text="@string/logOut"
         android:textColor="@color/white"
         android:textSize="16sp"
         android:textStyle="bold"
-        tools:layout_editor_absoluteX="161dp"
-        tools:layout_editor_absoluteY="641dp" />
+        app:layout_constraintBottom_toTopOf="@+id/deviceDataList"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/deviceDataList"
+        app:layout_constraintTop_toTopOf="@id/GG_Shield_Clouds_Home" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

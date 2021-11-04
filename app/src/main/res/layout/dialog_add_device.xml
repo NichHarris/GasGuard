@@ -1,56 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
+    android:background="@color/g_guard_theme"
     android:layout_height="match_parent">
 
     <RelativeLayout
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
         android:layout_width="250dp"
-        android:layout_height="175dp" >
+        android:layout_height="175dp"
+        android:layout_centerInParent="true">
 
         <EditText
             android:id="@+id/device_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
             android:layout_marginTop="15dp"
+            android:layout_marginEnd="20dp"
             android:ems="16"
+            android:hint="@string/device_name"
             android:maxLength="20"
-            android:hint="@string/device_name" />
+            android:textColor="@color/g_guard_font" />
 
         <EditText
             android:id="@+id/device_id"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
             android:layout_marginTop="75dp"
+            android:layout_marginEnd="20dp"
             android:ems="16"
+            android:hint="@string/device_id"
             android:maxLength="20"
-            android:hint="@string/device_id" />
+            android:textColor="@color/g_guard_font" />
 
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:id="@+id/save_add_device_button"
-            android:text="@string/save"
-            android:textSize="14sp"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentStart="true"
-            android:layout_marginStart="140dp"/>
-
-        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/cancel_add_device_button"
-            android:text="@string/cancel"
-            android:textSize="14sp"
-            android:layout_alignParentBottom="true"
             android:layout_alignParentStart="true"
-            android:layout_marginStart="20dp"/>
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="140dp"
+            android:text="@string/save"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/cancel_add_device_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="20dp"
+            android:text="@string/cancel"
+            android:textSize="14sp" />
 
     </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/GG_Shield_Cloud_add_Device"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="-10dp"
+        android:layout_marginBottom="-100dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+        app:srcCompat="@drawable/gg_corner" />
 
 </RelativeLayout>
