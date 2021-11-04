@@ -86,7 +86,7 @@ public class SignupActivity extends AppCompatActivity {
                     User user = new User(username, email);
 
                     // Get current User Id
-                    String currentUserId = Objects.requireNonNull(dB.getAuth().getCurrentUser()).getUid();
+                    String currentUserId = dB.getAuth().getCurrentUser().getUid();
 
                     DatabaseReference userRef = dB.getUserRef();
 
