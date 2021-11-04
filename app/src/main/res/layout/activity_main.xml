@@ -93,4 +93,4 @@
         app:layout_constraintTop_toBottomOf="@+id/textView2"
         app:layout_constraintVertical_bias="0.44"
         app:srcCompat="@drawable/gg_logo" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+</RelativeLayout>
