@@ -27,8 +27,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 // Device Fragment
-public class UpdateInfoFragment extends DialogFragment {
-    private static final String TAG = "Update Info";
+public class UpdateDeviceFragment extends DialogFragment {
+    private static final String TAG = "Update Device";
 
     public interface OnInputListener{
         void sendInput(String input);
@@ -40,6 +40,8 @@ public class UpdateInfoFragment extends DialogFragment {
     protected Button cancelButton, saveButton;
     protected EditText userNameInput, userEmailInput, userPhoneInput, userFirstNameInput, userLastNameInput;
 
+
+        // TODO: Change this to device info and not user info //
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -82,6 +84,7 @@ public class UpdateInfoFragment extends DialogFragment {
                     } else {
                         userEmail = snapshot.child("userEmail").getValue(String.class);
                     }
+                    assert userEmail != null;
                     dB.getUser().verifyBeforeUpdateEmail(userEmail).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {

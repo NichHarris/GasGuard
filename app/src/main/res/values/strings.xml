@@ -12,6 +12,7 @@
 
     <string name="welcome_message"> Welcome to gasGuard </string>
     <string name="welcome_user"> Welcome {0}! </string>
+    <string name="status"> Status: {0} </string>
     <string name="devices"> Devices </string>
     <string name="logOut">Log Out</string>
     <string name="addDeviceButton">Add Device</string>
