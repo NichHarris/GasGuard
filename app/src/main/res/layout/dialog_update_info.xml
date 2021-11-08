@@ -28,7 +28,7 @@
             android:layout_marginEnd="20dp"
             android:layout_marginTop="75dp"
             android:ems="16"
-            android:maxLength="20"
+            android:maxLength="50"
             android:hint="@string/email" />
 
         <EditText
