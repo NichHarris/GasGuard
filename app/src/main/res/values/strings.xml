@@ -26,4 +26,17 @@
     <string name="last_name">Last Name</string>
     <string name="sensors">Sensors</string>
     <string name="live_data_0">Live Data: {0}</string>
+    <string name="forgot_password"><u>Forgot Password</u></string>
+    <string name="delete_user">Delete User</string>
+    <string name="disable_sensor">Disable Sensor</string>
+    <string name="remove_device">Remove Device</string>
+    <string name="disable_device">Disable Device</string>
+    <string name="update_device_info">Update Device Info</string>
+    <string name="notifications">Notifications</string>
+    <string name="update_user_info">Update User Info</string>
+    <string name="add_device">Add Device</string>
+    <string name="device_names">Device Names</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="logout">Logout</string>
 </resources>
