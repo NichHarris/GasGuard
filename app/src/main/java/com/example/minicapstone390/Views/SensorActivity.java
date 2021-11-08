@@ -21,6 +21,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Objects;
+
 public class SensorActivity extends AppCompatActivity {
 
     // Declare variables
@@ -35,12 +37,10 @@ public class SensorActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sensor);
 
-//        // Add task-bar
-//        assert getSupportActionBar() != null;
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+        // Enable toolbar
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
         sensorName = (TextView) findViewById(R.id.sensor_name);
         liveData = (TextView) findViewById(R.id.live_data);
@@ -95,9 +95,9 @@ public class SensorActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    // Navigate back to homepage on task-bar return
+    // Navigate back to device page on task-bar return
     @Override
-    public boolean onNavigateUp() {
+    public boolean onSupportNavigateUp() {
         finish();
         return true;
     }
