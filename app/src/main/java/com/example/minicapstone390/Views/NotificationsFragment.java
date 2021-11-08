@@ -16,7 +16,7 @@ import com.example.minicapstone390.R;
 
 public class NotificationsFragment extends DialogFragment {
 
-    // Initialize variables
+    // Declare variables
     private final Database dB = new Database();
 
     @Nullable

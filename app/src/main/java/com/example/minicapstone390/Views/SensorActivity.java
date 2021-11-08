@@ -23,13 +23,12 @@ import com.google.firebase.database.ValueEventListener;
 
 public class SensorActivity extends AppCompatActivity {
 
-    // Initialize variables
+    // Declare variables
     private final Database dB = new Database();
 
     protected TextView sensorName, liveData;
     protected Toolbar toolbar;
     protected String sensorId;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +41,6 @@ public class SensorActivity extends AppCompatActivity {
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
 
         sensorName = (TextView) findViewById(R.id.sensor_name);
         liveData = (TextView) findViewById(R.id.live_data);

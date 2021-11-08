@@ -28,12 +28,11 @@ import java.util.Objects;
 
 public class ProfileActivity extends AppCompatActivity {
 
-    // Initialize variables
+    // Declare variables
     private final Database dB = new Database();
 
     protected TextView profileName, profileEmail, profilePhone, profileFirstName, profileLastName;
     protected Toolbar toolbar;
-    protected Button updateInfo, deleteUser;
     public String userName, userEmail, userPhone, userFirstName, userLastName;
 
     @Override

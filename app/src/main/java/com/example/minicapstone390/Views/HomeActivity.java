@@ -28,10 +28,10 @@ import java.util.logging.ConsoleHandler;
 
 public class HomeActivity extends AppCompatActivity {
 
+    // Declare variables
     private final Database dB = new Database();
     protected TextView welcomeUserMessage;
     protected Toolbar toolbar;
-    protected Button addNewDeviceButton, logoutButton, profileButton;
     protected ListView deviceList;
     protected List<String> deviceIds;
 

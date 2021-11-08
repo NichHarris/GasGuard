@@ -30,13 +30,13 @@ import java.util.List;
 
 public class DeviceActivity extends AppCompatActivity {
 
-    // Initialize variables
+    // Declare variables
     private final Database dB = new Database();
 
     protected String deviceId;
     protected Toolbar toolbar;
     protected ListView sensorList;
-    protected TextView deviceName; //TODO
+    protected TextView deviceName;
     protected List<String> sensorIds;
 
     @Override

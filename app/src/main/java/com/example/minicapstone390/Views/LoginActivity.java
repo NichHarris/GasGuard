@@ -21,7 +21,7 @@ import com.google.firebase.database.ValueEventListener;
 
 public class LoginActivity extends AppCompatActivity {
 
-    // Initialize variables
+    // Declare variables
     private final Database dB = new Database();
     protected Button loginButton, signupButton;
     protected TextView forgotPassword;
