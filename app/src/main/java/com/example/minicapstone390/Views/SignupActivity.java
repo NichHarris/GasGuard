@@ -74,7 +74,8 @@ public class SignupActivity extends AppCompatActivity {
 
         // (3) Email Must Be a Valid Email and Unique
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            Toast.makeText(getApplicationContext(), "Email Must Be Valid!", Toast.LENGTH_LONG).show();
+            emailET.setError("Email Must Be Valid!");
+            emailET.requestFocus();
             return;
         }
 
@@ -82,13 +83,15 @@ public class SignupActivity extends AppCompatActivity {
         // Regex for Password: Must Contain At Least 1 Lower and 1 Upper Case Character, 1 Number, 1 Special Characters, and Be 8 Characters Long
         Pattern pattern = Pattern.compile(passwordRegex);
         if (!pattern.matcher(password).matches()) {
-            Toast.makeText(getApplicationContext(), "Password Must Be Solid!", Toast.LENGTH_LONG).show();
+            passwordET.setError("Password Must Be Solid!");
+            passwordET.requestFocus();
             return;
         }
 
         // (5) Password and Confirm Password Must Match
         if (!password.equals(confirmPass)) {
-            Toast.makeText(getApplicationContext(), "Passwords Must Match!", Toast.LENGTH_LONG).show();
+            confirmPasswordET.setError("Passwords Must Match!");
+            confirmPasswordET.requestFocus();
             return;
         }
 
@@ -113,6 +116,9 @@ public class SignupActivity extends AppCompatActivity {
                                     Toast.makeText(getApplicationContext(), "Failed to Register User!", Toast.LENGTH_SHORT).show();
                                 }
                             });
+                } else {
+                    emailET.setError("Email is already registered!");
+                    emailET.requestFocus();
                 }
             });
     }
@@ -126,14 +132,13 @@ public class SignupActivity extends AppCompatActivity {
             return;
         }
 
-        // TODO: add pattern matching
         dB.getAuth().sendPasswordResetEmail(email).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
-                    // TODO: send toast for valid email
+                    Toast.makeText(getApplicationContext(), "Password reset sent successfully!", Toast.LENGTH_SHORT).show();
                 } else {
-                    // TODO: Send toast for invalid email
+                    Toast.makeText(getApplicationContext(), "Error sending password reset, email is not associated with an account!", Toast.LENGTH_SHORT).show();
                 }
             }
         });

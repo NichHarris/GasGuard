@@ -57,14 +57,13 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        // TODO: add pattern matching
         dB.getAuth().sendPasswordResetEmail(userEmail).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
-                    // TODO: send toast for valid email
+                    Toast.makeText(getApplicationContext(), "Password reset sent successfully!", Toast.LENGTH_SHORT).show();
                 } else {
-                    // TODO: Send toast for invalid email
+                    Toast.makeText(getApplicationContext(), "Error sending password reset, email is not associated with an account!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
