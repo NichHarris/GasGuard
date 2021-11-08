@@ -26,4 +26,5 @@
     <string name="last_name">Last Name</string>
     <string name="sensors">Sensors</string>
     <string name="live_data_0">Live Data: {0}</string>
+    <string name="forgot_password"><u>Forgot Password</u></string>
 </resources>

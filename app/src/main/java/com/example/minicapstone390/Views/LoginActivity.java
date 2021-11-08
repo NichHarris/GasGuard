@@ -1,22 +1,30 @@
 package com.example.minicapstone390.Views;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.minicapstone390.Controllers.Database;
 import com.example.minicapstone390.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 
 public class LoginActivity extends AppCompatActivity {
 
     // Initialize variables
     private final Database dB = new Database();
     protected Button loginButton, signupButton;
+    protected TextView forgotPassword;
     protected EditText userEmailET, passwordET;
 
     @Override
@@ -34,9 +42,33 @@ public class LoginActivity extends AppCompatActivity {
         // Switch to Sign Up Page
         signupButton = (Button) findViewById(R.id.signUpPage);
         signupButton.setOnClickListener(view -> openSignupActivity());
+
+        // Send password reset email
+        forgotPassword = (TextView) findViewById(R.id.loginForgot);
+        forgotPassword.setOnClickListener(view -> sendReset());
     }
 
+    private void sendReset() {
+        String userEmail = userEmailET.getText().toString();
 
+        if (userEmail.equals("")) {
+            userEmailET.setError("Please enter email to send reset to");
+            userEmailET.requestFocus();
+            return;
+        }
+
+        // TODO: add pattern matching
+        dB.getAuth().sendPasswordResetEmail(userEmail).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    // TODO: send toast for valid email
+                } else {
+                    // TODO: Send toast for invalid email
+                }
+            }
+        });
+    }
 
     private void userLogin() {
         String userEmail = userEmailET.getText().toString();
