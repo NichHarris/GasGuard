@@ -1,6 +1,7 @@
 package com.example.minicapstone390.Views;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -27,6 +28,7 @@ import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class DeviceActivity extends AppCompatActivity {
 
@@ -36,7 +38,7 @@ public class DeviceActivity extends AppCompatActivity {
     protected String deviceId;
     protected Toolbar toolbar;
     protected ListView sensorList;
-    protected TextView deviceName;
+    protected TextView deviceName, deviceStatus;
     protected List<String> sensorIds;
 
     @Override
@@ -44,21 +46,19 @@ public class DeviceActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_device);
 
-//        // Add task-bar
-//        assert getSupportActionBar() != null;
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+        // Enable toolbar
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
         deviceName = (TextView) findViewById(R.id.device_name);
+        deviceStatus = (TextView) findViewById(R.id.device_status);
 
         sensorList = (ListView) findViewById(R.id.sensorList);
         sensorIds = new ArrayList<>();
         Bundle carryOver = getIntent().getExtras();
         if (carryOver != null) {
             deviceId = carryOver.getString("deviceId");
-            displayDeviceName(deviceId);
             displayDeviceInfo(deviceId);
         } else {
             Toast.makeText(this, "Error fetching device", Toast.LENGTH_LONG).show();
@@ -79,31 +79,32 @@ public class DeviceActivity extends AppCompatActivity {
     public  boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if(id == R.id.update_device) {
-            //TODO:  call update device info fragment
+            UpdateDeviceFragment dialog = new UpdateDeviceFragment();
+            dialog.show(getSupportFragmentManager(), "Update Device");
         }
         if(id == R.id.disable_device) {
-            //TODO:  call disable device
-            // return to home
+            disableDevice();
         }
         if(id == R.id.remove_device) {
-            //TODO:  call remove device
-            // return to home
+            deleteDevice();
+            openHomeActivity();
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void openHomeActivity() {
-        Intent intent = new Intent(this, HomeActivity.class);
-        startActivity(intent);
+    private void setDeviceStatus(boolean status) {
+        dB.getDeviceChild(deviceId).child("status").setValue(status);
     }
 
-    private void displayDeviceName(String deviceId) {
-        DatabaseReference deviceRef = dB.getDeviceChild(deviceId).child("deviceName");
-
-        deviceRef.addValueEventListener(new ValueEventListener() {
+    private void disableDevice() {
+        dB.getDeviceChild(deviceId).child("status").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                deviceName.setText(snapshot.getValue(String.class));
+                if (snapshot.getValue(Boolean.class)) {
+                    dB.getDeviceChild(deviceId).child("status").setValue(false);
+                } else {
+                    dB.getDeviceChild(deviceId).child("status").setValue(true);
+                }
             }
 
             @Override
@@ -113,10 +114,33 @@ public class DeviceActivity extends AppCompatActivity {
         });
     }
 
-    private void displayDeviceInfo(String deviceId) {
-        DatabaseReference deviceRef = dB.getDeviceChild(deviceId).child("sensors");
+    private void deleteDevice() {
+        // TODO
+    }
 
-        deviceRef.addValueEventListener(new ValueEventListener() {
+    private void openHomeActivity() {
+        Intent intent = new Intent(this, HomeActivity.class);
+        startActivity(intent);
+    }
+
+    private void displayDeviceInfo(String deviceId) {
+        dB.getDeviceChild(deviceId).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                deviceName.setText(snapshot.child("deviceName").getValue(String.class));
+                String status = "Disabled";
+                if (snapshot.child("status").getValue(Boolean.class)) {
+                    status = "Active";
+                }
+                deviceStatus.setText(getResources().getString(R.string.status).replace("{0}", status));
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // TODO: Add error catch
+            }
+        });
+
+        dB.getDeviceChild(deviceId).child("sensors").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 List<String> sensorIds = new ArrayList<>();
@@ -174,7 +198,7 @@ public class DeviceActivity extends AppCompatActivity {
 
     // Navigate back to homepage on task-bar return
     @Override
-    public boolean onNavigateUp() {
+    public boolean onSupportNavigateUp() {
         finish();
         return true;
     }
