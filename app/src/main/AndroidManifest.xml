@@ -11,15 +11,19 @@
         android:theme="@style/Theme.MiniCapstone390">
         <activity
             android:name=".Views.SensorActivity"
+            android:label="Sensor"
             android:exported="false" />
         <activity
             android:name=".Views.DeviceActivity"
+            android:label="Device"
             android:exported="false" />
         <activity
             android:name=".Views.ProfileActivity"
+            android:label="Profile"
             android:exported="false" />
         <activity
             android:name=".Views.MainActivity"
+            android:label="Loading..."
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -30,15 +34,15 @@
         <activity
             android:name=".Views.LoginActivity"
             android:exported="true"
-            android:label="Login Activity" />
+            android:label="Login" />
         <activity
             android:name=".Views.SignupActivity"
             android:exported="true"
-            android:label="Signup Activity" />
+            android:label="Signup" />
         <activity
             android:name=".Views.HomeActivity"
             android:exported="true"
-            android:label="Home Activity" />
+            android:label="Home" />
     </application>
 
 </manifest>
