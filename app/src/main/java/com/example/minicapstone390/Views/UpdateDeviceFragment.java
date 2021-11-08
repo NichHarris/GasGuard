@@ -40,6 +40,8 @@ public class UpdateDeviceFragment extends DialogFragment {
     protected Button cancelButton, saveButton;
     protected EditText userNameInput, userEmailInput, userPhoneInput, userFirstNameInput, userLastNameInput;
 
+
+        // TODO: Change this to device info and not user info //
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
