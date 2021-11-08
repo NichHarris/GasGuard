@@ -67,10 +67,27 @@ public class SensorActivity extends AppCompatActivity {
     public  boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if(id == R.id.disable_sensor) {
-            //TODO:  call disable sensor
-            // return to device
+            disableSensor();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void disableSensor() {
+        dB.getSensorChild(sensorId).child("status").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.getValue(Boolean.class)) {
+                    dB.getSensorChild(sensorId).child("status").setValue(false);
+                } else {
+                    dB.getSensorChild(sensorId).child("status").setValue(true);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // TODO: Add error catch
+            }
+        });
     }
 
     private void displaySensorInfo(String sensorId) {
