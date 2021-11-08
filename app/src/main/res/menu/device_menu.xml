@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/update_device"
+        android:title="@string/update_device_info"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/disable_device"
+        android:title="@string/disable_device"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/remove_device"
+        android:title="@string/remove_device"
+        app:showAsAction="never" />
+</menu>

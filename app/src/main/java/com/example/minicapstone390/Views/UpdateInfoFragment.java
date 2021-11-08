@@ -35,7 +35,7 @@ import java.util.Objects;
 // Device Fragment
 public class UpdateInfoFragment extends DialogFragment {
 
-    // Initialize variables
+    // Declare variables
     private final Database dB = new Database();
 
     protected Button cancelButton, saveButton;

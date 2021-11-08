@@ -2,8 +2,12 @@ package com.example.minicapstone390.Views;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -24,11 +28,11 @@ import java.util.Objects;
 
 public class ProfileActivity extends AppCompatActivity {
 
-    // Initialize variables
+    // Declare variables
     private final Database dB = new Database();
 
     protected TextView profileName, profileEmail, profilePhone, profileFirstName, profileLastName;
-    protected Button updateInfo, deleteUser;
+    protected Toolbar toolbar;
     public String userName, userEmail, userPhone, userFirstName, userLastName;
 
     @Override
@@ -36,22 +40,47 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        updateAllInfo();
+
         profileEmail = (TextView) findViewById(R.id.profile_email);
         profileName = (TextView) findViewById(R.id.profile_name);
         profilePhone = (TextView) findViewById(R.id.profile_phone);
         profileFirstName = (TextView) findViewById(R.id.profileFirstName);
         profileLastName = (TextView) findViewById(R.id.profileLastName);
+    }
 
-        updateInfo = (Button) findViewById(R.id.profileUpdateButton);
-        updateInfo.setOnClickListener(view -> {
+    // Display options menu in task-bar
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.profile_menu, menu);
+        return true;
+    }
+
+    // Create the action when an option on the task-bar is selected
+    @Override
+    public  boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if(id == R.id.update_info) {
             UpdateInfoFragment dialog = new UpdateInfoFragment();
             dialog.show(getSupportFragmentManager(), "Update Info");
-        });
-        updateAllInfo();
-
-        // TODO: Change to drop down and add confirm box
-         deleteUser = (Button) findViewById(R.id.deleteUser);
-         deleteUser.setOnClickListener(view -> deleteUser());
+            updateAllInfo();
+        }
+        if(id == R.id.update_notification) {
+            NotificationsFragment dialog = new NotificationsFragment();
+            dialog.show(getSupportFragmentManager(), "Notifications");
+            updateAllInfo();
+        }
+        if(id == R.id.logout_user) {
+            logoutUser();
+        }
+        if(id == R.id.remove_user) {
+            //TODO: ADD CONFIRM OPTION FOR DELETE
+            deleteUser();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void deleteUser() {
@@ -59,12 +88,23 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
-                    // TODO: send toast for valid email
+                    // TODO: send toast for successful delete
                 } else {
-                    // TODO: Send toast for invalid email
+                    // TODO: Send toast for failed delete
                 }
             }
         });
+    }
+
+    // Navigation to Add Device Activity
+    private void logoutUser() {
+        FirebaseAuth.getInstance().signOut();
+        goToLoginActivity();
+    }
+
+    private void goToLoginActivity() {
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
     }
 
     public void updateAllInfo() {
@@ -92,5 +132,12 @@ public class ProfileActivity extends AppCompatActivity {
                 profileLastName.setText(String.format("Last Name: %s", userLastName));
             }
         });
+    }
+
+    // Navigate back to homepage on task-bar return
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return true;
     }
 }
