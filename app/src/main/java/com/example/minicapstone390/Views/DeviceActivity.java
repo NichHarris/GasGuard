@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -40,6 +42,10 @@ public class DeviceActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_device);
 
+        // Add task-bar
+        assert getSupportActionBar() != null;
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         sensorList = (ListView) findViewById(R.id.sensorList);
         sensorIds = new ArrayList<>();
         Bundle carryOver = getIntent().getExtras();
@@ -51,6 +57,31 @@ public class DeviceActivity extends AppCompatActivity {
             openHomeActivity();
         }
 
+    }
+
+    // Display options menu in task-bar
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.device_menu, menu);
+        return true;
+    }
+
+    // Create the action when an option on the task-bar is selected
+    @Override
+    public  boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if(id == R.id.update_device) {
+            //TODO:  call update device info fragment
+        }
+        if(id == R.id.disable_device) {
+            //TODO:  call disable device
+            // return to home
+        }
+        if(id == R.id.remove_device) {
+            //TODO:  call remove device
+            // return to home
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void openHomeActivity() {
@@ -119,5 +150,12 @@ public class DeviceActivity extends AppCompatActivity {
         Intent intent = new Intent(this, SensorActivity.class);
         intent.putExtra("sensorId", sensorId);
         startActivity(intent);
+    }
+
+    // Navigate back to homepage on task-bar return
+    @Override
+    public boolean onNavigateUp() {
+        finish();
+        return true;
     }
 }

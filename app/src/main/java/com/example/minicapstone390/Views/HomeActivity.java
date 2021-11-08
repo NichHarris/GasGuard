@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
@@ -93,6 +95,30 @@ public class HomeActivity extends AppCompatActivity {
 
         profileButton = (Button) findViewById(R.id.profileButton);
         profileButton.setOnClickListener(view -> goToProfileActivity());
+    }
+
+    // Display options menu in task-bar
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.home_menu, menu);
+        return true;
+    }
+
+    // Create the action when an option on the task-bar is selected
+    @Override
+    public  boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if(id == R.id.add_device) {
+            //TODO:  call add device fragment
+        }
+        if(id == R.id.profile) {
+            goToProfileActivity();
+        }
+        //NOTE: DON'T IMPLEMENT FOR NOW
+        if(id == R.id.device_names) {
+            //TODO: change list of device names to set names
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     // Get, Initialize, and Update Devices - Display List of Devices

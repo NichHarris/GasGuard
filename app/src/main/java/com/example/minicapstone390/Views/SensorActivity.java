@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,6 +34,10 @@ public class SensorActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sensor);
 
+        // Add task-bar
+        assert getSupportActionBar() != null;
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         sensorName = (TextView) findViewById(R.id.sensor_name);
         liveData = (TextView) findViewById(R.id.live_data);
 
@@ -43,6 +49,24 @@ public class SensorActivity extends AppCompatActivity {
             Toast.makeText(this, "Error fetching device", Toast.LENGTH_LONG).show();
             openHomeActivity();
         }
+    }
+
+    // Display options menu in task-bar
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.sensor_menu, menu);
+        return true;
+    }
+
+    // Create the action when an option on the task-bar is selected
+    @Override
+    public  boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if(id == R.id.disable_sensor) {
+            //TODO:  call disable sensor
+            // return to device
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void displaySensorInfo(String sensorId) {
@@ -65,5 +89,12 @@ public class SensorActivity extends AppCompatActivity {
     private void openHomeActivity() {
         Intent intent = new Intent(this, HomeActivity.class);
         startActivity(intent);
+    }
+
+    // Navigate back to homepage on task-bar return
+    @Override
+    public boolean onNavigateUp() {
+        finish();
+        return true;
     }
 }
