@@ -53,6 +53,20 @@
 
     <!-- Log Out Button -->
     <Button
+        android:id="@+id/deleteUser"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginVertical="600dp"
+        android:backgroundTint="@color/selected_toggle"
+        android:text="@string/delete_user"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_marginStart="20dp" />
+
+    <!-- Log Out Button -->
+    <Button
         android:id="@+id/profileUpdateButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

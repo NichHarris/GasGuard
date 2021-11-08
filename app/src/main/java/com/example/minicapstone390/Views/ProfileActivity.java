@@ -9,6 +9,8 @@ import android.widget.TextView;
 
 import com.example.minicapstone390.Controllers.Database;
 import com.example.minicapstone390.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -26,7 +28,7 @@ public class ProfileActivity extends AppCompatActivity {
     private final Database dB = new Database();
 
     protected TextView profileName, profileEmail, profilePhone, profileFirstName, profileLastName;
-    protected Button updateInfo;
+    protected Button updateInfo, deleteUser;
     public String userName, userEmail, userPhone, userFirstName, userLastName;
 
     @Override
@@ -46,6 +48,23 @@ public class ProfileActivity extends AppCompatActivity {
             dialog.show(getSupportFragmentManager(), "Update Info");
         });
         updateAllInfo();
+
+        // TODO: Change to drop down and add confirm box
+         deleteUser = (Button) findViewById(R.id.deleteUser);
+         deleteUser.setOnClickListener(view -> deleteUser());
+    }
+
+    private void deleteUser() {
+        dB.getUser().delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    // TODO: send toast for valid email
+                } else {
+                    // TODO: Send toast for invalid email
+                }
+            }
+        });
     }
 
     public void updateAllInfo() {
