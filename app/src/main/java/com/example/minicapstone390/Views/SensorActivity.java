@@ -2,6 +2,7 @@ package com.example.minicapstone390.Views;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -26,6 +27,7 @@ public class SensorActivity extends AppCompatActivity {
     private final Database dB = new Database();
 
     protected TextView sensorName, liveData;
+    protected Toolbar toolbar;
     protected String sensorId;
 
 
@@ -34,9 +36,13 @@ public class SensorActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sensor);
 
-        // Add task-bar
-        assert getSupportActionBar() != null;
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        // Add task-bar
+//        assert getSupportActionBar() != null;
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
 
         sensorName = (TextView) findViewById(R.id.sensor_name);
         liveData = (TextView) findViewById(R.id.live_data);

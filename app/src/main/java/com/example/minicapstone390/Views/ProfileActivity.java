@@ -2,7 +2,9 @@ package com.example.minicapstone390.Views;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -30,6 +32,7 @@ public class ProfileActivity extends AppCompatActivity {
     private final Database dB = new Database();
 
     protected TextView profileName, profileEmail, profilePhone, profileFirstName, profileLastName;
+    protected Toolbar toolbar;
     protected Button updateInfo, deleteUser;
     public String userName, userEmail, userPhone, userFirstName, userLastName;
 
@@ -38,9 +41,10 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-        // Add task-bar
-        assert getSupportActionBar() != null;
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        updateAllInfo();
 
         profileEmail = (TextView) findViewById(R.id.profile_email);
         profileName = (TextView) findViewById(R.id.profile_name);
@@ -70,7 +74,11 @@ public class ProfileActivity extends AppCompatActivity {
             dialog.show(getSupportFragmentManager(), "Notifications");
             updateAllInfo();
         }
+        if(id == R.id.logout_user) {
+            logoutUser();
+        }
         if(id == R.id.remove_user) {
+            //TODO: ADD CONFIRM OPTION FOR DELETE
             deleteUser();
         }
         return super.onOptionsItemSelected(item);
@@ -87,6 +95,17 @@ public class ProfileActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    // Navigation to Add Device Activity
+    private void logoutUser() {
+        FirebaseAuth.getInstance().signOut();
+        goToLoginActivity();
+    }
+
+    private void goToLoginActivity() {
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
     }
 
     public void updateAllInfo() {
@@ -118,7 +137,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     // Navigate back to homepage on task-bar return
     @Override
-    public boolean onNavigateUp() {
+    public boolean onSupportNavigateUp() {
         finish();
         return true;
     }

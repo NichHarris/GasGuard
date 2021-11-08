@@ -14,21 +14,23 @@ import android.widget.ListView;
 
 import com.example.minicapstone390.Controllers.Database;
 import com.example.minicapstone390.R;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.widget.Toolbar;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.ConsoleHandler;
 
 public class HomeActivity extends AppCompatActivity {
 
     private final Database dB = new Database();
     protected TextView welcomeUserMessage;
+    protected Toolbar toolbar;
     protected Button addNewDeviceButton, logoutButton, profileButton;
     protected ListView deviceList;
     protected List<String> deviceIds;
@@ -39,6 +41,9 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
         deviceIds = new ArrayList<>();
         DatabaseReference userRef = dB.getUserChild(dB.getUserId());
+
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -77,24 +82,6 @@ public class HomeActivity extends AppCompatActivity {
 
         deviceList = (ListView) findViewById(R.id.deviceDataList);
         loadDeviceList();
-
-        deviceList.setOnItemClickListener((parent, view, position, id) -> {
-            // TODO: Navigate to Device Activity of Selected Profile By Id
-            //goToDeviceActivity(...);
-        });
-
-        // This will be changed to
-        addNewDeviceButton = findViewById(R.id.addDeviceButton);
-        addNewDeviceButton.setOnClickListener(view -> {
-            DeviceFragment dialog = new DeviceFragment();
-            dialog.show(getSupportFragmentManager(), "Add Device Fragment");
-        });
-
-        logoutButton = findViewById(R.id.logoutButton);
-        logoutButton.setOnClickListener(view -> logoutUser());
-
-        profileButton = (Button) findViewById(R.id.profileButton);
-        profileButton.setOnClickListener(view -> goToProfileActivity());
     }
 
     // Display options menu in task-bar
@@ -106,8 +93,9 @@ public class HomeActivity extends AppCompatActivity {
 
     // Create the action when an option on the task-bar is selected
     @Override
-    public  boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
+        // TODO: Convert to switch
         if(id == R.id.add_device) {
             //TODO:  call add device fragment
         }
@@ -137,8 +125,6 @@ public class HomeActivity extends AppCompatActivity {
                 }
 
                 deviceList.setOnItemClickListener((parent, view, position, id) -> {
-                    // TODO: Navigate to Device Activity of Selected Profile By Id
-                    System.out.println(deviceIds.get(position));
                     goToDeviceActivity(deviceIds.get(position));
                 });
 
@@ -150,8 +136,6 @@ public class HomeActivity extends AppCompatActivity {
                 // TODO: Add error catch
             }
         });
-
-        System.out.println(deviceIds);
     }
 
     //Update User Message
@@ -197,7 +181,7 @@ public class HomeActivity extends AppCompatActivity {
 
     // Navigation to Add Device Activity
     private void logoutUser() {
-        FirebaseAuth.getInstance().signOut();
+        dB.getAuth().signOut();
         goToLoginActivity();
     }
 

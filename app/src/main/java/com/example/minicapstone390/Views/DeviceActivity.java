@@ -2,6 +2,7 @@ package com.example.minicapstone390.Views;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -33,6 +34,7 @@ public class DeviceActivity extends AppCompatActivity {
     private final Database dB = new Database();
 
     protected String deviceId;
+    protected Toolbar toolbar;
     protected ListView sensorList;
     protected TextView deviceName; //TODO
     protected List<String> sensorIds;
@@ -42,15 +44,21 @@ public class DeviceActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_device);
 
-        // Add task-bar
-        assert getSupportActionBar() != null;
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        // Add task-bar
+//        assert getSupportActionBar() != null;
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        deviceName = (TextView) findViewById(R.id.device_name);
 
         sensorList = (ListView) findViewById(R.id.sensorList);
         sensorIds = new ArrayList<>();
         Bundle carryOver = getIntent().getExtras();
         if (carryOver != null) {
             deviceId = carryOver.getString("deviceId");
+            displayDeviceName(deviceId);
             displayDeviceInfo(deviceId);
         } else {
             Toast.makeText(this, "Error fetching device", Toast.LENGTH_LONG).show();
@@ -89,10 +97,26 @@ public class DeviceActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    private void displayDeviceName(String deviceId) {
+        DatabaseReference deviceRef = dB.getDeviceChild(deviceId).child("deviceName");
+
+        deviceRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                deviceName.setText(snapshot.getValue(String.class));
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // TODO: Add error catch
+            }
+        });
+    }
+
     private void displayDeviceInfo(String deviceId) {
         DatabaseReference deviceRef = dB.getDeviceChild(deviceId).child("sensors");
 
-        deviceRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        deviceRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 List<String> sensorIds = new ArrayList<>();
@@ -102,8 +126,6 @@ public class DeviceActivity extends AppCompatActivity {
                 }
 
                 sensorList.setOnItemClickListener((parent, view, position, id) -> {
-                    // TODO: Navigate to Sensor Activity of Selected Profile By Id
-                    System.out.println(sensorIds.get(position));
                     goToSensorActivity(sensorIds.get(position));
                 });
 
@@ -115,8 +137,6 @@ public class DeviceActivity extends AppCompatActivity {
                 // TODO: Add error catch
             }
         });
-
-        System.out.println("Here" + sensorIds);
     }
 
     private void getSensorNames(List<String> sensors) {
