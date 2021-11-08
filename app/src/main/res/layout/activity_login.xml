@@ -105,6 +105,16 @@
             android:inputType="textPassword"
             android:autofillHints="password"/>
 
+        <TextView
+            android:id="@+id/loginForgot"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:text="@string/forgot_password"
+            android:textColor="@color/blue"
+            android:textAlignment="center"
+            android:focusable="true" />
+
         <android.widget.Button
             android:id="@+id/loginButton"
             android:layout_width="fill_parent"

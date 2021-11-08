@@ -2,9 +2,12 @@ package com.example.minicapstone390.Views;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,19 +23,27 @@ import com.google.firebase.database.ValueEventListener;
 
 public class SensorActivity extends AppCompatActivity {
 
-    // Initialize variables
+    // Declare variables
     private final Database dB = new Database();
 
-    protected TextView sensorName;
+    protected TextView sensorName, liveData;
+    protected Toolbar toolbar;
     protected String sensorId;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sensor);
 
+//        // Add task-bar
+//        assert getSupportActionBar() != null;
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
         sensorName = (TextView) findViewById(R.id.sensor_name);
+        liveData = (TextView) findViewById(R.id.live_data);
 
         Bundle carryOver = getIntent().getExtras();
         if (carryOver != null) {
@@ -44,13 +55,32 @@ public class SensorActivity extends AppCompatActivity {
         }
     }
 
+    // Display options menu in task-bar
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.sensor_menu, menu);
+        return true;
+    }
+
+    // Create the action when an option on the task-bar is selected
+    @Override
+    public  boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if(id == R.id.disable_sensor) {
+            //TODO:  call disable sensor
+            // return to device
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     private void displaySensorInfo(String sensorId) {
         DatabaseReference sensorRef = dB.getSensorChild(sensorId);
 
-        sensorRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        sensorRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 sensorName.setText(snapshot.child("sensorName").getValue(String.class));
+                liveData.setText(getResources().getString(R.string.live_data_0).replace("{0}", snapshot.child("sensorValue").getValue(Double.class).toString()));
             }
 
             @Override
@@ -63,5 +93,12 @@ public class SensorActivity extends AppCompatActivity {
     private void openHomeActivity() {
         Intent intent = new Intent(this, HomeActivity.class);
         startActivity(intent);
+    }
+
+    // Navigate back to homepage on task-bar return
+    @Override
+    public boolean onNavigateUp() {
+        finish();
+        return true;
     }
 }

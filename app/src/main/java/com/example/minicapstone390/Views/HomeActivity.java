@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
@@ -12,22 +14,24 @@ import android.widget.ListView;
 
 import com.example.minicapstone390.Controllers.Database;
 import com.example.minicapstone390.R;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.widget.Toolbar;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.ConsoleHandler;
 
 public class HomeActivity extends AppCompatActivity {
 
+    // Declare variables
     private final Database dB = new Database();
     protected TextView welcomeUserMessage;
-    protected Button addNewDeviceButton, logoutButton, profileButton;
+    protected Toolbar toolbar;
     protected ListView deviceList;
     protected List<String> deviceIds;
 
@@ -37,6 +41,9 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
         deviceIds = new ArrayList<>();
         DatabaseReference userRef = dB.getUserChild(dB.getUserId());
+
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -75,24 +82,31 @@ public class HomeActivity extends AppCompatActivity {
 
         deviceList = (ListView) findViewById(R.id.deviceDataList);
         loadDeviceList();
+    }
 
-        deviceList.setOnItemClickListener((parent, view, position, id) -> {
-            // TODO: Navigate to Device Activity of Selected Profile By Id
-            //goToDeviceActivity(...);
-        });
+    // Display options menu in task-bar
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.home_menu, menu);
+        return true;
+    }
 
-        // This will be changed to
-        addNewDeviceButton = findViewById(R.id.addDeviceButton);
-        addNewDeviceButton.setOnClickListener(view -> {
-            DeviceFragment dialog = new DeviceFragment();
-            dialog.show(getSupportFragmentManager(), "Add Device Fragment");
-        });
-
-        logoutButton = findViewById(R.id.logoutButton);
-        logoutButton.setOnClickListener(view -> logoutUser());
-
-        profileButton = (Button) findViewById(R.id.profileButton);
-        profileButton.setOnClickListener(view -> goToProfileActivity());
+    // Create the action when an option on the task-bar is selected
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        // TODO: Convert to switch
+        if(id == R.id.add_device) {
+            //TODO:  call add device fragment
+        }
+        if(id == R.id.profile) {
+            goToProfileActivity();
+        }
+        //NOTE: DON'T IMPLEMENT FOR NOW
+        if(id == R.id.device_names) {
+            //TODO: change list of device names to set names
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     // Get, Initialize, and Update Devices - Display List of Devices
@@ -111,8 +125,6 @@ public class HomeActivity extends AppCompatActivity {
                 }
 
                 deviceList.setOnItemClickListener((parent, view, position, id) -> {
-                    // TODO: Navigate to Device Activity of Selected Profile By Id
-                    System.out.println(deviceIds.get(position));
                     goToDeviceActivity(deviceIds.get(position));
                 });
 
@@ -124,8 +136,6 @@ public class HomeActivity extends AppCompatActivity {
                 // TODO: Add error catch
             }
         });
-
-        System.out.println(deviceIds);
     }
 
     //Update User Message
@@ -171,7 +181,7 @@ public class HomeActivity extends AppCompatActivity {
 
     // Navigation to Add Device Activity
     private void logoutUser() {
-        FirebaseAuth.getInstance().signOut();
+        dB.getAuth().signOut();
         goToLoginActivity();
     }
 

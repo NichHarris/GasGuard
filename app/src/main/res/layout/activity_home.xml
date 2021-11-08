@@ -5,6 +5,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Views.HomeActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:layout_scrollFlags="scroll|enterAlways" />
+    </com.google.android.material.appbar.AppBarLayout>
+
     <!-- Welcome Message   -->
     <TextView
         android:id="@+id/welcomeUserMessage"
@@ -47,43 +61,5 @@
         android:layout_height="match_parent"
         android:layout_marginVertical="200dp"
         android:textStyle="normal" />
-
-    <Button
-        android:id="@+id/addDeviceButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginVertical="20dp"
-        android:backgroundTint="@color/selected_toggle"
-        android:text="@string/addDeviceButton"
-        android:textColor="@color/white"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:layout_marginStart="250dp" />
-
-    <!-- Add Device Button -->
-    <Button
-        android:id="@+id/profileButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginVertical="600dp"
-        android:layout_centerHorizontal="true"
-        android:backgroundTint="@color/selected_toggle"
-        android:text="@string/profile"
-        android:textColor="@color/white"
-        android:textSize="16sp"
-        android:textStyle="bold" />
-
-    <!-- Log Out Button -->
-    <Button
-        android:id="@+id/logoutButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginVertical="20dp"
-        android:backgroundTint="@color/selected_toggle"
-        android:text="@string/logOut"
-        android:textColor="@color/white"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:layout_marginStart="20dp" />
 
 </RelativeLayout>

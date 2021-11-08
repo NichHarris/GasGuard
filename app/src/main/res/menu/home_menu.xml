@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/add_device"
+        android:title="@string/add_device"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/profile"
+        android:title="@string/profile"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/device_names"
+        android:title="@string/device_names"
+        app:showAsAction="never" />
+</menu>
