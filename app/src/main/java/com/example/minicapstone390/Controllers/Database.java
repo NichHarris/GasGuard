@@ -6,9 +6,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class Database {
-    private FirebaseDatabase database;
-    private FirebaseAuth auth;
-    private FirebaseUser user;
+    private final FirebaseDatabase database;
+    private final FirebaseAuth auth;
+    private final FirebaseUser user;
 
     public Database() {
         this.auth = FirebaseAuth.getInstance();

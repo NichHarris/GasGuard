@@ -2,6 +2,7 @@
 <resources>
     <color name="white">#FFFFFFFF</color>
     <color name="black">#FF000000</color>
+    <color name="blue">#0000FF</color>
     <color name="unfocused_text">#AEAEBB</color>
     <color name="input_border">#BABFC4</color>
     <color name="input_shadow">#D3E5F2</color>
