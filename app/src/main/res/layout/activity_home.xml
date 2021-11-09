@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/g_guard_theme"
     tools:context=".Views.HomeActivity">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -15,7 +16,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
+            android:background="@color/g_guard_banner"
             app:layout_scrollFlags="scroll|enterAlways" />
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -40,17 +41,17 @@
         android:id="@+id/devicesTitle"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/devices"
-        android:paddingTop="100dp"
-        android:paddingHorizontal="15dp"
-        android:textSize="25sp"
-        android:textStyle="bold"
-        android:textColor="@color/black"
         android:layout_marginStart="20dp"
         android:layout_marginTop="50dp"
-        app:layout_constraintTop_toTopOf="parent"
+        android:paddingHorizontal="15dp"
+        android:paddingTop="100dp"
+        android:text="@string/devices"
+        android:textColor="@color/black"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <!-- Device ListView -->
 
@@ -61,5 +62,14 @@
         android:layout_height="match_parent"
         android:layout_marginVertical="200dp"
         android:textStyle="normal" />
+
+    <ImageView
+        android:id="@+id/gg_cloud_home"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/devicesTitle"
+        android:layout_alignParentRight="true"
+
+        app:srcCompat="@drawable/gg_corner" />
 
 </RelativeLayout>
