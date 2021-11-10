@@ -26,7 +26,7 @@
     <string name="first_name">First Name</string>
     <string name="last_name">Last Name</string>
     <string name="sensors">Sensors</string>
-    <string name="live_data_0">Live Data: {0}</string>
+    <string name="sensor_graph">{0} Readings History</string>
     <string name="forgot_password"><u>Forgot Password</u></string>
     <string name="delete_user">Delete User</string>
     <string name="disable_sensor">Disable Sensor</string>
