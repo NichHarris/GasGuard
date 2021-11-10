@@ -86,6 +86,7 @@ public class ProfileActivity extends AppCompatActivity {
                 sharePreferenceHelper.setTheme(true);
             }
             reload();
+            //TODO Add transitions
         }
         if(id == R.id.update_notification) {
             NotificationsFragment dialog = new NotificationsFragment();

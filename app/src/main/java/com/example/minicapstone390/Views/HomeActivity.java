@@ -49,49 +49,44 @@ public class HomeActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        deviceIds = new ArrayList<>();
-        DatabaseReference userRef = dB.getUserChild(dB.getUserId());
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                String username = snapshot.child("userName").getValue(String.class);
-                updateUserMessage(username);
-            }
+        deviceIds = new ArrayList<>();
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                throw error.toException();
-            }
-        });
+        updatePage();
 
         //TODO: check if devices are part of the user
         //TODO: Put id list in sharedpred to avoid out of scope issue (asynch issue)
-        DatabaseReference deviceRef = dB.getDeviceRef().child("-Mmp8L5ajMh3q6W8wcnm");
-        deviceRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                System.out.println(snapshot.child("deviceName").getValue(String.class));
-                if (snapshot.child("userId").getValue(String.class).equals(dB.getUserId())) {
-                    //System.out.println(userId);
-                } else {
-                    //System.out.println(snapshot.child("userId").getValue(String.class));
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                // TODO: Add error catch
-            }
-        });
+//        DatabaseReference deviceRef = dB.getDeviceRef().child("-Mmp8L5ajMh3q6W8wcnm");
+//        deviceRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                System.out.println(snapshot.child("deviceName").getValue(String.class));
+//                if (snapshot.child("userId").getValue(String.class).equals(dB.getUserId())) {
+//                    //System.out.println(userId);
+//                } else {
+//                    //System.out.println(snapshot.child("userId").getValue(String.class));
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//                // TODO: Add error catch
+//            }
+//        });
 
         welcomeUserMessage = (TextView) findViewById(R.id.welcomeUserMessage);
 
         deviceList = (ListView) findViewById(R.id.deviceDataList);
         loadDeviceList();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updatePage();
     }
 
     // Display options menu in task-bar
@@ -149,10 +144,20 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     //Update User Message
-    private void updateUserMessage(String userName) {
-        System.out.println(userName);
-        String defaultMessage = getResources().getString(R.string.welcome_user).replace("{0}", userName);
-        welcomeUserMessage.setText(defaultMessage);
+    private void updatePage() {
+        dB.getUserChild(dB.getUserId()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String defaultMessage = getResources().getString(R.string.welcome_user).replace("{0}", snapshot.child("userName").getValue(String.class));
+                welcomeUserMessage.setText(defaultMessage);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                throw error.toException();
+            }
+        });
+        loadDeviceList();
     }
 
     private void goToProfileActivity() {
