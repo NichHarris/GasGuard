@@ -54,33 +54,10 @@ public class HomeActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         deviceIds = new ArrayList<>();
+        welcomeUserMessage = (TextView) findViewById(R.id.welcomeUserMessage);
+        deviceList = (ListView) findViewById(R.id.deviceDataList);
 
         updatePage();
-
-        //TODO: check if devices are part of the user
-        //TODO: Put id list in sharedpred to avoid out of scope issue (asynch issue)
-//        DatabaseReference deviceRef = dB.getDeviceRef().child("-Mmp8L5ajMh3q6W8wcnm");
-//        deviceRef.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                System.out.println(snapshot.child("deviceName").getValue(String.class));
-//                if (snapshot.child("userId").getValue(String.class).equals(dB.getUserId())) {
-//                    //System.out.println(userId);
-//                } else {
-//                    //System.out.println(snapshot.child("userId").getValue(String.class));
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//                // TODO: Add error catch
-//            }
-//        });
-
-        welcomeUserMessage = (TextView) findViewById(R.id.welcomeUserMessage);
-
-        deviceList = (ListView) findViewById(R.id.deviceDataList);
-        loadDeviceList();
     }
 
     @Override
@@ -143,7 +120,7 @@ public class HomeActivity extends AppCompatActivity {
         });
     }
 
-    //Update User Message
+    // Update Page
     private void updatePage() {
         dB.getUserChild(dB.getUserId()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -160,12 +137,13 @@ public class HomeActivity extends AppCompatActivity {
         loadDeviceList();
     }
 
+    // Navigation to Profile Activity
     private void goToProfileActivity() {
         Intent intent = new Intent(this, ProfileActivity.class);
         startActivity(intent);
     }
 
-    // Navigation to Sensor Activity
+    // Navigation to Device Activity
     private void goToDeviceActivity(String deviceId) {
         Intent intent = new Intent(this, DeviceActivity.class);
         intent.putExtra("deviceId", deviceId);
@@ -194,12 +172,6 @@ public class HomeActivity extends AppCompatActivity {
         setDeviceList(deviceNames);
     }
 
-    // Navigation to Add Device Activity
-    private void logoutUser() {
-        dB.getAuth().signOut();
-        goToLoginActivity();
-    }
-
     private void setDeviceList(List<String> devices) {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, devices);
         // Add Devices to ListView
@@ -208,10 +180,5 @@ public class HomeActivity extends AppCompatActivity {
 
     public void addToDeviceList(String id) {
         deviceIds.add(id);
-    }
-
-    private void goToLoginActivity() {
-        Intent intent = new Intent(this, LoginActivity.class);
-        startActivity(intent);
     }
 }

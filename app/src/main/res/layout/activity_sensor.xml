@@ -29,4 +29,10 @@
         android:text="@string/live_data_0"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true" />
+
+    <com.github.mikephil.charting.charts.LineChart
+        android:id = "@+id/lineChart"
+        android:layout_width = "fill_parent"
+        android:layout_height = "fill_parent" />
+
 </RelativeLayout>
