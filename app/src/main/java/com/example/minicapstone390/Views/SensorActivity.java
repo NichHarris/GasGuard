@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.minicapstone390.Controllers.Database;
+import com.example.minicapstone390.Controllers.SharedPreferenceHelper;
 import com.example.minicapstone390.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -21,6 +22,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+// DateTime
+import java.util.Date;
+import java.text.SimpleDateFormat;
+
 import java.util.Objects;
 
 public class SensorActivity extends AppCompatActivity {
@@ -28,12 +33,21 @@ public class SensorActivity extends AppCompatActivity {
     // Declare variables
     private final Database dB = new Database();
 
+    protected SharedPreferenceHelper sharePreferenceHelper;
     protected TextView sensorName, liveData;
     protected Toolbar toolbar;
     protected String sensorId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        sharePreferenceHelper = new SharedPreferenceHelper(SensorActivity.this);
+        // Set theme
+        if (sharePreferenceHelper.getTheme()) {
+            setTheme(R.style.NightMode);
+        } else {
+            setTheme(R.style.LightMode);
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sensor);
 

@@ -8,6 +8,11 @@
         app:showAsAction="never" />
 
     <item
+        android:id="@+id/theme"
+        android:title="@string/dark_mode_on_off"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/update_notification"
         android:title="@string/notifications"
         app:showAsAction="never" />

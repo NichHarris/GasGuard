@@ -40,4 +40,5 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="logout">Logout</string>
+    <string name="dark_mode_on_off">Dark Mode On/Off</string>
 </resources>

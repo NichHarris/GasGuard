@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.ListView;
 
 import com.example.minicapstone390.Controllers.Database;
+import com.example.minicapstone390.Controllers.SharedPreferenceHelper;
 import com.example.minicapstone390.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -30,6 +31,7 @@ public class HomeActivity extends AppCompatActivity {
 
     // Declare variables
     private final Database dB = new Database();
+    protected SharedPreferenceHelper sharePreferenceHelper;
     protected TextView welcomeUserMessage;
     protected Toolbar toolbar;
     protected ListView deviceList;
@@ -37,6 +39,14 @@ public class HomeActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        sharePreferenceHelper = new SharedPreferenceHelper(HomeActivity.this);
+        // Set theme
+        if (sharePreferenceHelper.getTheme()) {
+            setTheme(R.style.NightMode);
+        } else {
+            setTheme(R.style.LightMode);
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         deviceIds = new ArrayList<>();
