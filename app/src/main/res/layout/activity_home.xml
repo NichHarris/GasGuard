@@ -73,7 +73,7 @@
     <ListView
         android:id="@+id/deviceDataList"
         android:layout_width="413dp"
-        android:layout_height="252dp"
+        android:layout_height="262dp"
         android:layout_marginVertical="200dp"
         android:layout_marginTop="200dp"
         android:textStyle="normal"
@@ -84,14 +84,15 @@
 
     <ImageView
         android:id="@+id/gg_cloud_home"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="411dp"
+        android:layout_height="261dp"
         android:layout_below="@id/devicesTitle"
-        android:layout_alignParentRight="true"
-        android:layout_marginTop="468dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/gg_corner" />
+        app:layout_constraintTop_toBottomOf="@+id/deviceDataList"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/gg_corner"
+        android:contentDescription="TODO" />
 </androidx.constraintlayout.widget.ConstraintLayout>

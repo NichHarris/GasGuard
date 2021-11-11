@@ -81,9 +81,6 @@ public class SensorActivity extends AppCompatActivity {
         graphTimesOptions = (RadioGroup) findViewById(R.id.graphTimeOptions);
         sensorName = (TextView) findViewById(R.id.sensor_name);
         chartTitle = (TextView) findViewById(R.id.chart_title);
-
-        graphTime = updateGraphDates();
-        System.out.println(graphTime);
         sensorChart = (LineChart) findViewById(R.id.sensorChart);
         // setData(sensorChart)
         // configureGraph(sensorChart)
@@ -96,6 +93,9 @@ public class SensorActivity extends AppCompatActivity {
             Toast.makeText(this, "Error fetching device", Toast.LENGTH_LONG).show();
             openHomeActivity();
         }
+
+        graphTime = updateGraphDates();
+        System.out.println(graphTime);
         setGraphScale();
         getSensorData();
     }
@@ -161,6 +161,7 @@ public class SensorActivity extends AppCompatActivity {
         });
     }
 
+    // TODO
     private void getSensorData() {
         dB.getSensorChild(sensorId).child("SensorPastValues").addValueEventListener(new ValueEventListener() {
             @RequiresApi(api = Build.VERSION_CODES.O)
