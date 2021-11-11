@@ -4,11 +4,15 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.ListView;
 
@@ -23,6 +27,10 @@ import com.google.firebase.database.ValueEventListener;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
 
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.ConsoleHandler;
@@ -33,9 +41,14 @@ public class HomeActivity extends AppCompatActivity {
     private final Database dB = new Database();
     protected SharedPreferenceHelper sharePreferenceHelper;
     protected TextView welcomeUserMessage;
+    protected ProgressBar progressBar;
+    protected Button addDevice;
     protected Toolbar toolbar;
     protected ListView deviceList;
     protected List<String> deviceIds;
+
+    public static String wifiModuleIp = "";
+    public static int wifiModulePort = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,9 +66,13 @@ public class HomeActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        addDevice = (Button) findViewById(R.id.add_device);
+        progressBar = (ProgressBar) findViewById(R.id.progress_bar);
         deviceIds = new ArrayList<>();
         welcomeUserMessage = (TextView) findViewById(R.id.welcomeUserMessage);
         deviceList = (ListView) findViewById(R.id.deviceDataList);
+
+        addDevice.setOnClickListener(view -> connectDevice());
 
         updatePage();
     }
@@ -89,6 +106,32 @@ public class HomeActivity extends AppCompatActivity {
             //TODO: change list of device names to set names
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    // TODO: IMPLEMENT DEVICE CONNECTION
+    public void connectDevice() {
+        getIpAndPort();
+        Socket_AsyncTask connect_device = new Socket_AsyncTask();
+        connect_device.execute();
+    }
+
+    public void getIpAndPort() {
+        return;
+    }
+
+    public static class Socket_AsyncTask extends AsyncTask<Void, Void, Void> {
+        Socket socket;
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            try {
+                InetAddress inetAddress = InetAddress.getByName(HomeActivity.wifiModuleIp);
+                socket = new java.net.Socket(inetAddress, HomeActivity.wifiModulePort);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
     }
 
     // Get, Initialize, and Update Devices - Display List of Devices
@@ -135,6 +178,12 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
         loadDeviceList();
+        updateProgressBar();
+    }
+
+    private void updateProgressBar() {
+        // TODO: Get an aggregate of the data from active sensors and devices and display relative health
+        progressBar.setProgress(66);
     }
 
     // Navigation to Profile Activity
