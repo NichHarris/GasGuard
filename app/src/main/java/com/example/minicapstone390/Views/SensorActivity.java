@@ -182,31 +182,11 @@ public class SensorActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.O)
     private List<String> dateHistoryList(LocalDate current, long length) {
         List<String> history = new ArrayList<>();
-        length = 60;
-        long decrement = 1;
-        if (length == 0) {
-            // split into hours
-        } else {
-            // split into days depending on formula
-            decrement = length / 7;
-        }
-
-        // TODO
-        switch ((int) decrement) {
-            case 7:
-                // return a week graph
-                return Collections.emptyList();
-            case 14:
-                // return a 2 week graph
-                return Collections.emptyList();
-            case 30:
-                // return a month graph
-                return Collections.emptyList();
-            case 60:
-                // return a 2 month graph
-                return Collections.emptyList();
-            default:
-                // return a day graph
+        length = 7;
+        long decrement = length / 7;
+        if (decrement == 0) {
+            // split day
+            decrement = 4;
         }
 
         for (long i = length; i >= 0; i -= decrement) {

@@ -62,4 +62,42 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <RadioGroup
+        android:id="@+id/graphTimeOptions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/sensorChart" >
+
+        <RadioButton
+            android:id="@+id/dayButton"
+            style="@style/RadioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/day" />
+
+        <RadioButton
+            android:id="@+id/weekButton"
+            style="@style/RadioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Week" />
+
+        <RadioButton
+            android:id="@+id/weeksButton"
+            style="@style/RadioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2 Weeks" />
+
+        <RadioButton
+            android:id="@+id/monthButton"
+            style="@style/RadioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Month" />
+
+    </RadioGroup>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

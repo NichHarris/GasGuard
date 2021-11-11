@@ -41,4 +41,5 @@
     <string name="logout">Logout</string>
     <string name="dark_mode_on_off">Dark Mode On/Off</string>
     <string name="add_device">Add Device</string>
+    <string name="day">Day</string>
 </resources>
