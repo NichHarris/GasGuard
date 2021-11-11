@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.minicapstone390.Controllers.Database;
+import com.example.minicapstone390.Controllers.SharedPreferenceHelper;
 import com.example.minicapstone390.R;
 
 
@@ -19,6 +20,7 @@ public class NotificationsFragment extends DialogFragment {
 
     // Declare variables
     private final Database dB = new Database();
+    protected SharedPreferenceHelper sharePreferenceHelper;
 
     @Nullable
     @Override
