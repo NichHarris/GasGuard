@@ -35,17 +35,17 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
+        android:id="@+id/profile_phone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/profile_phone"
-        android:textSize="16sp"
-        android:textColor="@color/black"
-        android:layout_marginTop="100dp"
         android:layout_marginStart="40dp"
+        android:layout_marginTop="100dp"
+        android:textColor="@color/black"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -86,5 +86,17 @@
         app:layout_constraintTop_toTopOf="parent"
         app:titleTextColor="@android:color/transparent"
         app:layout_scrollFlags="scroll|enterAlways" />
+
+    <ImageView
+        android:id="@+id/blank_profile_pic_profile"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
+        app:srcCompat="@drawable/blank_profile_pic" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

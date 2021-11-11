@@ -133,13 +133,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="40dp"
-        android:layout_marginTop="95dp"
-        android:layout_marginBottom="140dp"
-        android:visibility="visible"
+        android:layout_marginTop="130dp"
+        android:layout_marginEnd="30dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/login_form"
-        app:srcCompat="@drawable/gg_corner"
-        tools:visibility="visible" />
+        app:srcCompat="@drawable/gg_corner" />
 </androidx.constraintlayout.widget.ConstraintLayout>
