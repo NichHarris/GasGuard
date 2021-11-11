@@ -161,6 +161,7 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 // TODO: Add error catch
+                System.out.println(error.toString());
             }
         });
     }
@@ -217,6 +218,7 @@ public class HomeActivity extends AppCompatActivity {
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
                     // TODO: Add error catch
+                    System.out.println(error.toString());
                 }
             });
         }

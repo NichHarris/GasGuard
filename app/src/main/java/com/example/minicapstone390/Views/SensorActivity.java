@@ -31,8 +31,10 @@ import com.google.firebase.database.ValueEventListener;
 
 // DateTime
 import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -47,7 +49,6 @@ public class SensorActivity extends AppCompatActivity {
 
     // Declare variables
     private final Database dB = new Database();
-
     protected SharedPreferenceHelper sharePreferenceHelper;
     protected LineChart sensorChart;
     protected TextView sensorName, chartTitle;
@@ -125,25 +126,38 @@ public class SensorActivity extends AppCompatActivity {
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 // TODO: Add error catch
+                System.out.println(error.toString());
             }
         });
     }
 
     private void getSensorData() {
         dB.getSensorChild(sensorId).child("SensorPastValues").addValueEventListener(new ValueEventListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 List<Pair<String, Double>> sensorData = new ArrayList<>();
                 for (DataSnapshot ds : snapshot.getChildren()) {
-//                    Pair<String, Double> data = new Pair<>();
                     System.out.println(ds.getKey());
+                    // Gets the date
+                    System.out.println(LocalDate.parse(ds.getKey(), DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+                    // Gets the time of day
+                    System.out.println(LocalTime.parse(ds.getKey(), DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+                    Instant instant = Instant.parse(ds.getKey()+".521Z");
+                    Date time = null;
+                    try {
+                        time = Date.from(instant);
+                    } catch (Exception e) {
+                        System.out.println(e);
+                    }
+                    System.out.println(time);
                     System.out.println(ds.child("Value").getValue(Double.class).toString());
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                System.out.println(error.toString());
             }
         });
     }
@@ -155,12 +169,12 @@ public class SensorActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 sensorName.setText(snapshot.child("SensorName").getValue(String.class));
-                chartTitle.setText(getResources().getString(R.string.sensor_graph).replace("{0}", snapshot.child("SensorName").getValue(String.class)));
+                chartTitle.setText(getResources().getString(R.string.sensor_graph).replace("{0}", Objects.requireNonNull(snapshot.child("SensorName").getValue(String.class))));
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                // TODO: Add error catch
+                System.out.println(error.toString());
             }
         });
     }
@@ -203,6 +217,7 @@ public class SensorActivity extends AppCompatActivity {
         return history;
     }
 
+    // TODO
     private void setGraphData() {
         return;
     }

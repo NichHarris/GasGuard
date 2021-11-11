@@ -152,6 +152,7 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 // TODO: Add error catch
+                System.out.println(error.toString());
             }
 
             private void updateProfile() {
