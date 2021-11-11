@@ -40,7 +40,6 @@ public class DeviceFragment extends DialogFragment {
     public int deviceCount;
     public String deviceKey;
 
-
     // TODO: Replace with check for device ID in database and add it to user
     @Nullable
     @Override
