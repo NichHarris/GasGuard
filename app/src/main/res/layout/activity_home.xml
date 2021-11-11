@@ -59,28 +59,16 @@
         android:id="@+id/devicesTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-<<<<<<< HEAD
         android:layout_marginStart="20dp"
         android:layout_marginTop="50dp"
-=======
-        android:layout_marginBottom="16dp"
->>>>>>> UI11/Add_Themes
         android:paddingHorizontal="15dp"
         android:paddingTop="100dp"
         android:text="@string/devices"
         android:textColor="@color/black"
         android:textSize="25sp"
         android:textStyle="bold"
-<<<<<<< HEAD
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <!-- Device ListView -->
-=======
         app:layout_constraintBottom_toTopOf="@+id/deviceDataList"
         app:layout_constraintStart_toStartOf="parent" />
->>>>>>> UI11/Add_Themes
 
     <ListView
         android:id="@+id/deviceDataList"
@@ -94,17 +82,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/welcomeUserMessage" />
 
-<<<<<<< HEAD
     <ImageView
         android:id="@+id/gg_cloud_home"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/devicesTitle"
         android:layout_alignParentRight="true"
-
+        android:layout_marginTop="468dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/gg_corner" />
-
-</RelativeLayout>
-=======
 </androidx.constraintlayout.widget.ConstraintLayout>
->>>>>>> UI11/Add_Themes
