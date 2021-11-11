@@ -141,8 +141,8 @@ public class HomeActivity extends AppCompatActivity {
     //Update User Message
     private void updateUserMessage(String userName) {
         System.out.println(userName);
-        String defaultMessage = getResources().getString(R.string.welcome_user).replace("{0}", userName);
-        welcomeUserMessage.setText(defaultMessage);
+//        String defaultMessage = getResources().getString(R.string.welcome_user).replace("{0}", userName);
+//        welcomeUserMessage.setText(defaultMessage);
     }
 
     private void goToProfileActivity() {
