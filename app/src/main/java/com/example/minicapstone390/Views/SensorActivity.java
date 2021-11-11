@@ -12,6 +12,7 @@ import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,9 +53,12 @@ public class SensorActivity extends AppCompatActivity {
     protected SharedPreferenceHelper sharePreferenceHelper;
     protected LineChart sensorChart;
     protected TextView sensorName, chartTitle;
+    protected RadioGroup graphTimesOptions;
     protected List<String> graphTime;
     protected Toolbar toolbar;
     protected String sensorId;
+
+    public int graphTimeScale = 0;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -74,10 +78,11 @@ public class SensorActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        graphTimesOptions = (RadioGroup) findViewById(R.id.graphTimeOptions);
         sensorName = (TextView) findViewById(R.id.sensor_name);
         chartTitle = (TextView) findViewById(R.id.chart_title);
 
-        graphTime = dateHistoryList(LocalDate.now() ,sharePreferenceHelper.getGraphLength());
+        graphTime = updateGraphDates();
         System.out.println(graphTime);
         sensorChart = (LineChart) findViewById(R.id.sensorChart);
         // setData(sensorChart)
@@ -91,7 +96,7 @@ public class SensorActivity extends AppCompatActivity {
             Toast.makeText(this, "Error fetching device", Toast.LENGTH_LONG).show();
             openHomeActivity();
         }
-
+        setGraphScale();
         getSensorData();
     }
 
@@ -110,6 +115,31 @@ public class SensorActivity extends AppCompatActivity {
             disableSensor();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void setGraphScale() {
+        graphTimesOptions.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int id) {
+                switch (id) {
+                    case R.id.weekButton:
+                        graphTimeScale = 7;
+                        break;
+                    case R.id.weeksButton:
+                        graphTimeScale = 14;
+                        break;
+                    case R.id.monthButton:
+                        graphTimeScale = 30;
+                        break;
+                    default:
+                        graphTimeScale = 0;
+                }
+
+                System.out.println(graphTimeScale);
+                System.out.println(updateGraphDates());
+            }
+        });
     }
 
     private void disableSensor() {
@@ -180,20 +210,17 @@ public class SensorActivity extends AppCompatActivity {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private List<String> dateHistoryList(LocalDate current, long length) {
+    private List<String> updateGraphDates() {
         List<String> history = new ArrayList<>();
-        length = 7;
-        long decrement = length / 7;
+        long decrement = graphTimeScale / 7;
         if (decrement == 0) {
             // split day
             decrement = 4;
         }
 
-        for (long i = length; i >= 0; i -= decrement) {
-            history.add(current.minusDays(i).format(DateTimeFormatter.ISO_DATE));
+        for (long i = graphTimeScale; i >= 0; i -= decrement) {
+            history.add(LocalDate.now().minusDays(i).format(DateTimeFormatter.ISO_DATE));
         }
-
-
         return history;
     }
 
