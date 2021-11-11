@@ -150,6 +150,8 @@ public class HomeActivity extends AppCompatActivity {
                 }
 
                 deviceList.setOnItemClickListener((parent, view, position, id) -> {
+                    System.out.println("Here");
+                    System.out.println(deviceIds.get(position));
                     goToDeviceActivity(deviceIds.get(position));
                 });
 

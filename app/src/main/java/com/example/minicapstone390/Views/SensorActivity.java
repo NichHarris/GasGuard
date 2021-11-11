@@ -8,6 +8,7 @@ import androidx.appcompat.widget.Toolbar;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
@@ -38,6 +39,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -88,6 +90,8 @@ public class SensorActivity extends AppCompatActivity {
             Toast.makeText(this, "Error fetching device", Toast.LENGTH_LONG).show();
             openHomeActivity();
         }
+
+        getSensorData();
     }
 
     // Display options menu in task-bar
@@ -125,14 +129,33 @@ public class SensorActivity extends AppCompatActivity {
         });
     }
 
+    private void getSensorData() {
+        dB.getSensorChild(sensorId).child("SensorPastValues").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<Pair<String, Double>> sensorData = new ArrayList<>();
+                for (DataSnapshot ds : snapshot.getChildren()) {
+//                    Pair<String, Double> data = new Pair<>();
+                    System.out.println(ds.getKey());
+                    System.out.println(ds.child("Value").getValue(Double.class).toString());
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
     private void displaySensorInfo(String sensorId) {
         DatabaseReference sensorRef = dB.getSensorChild(sensorId);
 
         sensorRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                sensorName.setText(snapshot.child("sensorName").getValue(String.class));
-                chartTitle.setText(getResources().getString(R.string.sensor_graph).replace("{0}", snapshot.child("sensorName").getValue(String.class)));
+                sensorName.setText(snapshot.child("SensorName").getValue(String.class));
+                chartTitle.setText(getResources().getString(R.string.sensor_graph).replace("{0}", snapshot.child("SensorName").getValue(String.class)));
             }
 
             @Override
@@ -145,15 +168,16 @@ public class SensorActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.O)
     private List<String> dateHistoryList(LocalDate current, long length) {
         List<String> history = new ArrayList<>();
-        length = 7;
+        length = 60;
         long decrement = 1;
         if (length == 0) {
             // split into hours
         } else {
             // split into days depending on formula
-            decrement = length / 6;
+            decrement = length / 7;
         }
 
+        // TODO
         switch ((int) decrement) {
             case 7:
                 // return a week graph

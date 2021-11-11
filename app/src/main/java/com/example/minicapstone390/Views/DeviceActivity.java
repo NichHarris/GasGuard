@@ -178,10 +178,10 @@ public class DeviceActivity extends AppCompatActivity {
 
         for (String id: sensors) {
             DatabaseReference sensorRef = dB.getSensorChild(id);
-            sensorRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            sensorRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    sensorNames.add(snapshot.child("sensorName").getValue(String.class));
+                    sensorNames.add(snapshot.child("SensorName").getValue(String.class));
                     setSensorList(sensorNames);
                 }
 
