@@ -7,18 +7,13 @@
     android:background="@color/g_guard_theme"
     tools:context=".Views.DeviceActivity">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appBarLayout"
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/g_guard_banner"
-            app:layout_scrollFlags="scroll|enterAlways" />
-    </com.google.android.material.appbar.AppBarLayout>
+        android:layout_height="wrap_content"
+        android:background="@color/g_guard_banner"
+        app:titleTextColor="@android:color/transparent"
+        app:layout_scrollFlags="scroll|enterAlways" />
 
     <TextView
         android:layout_width="wrap_content"

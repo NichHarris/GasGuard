@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
+import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,12 +16,16 @@ import com.example.minicapstone390.Controllers.Database;
 import com.example.minicapstone390.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.example.minicapstone390.Views.UpdateInfoFragment;
+import com.example.minicapstone390.Controllers.SharedPreferenceHelper;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
+
+import java.net.InetAddress;
+import java.net.Socket;
 import java.util.Objects;
 
 public class ProfileActivity extends AppCompatActivity {
@@ -27,18 +33,29 @@ public class ProfileActivity extends AppCompatActivity {
     // Declare variables
     private final Database dB = new Database();
 
+    protected SharedPreferenceHelper sharePreferenceHelper;
     protected TextView profileName, profileEmail, profilePhone, profileFirstName, profileLastName;
     protected Toolbar toolbar;
     public String userName, userEmail, userPhone, userFirstName, userLastName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        sharePreferenceHelper = new SharedPreferenceHelper(ProfileActivity.this);
+        // Set theme
+        if (sharePreferenceHelper.getTheme()) {
+            setTheme(R.style.NightMode);
+        } else {
+            setTheme(R.style.LightMode);
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
+        sharePreferenceHelper = new SharedPreferenceHelper(ProfileActivity.this);
         // Enable toolbar
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
         updateAllInfo();
@@ -65,6 +82,15 @@ public class ProfileActivity extends AppCompatActivity {
             UpdateInfoFragment dialog = new UpdateInfoFragment();
             dialog.show(getSupportFragmentManager(), "Update Info");
             updateAllInfo();
+        }
+        if(id == R.id.theme) {
+            if (sharePreferenceHelper.getTheme()) {
+                sharePreferenceHelper.setTheme(false);
+            } else {
+                sharePreferenceHelper.setTheme(true);
+            }
+            reload();
+            //TODO Add transitions
         }
         if(id == R.id.update_notification) {
             NotificationsFragment dialog = new NotificationsFragment();
@@ -94,6 +120,12 @@ public class ProfileActivity extends AppCompatActivity {
         });
     }
 
+    private void reload() {
+        Intent intent = new Intent(this, ProfileActivity.class);
+        startActivity(intent);
+        // TODO: Add transition
+    }
+
     // Navigation to Add Device Activity
     private void logoutUser() {
         FirebaseAuth.getInstance().signOut();
@@ -120,6 +152,7 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 // TODO: Add error catch
+                System.out.println(error.toString());
             }
 
             private void updateProfile() {

@@ -84,7 +84,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
-
+        app:layout_constraintTop_toTopOf="parent"
+        app:titleTextColor="@android:color/transparent"
+        app:layout_scrollFlags="scroll|enterAlways" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

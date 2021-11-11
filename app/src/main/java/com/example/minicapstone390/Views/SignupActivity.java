@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.minicapstone390.Controllers.Database;
+import com.example.minicapstone390.Controllers.SharedPreferenceHelper;
 import com.example.minicapstone390.Models.User;
 import com.example.minicapstone390.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -32,12 +33,21 @@ public class SignupActivity extends AppCompatActivity {
     private final Database dB = new Database();
     private final String passwordRegex = "^(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[`~!@#$%^&*()\\-=_+\\[\\]\\\\{}|;:'\",.\\/<>? ]).{8,}$";
 
+    protected SharedPreferenceHelper sharePreferenceHelper;
     protected Button signUpButton, loginButton;
     protected TextView forgotPassword;
     protected EditText usernameET, emailET, passwordET, confirmPasswordET;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        sharePreferenceHelper = new SharedPreferenceHelper(SignupActivity.this);
+        // Set theme
+        if (sharePreferenceHelper.getTheme()) {
+            setTheme(R.style.NightMode);
+        } else {
+            setTheme(R.style.LightMode);
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
 
