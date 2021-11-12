@@ -30,17 +30,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-<!--    <TextView-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:id="@+id/live_data"-->
-<!--        android:text="@string/live_data_0"-->
-<!--        android:layout_centerHorizontal="true"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintHorizontal_bias="0.0"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent" />-->
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -82,22 +71,20 @@
             style="@style/RadioButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Week" />
+            android:text="@string/week" />
 
         <RadioButton
             android:id="@+id/weeksButton"
             style="@style/RadioButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="2 Weeks" />
+            android:text="@string/_2_weeks" />
 
         <RadioButton
             android:id="@+id/monthButton"
             style="@style/RadioButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Month" />
-
+            android:text="@string/month" />
     </RadioGroup>
-
 </androidx.constraintlayout.widget.ConstraintLayout>
