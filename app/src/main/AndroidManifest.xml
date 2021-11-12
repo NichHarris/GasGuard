@@ -34,7 +34,7 @@
             android:exported="false" />
         <activity
             android:name=".Views.MainActivity"
-            android:label="Loading..."
+            android:label="GasGuard"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
