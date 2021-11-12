@@ -30,9 +30,9 @@ import java.util.Map;
 
 // Device Fragment
 public class DeviceFragment extends DialogFragment {
+    private static final String TAG = "AddDeviceFragment";
 
     // Declare variables
-    private static final String TAG = "Add Device";
     private final Database dB = new Database();
 
     protected Button cancelButton, saveButton;

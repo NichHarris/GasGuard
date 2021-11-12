@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Patterns;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,7 +16,9 @@ import com.example.minicapstone390.Controllers.Database;
 import com.example.minicapstone390.Controllers.SharedPreferenceHelper;
 import com.example.minicapstone390.Models.User;
 import com.example.minicapstone390.R;
+import com.google.android.gms.tasks.OnCanceledListener;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -28,6 +31,7 @@ import java.util.Objects;
 import java.util.regex.Pattern;
 
 public class SignupActivity extends AppCompatActivity {
+    private static final String TAG = "SignupActivity";
 
     // Declare variables
     private final Database dB = new Database();
@@ -121,8 +125,10 @@ public class SignupActivity extends AppCompatActivity {
                             .addOnCompleteListener(t -> {
                                 if (t.isSuccessful()) {
                                     Toast.makeText(getApplicationContext(), "User Registered Successfully!", Toast.LENGTH_SHORT).show();
+                                    Log.i(TAG, String.format("User: %s successfully registered.", username));
                                     openHomeActivity();
                                 } else {
+                                    Log.e(TAG, "Failed to create user on database");
                                     Toast.makeText(getApplicationContext(), "Failed to Register User!", Toast.LENGTH_SHORT).show();
                                 }
                             });
@@ -146,8 +152,10 @@ public class SignupActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
+                    Log.i(TAG, String.format("Password reset sent to: %s", email));
                     Toast.makeText(getApplicationContext(), "Password reset sent successfully!", Toast.LENGTH_SHORT).show();
                 } else {
+                    Log.e(TAG, "Failed to send password reset email");
                     Toast.makeText(getApplicationContext(), "Error sending password reset, email is not associated with an account!", Toast.LENGTH_SHORT).show();
                 }
             }

@@ -7,6 +7,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
@@ -32,6 +33,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class DeviceActivity extends AppCompatActivity {
+    private static final String TAG = "DeviceActivity";
 
     // Declare variables
     private final Database dB = new Database();
@@ -41,10 +43,12 @@ public class DeviceActivity extends AppCompatActivity {
     protected Toolbar toolbar;
     protected ListView sensorList;
     protected TextView deviceName, deviceStatus;
-    protected List<String> sensorIds;
+    protected List<String> sensorIds = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        // Initialize SharedPref and check theme
         sharePreferenceHelper = new SharedPreferenceHelper(DeviceActivity.this);
         // Set theme
         if (sharePreferenceHelper.getTheme()) {
@@ -61,11 +65,12 @@ public class DeviceActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
+        // Initialize TextViews
         deviceName = (TextView) findViewById(R.id.device_name);
         deviceStatus = (TextView) findViewById(R.id.device_status);
 
+        // Display info for selected device
         sensorList = (ListView) findViewById(R.id.sensorList);
-        sensorIds = new ArrayList<>();
         Bundle carryOver = getIntent().getExtras();
         if (carryOver != null) {
             deviceId = carryOver.getString("deviceId");
@@ -102,84 +107,96 @@ public class DeviceActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void setDeviceStatus(boolean status) {
-        dB.getDeviceChild(deviceId).child("status").setValue(status);
-    }
-
+    // Change the active status of a device
     private void disableDevice() {
         dB.getDeviceChild(deviceId).child("status").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.getValue(Boolean.class)) {
-                    dB.getDeviceChild(deviceId).child("status").setValue(false);
-                } else {
-                    dB.getDeviceChild(deviceId).child("status").setValue(true);
+                boolean status = true;
+
+                try {
+                    if (snapshot.getValue(Boolean.class)) {
+                        status = false;
+                    }
+                    dB.getDeviceChild(deviceId).child("status").setValue(status);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.d(TAG, e.toString());
+                    throw e;
                 }
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                // TODO: Add error catch
-                System.out.println(error.toString());
+            public void onCancelled(@NonNull DatabaseError e) {
+                Log.d(TAG, e.toString());
+                throw e.toException();
             }
         });
     }
 
+    // Remove device from the user
     private void deleteDevice() {
         // TODO
     }
 
+    // Navigate to the HomeActivity
     private void openHomeActivity() {
         Intent intent = new Intent(this, HomeActivity.class);
         startActivity(intent);
     }
 
+    // Display relevant device information
     private void displayDeviceInfo(String deviceId) {
         dB.getDeviceChild(deviceId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 deviceName.setText(snapshot.child("deviceName").getValue(String.class));
                 String status = "Disabled";
-                if (snapshot.child("status").getValue(Boolean.class)) {
-                    status = "Active";
+                try {
+                    if (snapshot.child("status").getValue(Boolean.class)) {
+                        status = "Active";
+                    }
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
+                    throw e;
                 }
                 deviceStatus.setText(getResources().getString(R.string.status).replace("{0}", status));
             }
+
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                // TODO: Add error catch
-                System.out.println(error.toString());
+            public void onCancelled(@NonNull DatabaseError e) {
+                Log.d(TAG, e.toString());
+                throw e.toException();
             }
         });
 
         dB.getDeviceChild(deviceId).child("sensors").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                List<String> sensorIds = new ArrayList<>();
                 for (DataSnapshot ds : snapshot.getChildren()) {
                     sensorIds.add(ds.getValue(String.class));
-                    addToSensorList(ds.getValue(String.class));
                 }
 
                 sensorList.setOnItemClickListener((parent, view, position, id) -> {
                     goToSensorActivity(sensorIds.get(position));
                 });
 
-                getSensorNames(sensorIds);
+                getSensorNames();
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                // TODO: Add error catch
-                System.out.println(error.toString());
+            public void onCancelled(@NonNull DatabaseError e) {
+                Log.d(TAG, e.toString());
+                throw e.toException();
             }
         });
     }
 
-    private void getSensorNames(List<String> sensors) {
+    // Get List of all sensor names
+    private void getSensorNames() {
         List<String> sensorNames = new ArrayList<>();
 
-        for (String id: sensors) {
+        for (String id: sensorIds) {
             DatabaseReference sensorRef = dB.getSensorChild(id);
             sensorRef.addValueEventListener(new ValueEventListener() {
                 @Override
@@ -189,21 +206,22 @@ public class DeviceActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-                    // TODO: Add error catch
-                    System.out.println(error.toString());
+                public void onCancelled(@NonNull DatabaseError e) {
+                    Log.d(TAG, e.toString());
+                    throw e.toException();
                 }
             });
         }
         setSensorList(sensorNames);
     }
 
+    // Set ListView of sensors
     private void setSensorList(List<String> sensors) {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, sensors);
         sensorList.setAdapter(adapter);
     }
-    private void addToSensorList(String id) { sensorIds.add(id); }
 
+    // Open sensor activity for selected sensor
     private void goToSensorActivity(String sensorId) {
         Intent intent = new Intent(this, SensorActivity.class);
         intent.putExtra("sensorId", sensorId);

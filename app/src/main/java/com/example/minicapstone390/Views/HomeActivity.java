@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -36,6 +37,7 @@ import java.util.List;
 import java.util.logging.ConsoleHandler;
 
 public class HomeActivity extends AppCompatActivity {
+    private static final String TAG = "HomeActivity";
 
     // Declare variables
     private final Database dB = new Database();
@@ -51,6 +53,8 @@ public class HomeActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        // Initialize SharedPref and check theme
         sharePreferenceHelper = new SharedPreferenceHelper(HomeActivity.this);
         // Set theme
         if (sharePreferenceHelper.getTheme()) {
@@ -62,14 +66,17 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        // Enable toolbar
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // Initialize Layouts
         progressBar = (ProgressBar) findViewById(R.id.progress_bar);
         deviceIds = new ArrayList<>();
         welcomeUserMessage = (TextView) findViewById(R.id.welcomeUserMessage);
         deviceList = (ListView) findViewById(R.id.deviceDataList);
 
+        // Update page info
         updatePage();
     }
 
@@ -89,17 +96,16 @@ public class HomeActivity extends AppCompatActivity {
     // Create the action when an option on the task-bar is selected
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        // TODO: Convert to switch
-        if(id == R.id.add_device) {
-            connectDevice();
-        }
-        if(id == R.id.profile) {
-            goToProfileActivity();
-        }
-        //NOTE: DON'T IMPLEMENT FOR NOW
-        if(id == R.id.device_names) {
-            //TODO: change list of device names to set names
+        switch (item.getItemId()) {
+            case R.id.add_device:
+                connectDevice();
+                break;
+            case R.id.profile:
+                goToProfileActivity();
+                break;
+            case R.id.device_names:
+                //TODO: change list of device names to set names
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -111,11 +117,13 @@ public class HomeActivity extends AppCompatActivity {
         connect_device.execute();
     }
 
+    // TODO
     public void getIpAndPort() {
         DeviceFragment dialog = new DeviceFragment();
-        dialog.show(getSupportFragmentManager(), "Add Device");
+        dialog.show(getSupportFragmentManager(), "AddDeviceFragment");
     }
 
+    // TODO
     public static class Socket_AsyncTask extends AsyncTask<Void, Void, Void> {
         Socket socket;
 
@@ -147,8 +155,6 @@ public class HomeActivity extends AppCompatActivity {
                 }
 
                 deviceList.setOnItemClickListener((parent, view, position, id) -> {
-                    System.out.println("Here");
-                    System.out.println(deviceIds.get(position));
                     goToDeviceActivity(deviceIds.get(position));
                 });
 
@@ -156,14 +162,14 @@ public class HomeActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                // TODO: Add error catch
-                System.out.println(error.toString());
+            public void onCancelled(@NonNull DatabaseError e) {
+                Log.d(TAG, e.toString());
+                throw e.toException();
             }
         });
     }
 
-    // Update Page
+    // Update Page information
     private void updatePage() {
         dB.getUserChild(dB.getUserId()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -173,14 +179,16 @@ public class HomeActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                throw error.toException();
+            public void onCancelled(@NonNull DatabaseError e) {
+                Log.d(TAG, e.toString());
+                throw e.toException();
             }
         });
         loadDeviceList();
         updateProgressBar();
     }
 
+    // TODO
     private void updateProgressBar() {
         // TODO: Get an aggregate of the data from active sensors and devices and display relative health
         progressBar.setProgress(66);
@@ -199,6 +207,7 @@ public class HomeActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    // Get List of device names associated with the user
     private void getDeviceNames(List<String> devices) {
         List<String> deviceNames = new ArrayList<>();
 
@@ -213,9 +222,9 @@ public class HomeActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-                    // TODO: Add error catch
-                    System.out.println(error.toString());
+                public void onCancelled(@NonNull DatabaseError e) {
+                    Log.d(TAG, e.toString());
+                    throw e.toException();
                 }
             });
         }

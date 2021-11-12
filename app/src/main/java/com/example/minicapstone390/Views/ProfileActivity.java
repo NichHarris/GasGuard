@@ -1,13 +1,16 @@
 package com.example.minicapstone390.Views;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -29,6 +32,7 @@ import java.net.Socket;
 import java.util.Objects;
 
 public class ProfileActivity extends AppCompatActivity {
+    private static final String TAG = "ProfileActivity";
 
     // Declare variables
     private final Database dB = new Database();
@@ -40,6 +44,8 @@ public class ProfileActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        // Initialize SharedPref and check theme
         sharePreferenceHelper = new SharedPreferenceHelper(ProfileActivity.this);
         // Set theme
         if (sharePreferenceHelper.getTheme()) {
@@ -51,22 +57,20 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-        sharePreferenceHelper = new SharedPreferenceHelper(ProfileActivity.this);
         // Enable toolbar
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
-        updateAllInfo();
-
-
-
+        // Initialize TextViews
         profileEmail = (TextView) findViewById(R.id.profile_email);
         profileName = (TextView) findViewById(R.id.profile_name);
         profilePhone = (TextView) findViewById(R.id.profile_phone);
         profileFirstName = (TextView) findViewById(R.id.profileFirstName);
         profileLastName = (TextView) findViewById(R.id.profileLastName);
+
+        // Update user info page
+        updateAllInfo();
     }
 
     // Display options menu in task-bar
@@ -80,48 +84,72 @@ public class ProfileActivity extends AppCompatActivity {
     @Override
     public  boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if(id == R.id.update_info) {
-            UpdateInfoFragment dialog = new UpdateInfoFragment();
-            dialog.show(getSupportFragmentManager(), "Update Info");
-            updateAllInfo();
-        }
-        if(id == R.id.theme) {
-            if (sharePreferenceHelper.getTheme()) {
-                sharePreferenceHelper.setTheme(false);
-            } else {
-                sharePreferenceHelper.setTheme(true);
-            }
-            reload();
-            //TODO Add transitions
-        }
-        if(id == R.id.update_notification) {
-            NotificationsFragment dialog = new NotificationsFragment();
-            dialog.show(getSupportFragmentManager(), "Notifications");
-            updateAllInfo();
-        }
-        if(id == R.id.logout_user) {
-            logoutUser();
-        }
-        if(id == R.id.remove_user) {
-            //TODO: ADD CONFIRM OPTION FOR DELETE
-            deleteUser();
+
+        switch (item.getItemId()) {
+            case R.id.update_info:
+                UpdateInfoFragment infoFragment = new UpdateInfoFragment();
+                infoFragment.show(getSupportFragmentManager(), "Update Info");
+                updateAllInfo();
+                break;
+            case R.id.theme:
+                if (sharePreferenceHelper.getTheme()) {
+                    sharePreferenceHelper.setTheme(false);
+                } else {
+                    sharePreferenceHelper.setTheme(true);
+                }
+                reload();
+                //TODO Add transitions
+                break;
+            case R.id.update_notification:
+                NotificationsFragment notificationsFragment = new NotificationsFragment();
+                notificationsFragment.show(getSupportFragmentManager(), "Notifications");
+                updateAllInfo();
+                break;
+            case R.id.logout_user:
+                logoutUser();
+                break;
+            case R.id.remove_user:
+                deleteUser();
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
 
+    // Delete user
     private void deleteUser() {
-        dB.getUser().delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(true);
+        builder.setTitle("Delete Confirmation");
+        builder.setMessage("WARNING: Deleting user will completely remove it.");
+        builder.setPositiveButton("Confirm",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dB.getUser().delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    goToLoginActivity();
+                                } else {
+                                    // TODO: Send toast for failed delete
+                                }
+                            }
+                        });
+                    }
+                });
+        builder.setNegativeButton("Cancel",
+                new DialogInterface.OnClickListener() {
             @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()) {
-                    // TODO: send toast for successful delete
-                } else {
-                    // TODO: Send toast for failed delete
-                }
+            public void onClick(DialogInterface dialogInterface, int i) {
+                // TODO LOG THAT IT IS A CANCEL
             }
         });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
+    // Reload page
     private void reload() {
         Intent intent = new Intent(this, ProfileActivity.class);
         startActivity(intent);
@@ -134,11 +162,13 @@ public class ProfileActivity extends AppCompatActivity {
         goToLoginActivity();
     }
 
+    // Navigate to long activity
     private void goToLoginActivity() {
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
     }
 
+    // Update all user info
     public void updateAllInfo() {
         dB.getUserChild(dB.getUserId()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -152,9 +182,9 @@ public class ProfileActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                // TODO: Add error catch
-                System.out.println(error.toString());
+            public void onCancelled(@NonNull DatabaseError e) {
+                Log.d(TAG, e.toString());
+                throw e.toException();
             }
 
             private void updateProfile() {
