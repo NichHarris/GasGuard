@@ -1,5 +1,6 @@
 package com.example.minicapstone390.Views;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -7,29 +8,46 @@ import android.os.Bundle;
 import android.util.Patterns;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.minicapstone390.Controllers.Database;
+import com.example.minicapstone390.Controllers.SharedPreferenceHelper;
 import com.example.minicapstone390.Models.User;
 import com.example.minicapstone390.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.Objects;
 import java.util.regex.Pattern;
 
 public class SignupActivity extends AppCompatActivity {
 
-    // Initialize variables
+    // Declare variables
     private final Database dB = new Database();
     private final String passwordRegex = "^(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[`~!@#$%^&*()\\-=_+\\[\\]\\\\{}|;:'\",.\\/<>? ]).{8,}$";
 
+    protected SharedPreferenceHelper sharePreferenceHelper;
     protected Button signUpButton, loginButton;
+    protected TextView forgotPassword;
     protected EditText usernameET, emailET, passwordET, confirmPasswordET;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        sharePreferenceHelper = new SharedPreferenceHelper(SignupActivity.this);
+        // Set theme
+        if (sharePreferenceHelper.getTheme()) {
+            setTheme(R.style.NightMode);
+        } else {
+            setTheme(R.style.LightMode);
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
 
@@ -45,6 +63,10 @@ public class SignupActivity extends AppCompatActivity {
         // Switch to Login Page
         loginButton = (Button) findViewById(R.id.loginPage);
         loginButton.setOnClickListener(view -> openLoginActivity());
+
+        // Send password reset email
+         forgotPassword = (TextView) findViewById(R.id.signUpForgot);
+         forgotPassword.setOnClickListener(view -> sendReset());
     }
 
     private void userSignup() {
@@ -62,7 +84,8 @@ public class SignupActivity extends AppCompatActivity {
 
         // (3) Email Must Be a Valid Email and Unique
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            Toast.makeText(getApplicationContext(), "Email Must Be Valid!", Toast.LENGTH_LONG).show();
+            emailET.setError("Email Must Be Valid!");
+            emailET.requestFocus();
             return;
         }
 
@@ -70,13 +93,15 @@ public class SignupActivity extends AppCompatActivity {
         // Regex for Password: Must Contain At Least 1 Lower and 1 Upper Case Character, 1 Number, 1 Special Characters, and Be 8 Characters Long
         Pattern pattern = Pattern.compile(passwordRegex);
         if (!pattern.matcher(password).matches()) {
-            Toast.makeText(getApplicationContext(), "Password Must Be Solid!", Toast.LENGTH_LONG).show();
+            passwordET.setError("Password Must Be Solid!");
+            passwordET.requestFocus();
             return;
         }
 
         // (5) Password and Confirm Password Must Match
         if (!password.equals(confirmPass)) {
-            Toast.makeText(getApplicationContext(), "Passwords Must Match!", Toast.LENGTH_LONG).show();
+            confirmPasswordET.setError("Passwords Must Match!");
+            confirmPasswordET.requestFocus();
             return;
         }
 
@@ -101,8 +126,32 @@ public class SignupActivity extends AppCompatActivity {
                                     Toast.makeText(getApplicationContext(), "Failed to Register User!", Toast.LENGTH_SHORT).show();
                                 }
                             });
+                } else {
+                    emailET.setError("Email is already registered!");
+                    emailET.requestFocus();
                 }
             });
+    }
+
+    private void sendReset() {
+        String email = emailET.getText().toString();
+
+        if (email.equals("")) {
+            emailET.setError("Please enter email to send reset to");
+            emailET.requestFocus();
+            return;
+        }
+
+        dB.getAuth().sendPasswordResetEmail(email).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    Toast.makeText(getApplicationContext(), "Password reset sent successfully!", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Error sending password reset, email is not associated with an account!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     private void openHomeActivity() {

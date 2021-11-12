@@ -31,7 +31,7 @@ import java.util.Map;
 // Device Fragment
 public class DeviceFragment extends DialogFragment {
 
-    // Initialize variables
+    // Declare variables
     private final Database dB = new Database();
 
     protected Button cancelButton, saveButton;
@@ -40,6 +40,7 @@ public class DeviceFragment extends DialogFragment {
     public int deviceCount;
     public String deviceKey;
 
+    // TODO: Replace with check for device ID in database and add it to user
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,

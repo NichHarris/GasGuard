@@ -6,15 +6,27 @@ import android.os.Bundle;
 import android.content.Intent;
 
 import com.example.minicapstone390.Controllers.Database;
+import com.example.minicapstone390.Controllers.SharedPreferenceHelper;
 import com.example.minicapstone390.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity {
+
+    // Declare variables
     private final Database dB = new Database();
+    protected SharedPreferenceHelper sharePreferenceHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        sharePreferenceHelper = new SharedPreferenceHelper(MainActivity.this);
+        // Set theme
+        if (sharePreferenceHelper.getTheme()) {
+            setTheme(R.style.NightMode);
+        } else {
+            setTheme(R.style.LightMode);
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 

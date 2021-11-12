@@ -2,50 +2,49 @@ package com.example.minicapstone390.Views;
 
 import android.app.FragmentManager;
 import android.os.Bundle;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.minicapstone390.Controllers.Database;
-import com.example.minicapstone390.Models.Device;
-import com.example.minicapstone390.Models.User;
 import com.example.minicapstone390.Views.ProfileActivity;
 import com.example.minicapstone390.R;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 // Device Fragment
 public class UpdateInfoFragment extends DialogFragment {
+    private static final String TAG = "Update Info";
 
-    // Initialize variables
+    public interface OnInputListener{
+        void sendInput(String input);
+    }
+    public OnInputListener onInputListener;
+
+    // Declare variables
     private final Database dB = new Database();
-
     protected Button cancelButton, saveButton;
     protected EditText userNameInput, userEmailInput, userPhoneInput, userFirstNameInput, userLastNameInput;
-
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.dialog_update_info, container, false);
 
         // Input Fields for Student Profile Data
@@ -70,7 +69,30 @@ public class UpdateInfoFragment extends DialogFragment {
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     String userName, userEmail, userPhone, userFirstName, userLastName;
                     userName = userNameInput.getText().toString().equals("") ? snapshot.child("userName").getValue(String.class) : userNameInput.getText().toString();
-                    userEmail = userEmailInput.getText().toString().equals("") ? snapshot.child("userEmail").getValue(String.class) : userEmailInput.getText().toString();
+
+                    if (!userEmailInput.getText().toString().equals("")) {
+                        // Email Must Be a Valid Email and Unique
+                        if (!Patterns.EMAIL_ADDRESS.matcher(userEmailInput.getText().toString()).matches()) {
+                            userEmailInput.setError("Email Must Be Valid!");
+                            userEmailInput.requestFocus();
+                            return;
+                        } else {
+                            userEmail = userEmailInput.getText().toString();
+                        }
+                    } else {
+                        userEmail = snapshot.child("userEmail").getValue(String.class);
+                    }
+                    dB.getUser().verifyBeforeUpdateEmail(userEmail).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (!task.isSuccessful()) {
+                                userEmailInput.setError("Email already in use");
+                                userEmailInput.requestFocus();
+                                return;
+                            }
+                        }
+                    });
+
                     userPhone = userPhoneInput.getText().toString().equals("") ? snapshot.child("userPhone").getValue(String.class) : userPhoneInput.getText().toString();
                     userFirstName = userFirstNameInput.getText().toString().equals("") ? snapshot.child("userFirstName").getValue(String.class) : userFirstNameInput.getText().toString();
                     userLastName = userLastNameInput.getText().toString().equals("") ? snapshot.child("userLastName").getValue(String.class) : userLastNameInput.getText().toString();
@@ -95,9 +117,8 @@ public class UpdateInfoFragment extends DialogFragment {
                             userInfo.put("devices", devices);
                             userRef.updateChildren(userInfo);
 
-                            //noinspection ConstantConditions
-                            // TODO: Causing profile to crash
-                            ((ProfileActivity)requireActivity()).updateAllInfo();
+                            ((ProfileActivity)getActivity()).updateAllInfo();
+                            dismiss();
                         }
 
                         @Override
@@ -105,7 +126,6 @@ public class UpdateInfoFragment extends DialogFragment {
                             dismiss(); // TODO: Add error catch
                         }
                     });
-                    dismiss();
                 }
 
                 @Override

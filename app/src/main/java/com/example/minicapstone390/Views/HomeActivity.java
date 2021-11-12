@@ -4,95 +4,134 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.ContextMenu;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.ListView;
 
 import com.example.minicapstone390.Controllers.Database;
+import com.example.minicapstone390.Controllers.SharedPreferenceHelper;
 import com.example.minicapstone390.R;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.widget.Toolbar;
+
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.ConsoleHandler;
 
 public class HomeActivity extends AppCompatActivity {
 
+    // Declare variables
     private final Database dB = new Database();
+    protected SharedPreferenceHelper sharePreferenceHelper;
     protected TextView welcomeUserMessage;
-    protected Button addNewDeviceButton, logoutButton, profileButton;
+    protected ProgressBar progressBar;
+    protected Button addDevice;
+    protected Toolbar toolbar;
     protected ListView deviceList;
     protected List<String> deviceIds;
 
+    public static String wifiModuleIp = "";
+    public static int wifiModulePort = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        sharePreferenceHelper = new SharedPreferenceHelper(HomeActivity.this);
+        // Set theme
+        if (sharePreferenceHelper.getTheme()) {
+            setTheme(R.style.NightMode);
+        } else {
+            setTheme(R.style.LightMode);
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        addDevice = (Button) findViewById(R.id.add_device);
+        progressBar = (ProgressBar) findViewById(R.id.progress_bar);
         deviceIds = new ArrayList<>();
-        DatabaseReference userRef = dB.getUserChild(dB.getUserId());
-
-        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                String username = snapshot.child("userName").getValue(String.class);
-                updateUserMessage(username);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                throw error.toException();
-            }
-        });
-
-        //TODO: check if devices are part of the user
-        //TODO: Put id list in sharedpred to avoid out of scope issue (asynch issue)
-        DatabaseReference deviceRef = dB.getDeviceRef().child("-Mmp8L5ajMh3q6W8wcnm");
-        deviceRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                System.out.println(snapshot.child("deviceName").getValue(String.class));
-                if (snapshot.child("userId").getValue(String.class).equals(dB.getUserId())) {
-                    //System.out.println(userId);
-                } else {
-                    //System.out.println(snapshot.child("userId").getValue(String.class));
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                // TODO: Add error catch
-            }
-        });
-
         welcomeUserMessage = (TextView) findViewById(R.id.welcomeUserMessage);
-
         deviceList = (ListView) findViewById(R.id.deviceDataList);
-        loadDeviceList();
 
-        deviceList.setOnItemClickListener((parent, view, position, id) -> {
-            // TODO: Navigate to Device Activity of Selected Profile By Id
-            //goToDeviceActivity(...);
-        });
+        addDevice.setOnClickListener(view -> connectDevice());
 
-        // This will be changed to
-        addNewDeviceButton = findViewById(R.id.addDeviceButton);
-        addNewDeviceButton.setOnClickListener(view -> {
-            DeviceFragment dialog = new DeviceFragment();
-            dialog.show(getSupportFragmentManager(), "Add Device Fragment");
-        });
+        updatePage();
+    }
 
-        logoutButton = findViewById(R.id.logoutButton);
-        logoutButton.setOnClickListener(view -> logoutUser());
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updatePage();
+    }
 
-        profileButton = (Button) findViewById(R.id.profileButton);
-        profileButton.setOnClickListener(view -> goToProfileActivity());
+    // Display options menu in task-bar
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.home_menu, menu);
+        return true;
+    }
+
+    // Create the action when an option on the task-bar is selected
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        // TODO: Convert to switch
+        if(id == R.id.add_device) {
+            //TODO:  call add device fragment
+        }
+        if(id == R.id.profile) {
+            goToProfileActivity();
+        }
+        //NOTE: DON'T IMPLEMENT FOR NOW
+        if(id == R.id.device_names) {
+            //TODO: change list of device names to set names
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    // TODO: IMPLEMENT DEVICE CONNECTION
+    public void connectDevice() {
+        getIpAndPort();
+        Socket_AsyncTask connect_device = new Socket_AsyncTask();
+        connect_device.execute();
+    }
+
+    public void getIpAndPort() {
+        return;
+    }
+
+    public static class Socket_AsyncTask extends AsyncTask<Void, Void, Void> {
+        Socket socket;
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            try {
+                InetAddress inetAddress = InetAddress.getByName(HomeActivity.wifiModuleIp);
+                socket = new java.net.Socket(inetAddress, HomeActivity.wifiModulePort);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
     }
 
     // Get, Initialize, and Update Devices - Display List of Devices
@@ -111,7 +150,7 @@ public class HomeActivity extends AppCompatActivity {
                 }
 
                 deviceList.setOnItemClickListener((parent, view, position, id) -> {
-                    // TODO: Navigate to Device Activity of Selected Profile By Id
+                    System.out.println("Here");
                     System.out.println(deviceIds.get(position));
                     goToDeviceActivity(deviceIds.get(position));
                 });
@@ -122,25 +161,41 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 // TODO: Add error catch
+                System.out.println(error.toString());
             }
         });
-
-        System.out.println(deviceIds);
     }
 
-    //Update User Message
-    private void updateUserMessage(String userName) {
-        System.out.println(userName);
-        String defaultMessage = getResources().getString(R.string.welcome_user).replace("{0}", userName);
-        welcomeUserMessage.setText(defaultMessage);
+    // Update Page
+    private void updatePage() {
+        dB.getUserChild(dB.getUserId()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String defaultMessage = getResources().getString(R.string.welcome_user).replace("{0}", snapshot.child("userName").getValue(String.class));
+                welcomeUserMessage.setText(defaultMessage);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                throw error.toException();
+            }
+        });
+        loadDeviceList();
+        updateProgressBar();
     }
 
+    private void updateProgressBar() {
+        // TODO: Get an aggregate of the data from active sensors and devices and display relative health
+        progressBar.setProgress(66);
+    }
+
+    // Navigation to Profile Activity
     private void goToProfileActivity() {
         Intent intent = new Intent(this, ProfileActivity.class);
         startActivity(intent);
     }
 
-    // Navigation to Sensor Activity
+    // Navigation to Device Activity
     private void goToDeviceActivity(String deviceId) {
         Intent intent = new Intent(this, DeviceActivity.class);
         intent.putExtra("deviceId", deviceId);
@@ -163,16 +218,11 @@ public class HomeActivity extends AppCompatActivity {
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
                     // TODO: Add error catch
+                    System.out.println(error.toString());
                 }
             });
         }
         setDeviceList(deviceNames);
-    }
-
-    // Navigation to Add Device Activity
-    private void logoutUser() {
-        FirebaseAuth.getInstance().signOut();
-        goToLoginActivity();
     }
 
     private void setDeviceList(List<String> devices) {
@@ -183,10 +233,5 @@ public class HomeActivity extends AppCompatActivity {
 
     public void addToDeviceList(String id) {
         deviceIds.add(id);
-    }
-
-    private void goToLoginActivity() {
-        Intent intent = new Intent(this, LoginActivity.class);
-        startActivity(intent);
     }
 }

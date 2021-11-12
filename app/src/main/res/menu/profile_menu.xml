@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/update_info"
+        android:title="@string/update_user_info"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/theme"
+        android:title="@string/dark_mode_on_off"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/update_notification"
+        android:title="@string/notifications"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/logout_user"
+        android:title="@string/logout"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/remove_user"
+        android:title="@string/delete_user"
+        app:showAsAction="never" />
+</menu>
