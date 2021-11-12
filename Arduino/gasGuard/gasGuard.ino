@@ -1,14 +1,18 @@
 #include <WiFiNINA.h>
 #include <SPI.h>
-#include "FlashAsEEPROM.h"
+#include <WiFiUdp.h>
+#include <RTCZero.h>
+
 #include "Firebase_Arduino_WiFiNINA.h"
-# include "TimeLib.h"
+#include "TimeLib.h"
 #include "Config.h"
 
 #define TIME_HEADER  "T"   // Header tag for serial time sync message
 #define TIME_REQUEST  7    // ASCII bell character requests a time sync message 
 
 FirebaseData fbdo;
+int GMT = -5;
+RTCZero rtc;
 
 float Sensor1Value;
 float Sensor2Value;
@@ -36,6 +40,7 @@ void setup() {
   Serial.println(WiFi.localIP());
   Serial.println();
   
+  
   //Provide the autntication data
   Firebase.begin(DATABASE_URL, DATABASE_SECRET, WIFI_SSID, WIFI_PASSWORD);
   Firebase.reconnectWiFi(true);
@@ -45,6 +50,7 @@ void setup() {
   Firebase.setString(fbdo, "Arduinos/"+String(DeviceID)+"/Sensor4ID", String(DeviceID)+"-4");
   Firebase.setString(fbdo, "Arduinos/"+String(DeviceID)+"/Sensor5ID", String(DeviceID)+"-5");
   Firebase.setString(fbdo, "Arduinos/"+String(DeviceID)+"/Sensor6ID", String(DeviceID)+"-6");
+  Firebase.setBool(fbdo, "Arduinos/"+String(DeviceID)+"/status", true);
   
   Firebase.setString(fbdo, "Sensors/"+String(DeviceID)+"-1/SensorName", Sensor1Name);
   Firebase.setString(fbdo, "Sensors/"+String(DeviceID)+"-2/SensorName", Sensor2Name);
@@ -52,7 +58,9 @@ void setup() {
   Firebase.setString(fbdo, "Sensors/"+String(DeviceID)+"-4/SensorName", Sensor4Name);
   Firebase.setString(fbdo, "Sensors/"+String(DeviceID)+"-5/SensorName", Sensor5Name);
   Firebase.setString(fbdo, "Sensors/"+String(DeviceID)+"-6/SensorName", Sensor6Name);
-
+  
+  setTime(WiFi.getTime());
+  adjustTime(GMT*60*60);
   setSyncProvider(requestSync);  //set function to call when sync required
   Serial.println("Waiting for sync message");
 
@@ -71,55 +79,30 @@ void loop() {
       Sensor5Value = analogRead(A4)/1023.0;
       Sensor6Value = analogRead(A5)/1023.0;
    
-   if(Firebase.setFloat(fbdo, "Sensors/"+String(DeviceID)+"-1/SensorValue", Sensor1Value)) {
-    Serial.println(fbdo.floatData());
-  } else {
-    Serial.println(fbdo.errorReason());
-  }
-  
-  if(Firebase.setFloat(fbdo, "Sensors/"+String(DeviceID)+"-2/SensorValue", Sensor2Value)) {
-    Serial.println(fbdo.floatData());
-  } else {
-    Serial.println(fbdo.errorReason());
-  }
-     
-  if(Firebase.setFloat(fbdo, "Sensors/"+String(DeviceID)+"-3/SensorValue", Sensor3Value)) {
-    Serial.println(fbdo.floatData());
-  } else {
-    Serial.println(fbdo.errorReason());
-  }
-  
-  if(Firebase.setFloat(fbdo, "Sensors/"+String(DeviceID)+"-4/SensorValue", Sensor4Value)) {
-    Serial.println(fbdo.floatData());
-  } else {
-    Serial.println(fbdo.errorReason());
-  }
-  
-  if(Firebase.setFloat(fbdo, "Sensors/"+String(DeviceID)+"-5/SensorValue", Sensor5Value)) {
-    Serial.println(fbdo.floatData());
-  } else {
-    Serial.println(fbdo.errorReason());
-  }
+  Firebase.setFloat(fbdo, "Sensors/"+String(DeviceID)+"-1/SensorValue", Sensor1Value);
+  Firebase.setFloat(fbdo, "Sensors/"+String(DeviceID)+"-1/SensorPastValues/"+Timestamp()+"/Value",Sensor1Value);
 
-  if(Firebase.setFloat(fbdo, "Sensors/"+String(DeviceID)+"-6/SensorValue", Sensor6Value)) {
-    Serial.println(fbdo.floatData());
-  } else {
-    Serial.println(fbdo.errorReason());
-  }
-//
-  if( Firebase.setFloat(fbdo, "Sensors/"+String(DeviceID)+"-1/SensorPastValues/"+Timestamp(),Sensor1Value)
-   ) {
-         Serial.println(fbdo.floatData());
-    } else {
-    Serial.println(fbdo.errorReason());
-   }
+  Firebase.setFloat(fbdo, "Sensors/"+String(DeviceID)+"-2/SensorValue", Sensor2Value);
+  Firebase.setFloat(fbdo, "Sensors/"+String(DeviceID)+"-2/SensorPastValues/"+Timestamp()+"/Value",Sensor2Value);  
+     
+  Firebase.setFloat(fbdo, "Sensors/"+String(DeviceID)+"-3/SensorValue", Sensor3Value);  
+  Firebase.setFloat(fbdo, "Sensors/"+String(DeviceID)+"-3/SensorPastValues/"+Timestamp()+"/Value",Sensor3Value);
   
-   delay(5000);
+  Firebase.setFloat(fbdo, "Sensors/"+String(DeviceID)+"-4/SensorValue", Sensor4Value);
+  Firebase.setFloat(fbdo, "Sensors/"+String(DeviceID)+"-4/SensorPastValues/"+Timestamp()+"/Value",Sensor4Value);
+  
+  Firebase.setFloat(fbdo, "Sensors/"+String(DeviceID)+"-5/SensorValue", Sensor5Value);
+  Firebase.setFloat(fbdo, "Sensors/"+String(DeviceID)+"-5/SensorPastValues/"+Timestamp()+"/Value",Sensor5Value);
+
+  Firebase.setFloat(fbdo, "Sensors/"+String(DeviceID)+"-6/SensorValue", Sensor6Value);
+  Firebase.setFloat(fbdo, "Sensors/"+String(DeviceID)+"-6/SensorPastValues/"+Timestamp()+"/Value",Sensor6Value);
+  
+  delay(4000);
 }
 
 void processSyncMessage() {
   unsigned long pctime;
-  const unsigned long DEFAULT_TIME = 1357041600; // Jan 1 2013
+  const unsigned long DEFAULT_TIME = WiFi.getTime(); // Jan 1 2013
 
   if(Serial.find(TIME_HEADER)) {
      pctime = Serial.parseInt();
@@ -137,6 +120,33 @@ time_t requestSync()
 
 String Timestamp()
 {
+  
   time_t t = now();
-  return String(year(t))+"-"+String(month(t))+"-"+String(day(t))+"_"+String(hour(t))+":"+String(minute(t))+":"+String(second(t));
+  time_t MM = month(t);
+  time_t DD = day(t);
+  time_t H = hour(t);
+  time_t M = minute(t);
+  time_t S = second(t);
+  String month = String( (unsigned long) MM );
+  String day = String( (unsigned long) DD );
+  String hour = String( (unsigned long) H );
+  String minute = String( (unsigned long) M );
+  String second = String( (unsigned long) S );
+  
+  if (month.toInt()<10){
+    month = "0"+month;
+    }
+  if (day.toInt()<10){
+    day = "0"+day;
+    }
+  if (hour.toInt()<10){
+    hour = "0"+hour;
+    }
+  if (minute.toInt()<10){
+    minute = "0"+minute;
+    }
+  if (second.toInt()<10){
+    second = "0"+second;
+    }
+  return String(year(t))+"-"+month+"-"+day+"T"+hour+":"+minute+":"+second;
 }
