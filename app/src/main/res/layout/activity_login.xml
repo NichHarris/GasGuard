@@ -141,5 +141,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/login_form"
         app:srcCompat="@drawable/gg_corner"
-        tools:visibility="visible" />
+        tools:visibility="visible"
+        android:contentDescription="TODO" />
 </androidx.constraintlayout.widget.ConstraintLayout>

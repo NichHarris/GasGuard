@@ -42,7 +42,6 @@ public class HomeActivity extends AppCompatActivity {
     protected SharedPreferenceHelper sharePreferenceHelper;
     protected TextView welcomeUserMessage;
     protected ProgressBar progressBar;
-    protected Button addDevice;
     protected Toolbar toolbar;
     protected ListView deviceList;
     protected List<String> deviceIds;
@@ -66,13 +65,10 @@ public class HomeActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        addDevice = (Button) findViewById(R.id.add_device);
         progressBar = (ProgressBar) findViewById(R.id.progress_bar);
         deviceIds = new ArrayList<>();
         welcomeUserMessage = (TextView) findViewById(R.id.welcomeUserMessage);
         deviceList = (ListView) findViewById(R.id.deviceDataList);
-
-        addDevice.setOnClickListener(view -> connectDevice());
 
         updatePage();
     }
@@ -96,6 +92,7 @@ public class HomeActivity extends AppCompatActivity {
         int id = item.getItemId();
         // TODO: Convert to switch
         if(id == R.id.add_device) {
+            connectDevice();
             //TODO:  call add device fragment
         }
         if(id == R.id.profile) {
