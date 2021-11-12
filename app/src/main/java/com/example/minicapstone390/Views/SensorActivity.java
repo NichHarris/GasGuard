@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.NotificationCompat;
 
 import android.content.Intent;
 import android.os.Build;
@@ -58,6 +59,7 @@ public class SensorActivity extends AppCompatActivity {
     protected Toolbar toolbar;
     protected String sensorId;
 
+    public double total = 0;
     public int graphTimeScale = 0;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -98,6 +100,11 @@ public class SensorActivity extends AppCompatActivity {
         System.out.println(graphTime);
         setGraphScale();
         getSensorData();
+        getCurrentData();
+    }
+
+    private void notification() {
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "id").setContentTitle("Notif").setContentText("Over 10").setPriority(NotificationCompat.PRIORITY_DEFAULT);
     }
 
     // Display options menu in task-bar
@@ -228,6 +235,25 @@ public class SensorActivity extends AppCompatActivity {
     // TODO
     private void setGraphData() {
         return;
+    }
+
+    private void getCurrentData() {
+        dB.getSensorChild(sensorId).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                total += snapshot.child("SensorValue").getValue(Double.class);
+                System.out.println(total);
+                if (total >= 10) {
+                    notification();
+                    total = 0;
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                System.out.println(error.toString());
+            }
+        });
     }
 
     // Navigate back to Home Activity

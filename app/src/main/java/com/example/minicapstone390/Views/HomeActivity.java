@@ -93,7 +93,6 @@ public class HomeActivity extends AppCompatActivity {
         // TODO: Convert to switch
         if(id == R.id.add_device) {
             connectDevice();
-            //TODO:  call add device fragment
         }
         if(id == R.id.profile) {
             goToProfileActivity();
@@ -113,7 +112,8 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     public void getIpAndPort() {
-        return;
+        DeviceFragment dialog = new DeviceFragment();
+        dialog.show(getSupportFragmentManager(), "Add Device");
     }
 
     public static class Socket_AsyncTask extends AsyncTask<Void, Void, Void> {

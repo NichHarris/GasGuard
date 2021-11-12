@@ -60,6 +60,8 @@ public class ProfileActivity extends AppCompatActivity {
 
         updateAllInfo();
 
+
+
         profileEmail = (TextView) findViewById(R.id.profile_email);
         profileName = (TextView) findViewById(R.id.profile_name);
         profilePhone = (TextView) findViewById(R.id.profile_phone);

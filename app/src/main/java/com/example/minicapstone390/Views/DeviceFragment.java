@@ -32,6 +32,7 @@ import java.util.Map;
 public class DeviceFragment extends DialogFragment {
 
     // Declare variables
+    private static final String TAG = "Add Device";
     private final Database dB = new Database();
 
     protected Button cancelButton, saveButton;
