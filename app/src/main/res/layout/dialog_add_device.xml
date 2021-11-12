@@ -32,23 +32,25 @@
             android:maxLength="20"
             android:hint="@string/device_id" />
 
-        <Button
+        <android.widget.Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/save_add_device_button"
             android:text="@string/save"
             android:textSize="14sp"
+            android:textColor="@color/white"
             android:background="@color/g_guard_font"
             android:layout_alignParentBottom="true"
             android:layout_alignParentStart="true"
             android:layout_marginStart="140dp"/>
 
-        <Button
+        <android.widget.Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/cancel_add_device_button"
             android:text="@string/cancel"
             android:textSize="14sp"
+            android:textColor="@color/white"
             android:background="@color/g_guard_font"
             android:layout_alignParentBottom="true"
             android:layout_alignParentStart="true"
