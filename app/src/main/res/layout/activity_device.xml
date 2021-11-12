@@ -67,7 +67,7 @@
     <!-- Sensor ListView -->
     <ListView
         android:id="@+id/sensorList"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginVertical="200dp"
         android:textStyle="normal"
