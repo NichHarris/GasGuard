@@ -6,7 +6,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.NotificationCompat;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,7 +26,14 @@ import com.example.minicapstone390.R;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+import com.github.mikephil.charting.utils.ColorTemplate;
+import com.google.android.material.color.MaterialColors;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -46,7 +55,9 @@ import java.text.SimpleDateFormat;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 public class SensorActivity extends AppCompatActivity {
     private static final String TAG = "SensorActivity";
@@ -84,9 +95,11 @@ public class SensorActivity extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         graphTimesOptions = (RadioGroup) findViewById(R.id.graphTimeOptions);
         graphTimesOptions.check(R.id.dayButton);
+
         sensorName = (TextView) findViewById(R.id.sensor_name);
         chartTitle = (TextView) findViewById(R.id.chart_title);
         sensorChart = (LineChart) findViewById(R.id.sensorChart);
+        configureGraph(sensorChart);
         // setData(sensorChart)
         // configureGraph(sensorChart)
 
@@ -98,12 +111,12 @@ public class SensorActivity extends AppCompatActivity {
             Toast.makeText(this, "Error fetching device", Toast.LENGTH_LONG).show();
             openHomeActivity();
         }
-
-        graphTime = updateGraphDates();
+//        graphTime = updateGraphDates();
         System.out.println(graphTime);
         setGraphScale();
         getSensorData();
         getCurrentData();
+        setXAxisStyle();
     }
 
     private void notification() {
@@ -147,8 +160,8 @@ public class SensorActivity extends AppCompatActivity {
                         graphTimeScale = 0;
                 }
 
-                // Update graph when scale is set
-                System.out.println(updateGraphDates());
+                graphTime = updateGraphDates();
+//                setXAxis();
             }
         });
     }
@@ -228,6 +241,134 @@ public class SensorActivity extends AppCompatActivity {
             }
         });
     }
+
+    protected void setXAxisStyle() {
+        XAxis xAxis = sensorChart.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setTextSize(10f);
+        xAxis.setTextColor(Color.WHITE);
+        xAxis.setDrawAxisLine(false);
+        xAxis.setDrawGridLines(true);
+        xAxis.setTextColor(Color.rgb(0, 0, 0));
+        xAxis.setCenterAxisLabels(true);
+        xAxis.setGranularity(1f); // one hour
+        xAxis.setValueFormatter(new IAxisValueFormatter() {
+
+            private final SimpleDateFormat mFormat = new SimpleDateFormat("MM/dd", Locale.ENGLISH);
+
+            @Override
+            public String getFormattedValue(float value, AxisBase axis) {
+
+                long millis = TimeUnit.HOURS.toMillis((long) value);
+                return mFormat.format(new Date(millis));
+            }
+        });
+
+        YAxis leftAxis = sensorChart.getAxisLeft();
+        leftAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
+        leftAxis.setTextColor(ColorTemplate.getHoloBlue());
+        leftAxis.setDrawGridLines(true);
+        leftAxis.setGranularityEnabled(true);
+        leftAxis.setAxisMinimum(0f);
+        leftAxis.setAxisMaximum(1f);
+        leftAxis.setYOffset(-9f);
+        leftAxis.setTextColor(Color.rgb(0, 0, 0));
+
+        YAxis rightAxis = sensorChart.getAxisRight();
+        rightAxis.setEnabled(false);
+        setData();
+    }
+
+    protected void setData() {
+        ArrayList<Entry> values = new ArrayList<>();
+        for (int x = 1; x < 24 - 1; x++) {
+            int y = x - 1;
+            values.add(new Entry(x, y));
+        }
+        LineDataSet set = new LineDataSet(values, "Test");
+        set.setDrawValues(false);
+        set.setLineWidth(2);
+
+        LineData data = new LineData(set);
+        data.setValueTextColor(Color.BLACK);
+        data.setValueTextSize(9f);
+
+        sensorChart.setData(data);
+        sensorChart.invalidate();
+    }
+
+    //Configuration of each Chart on the activity.
+    protected void configureGraph(LineChart chart) {
+
+        // Get theme color
+        @SuppressLint("RestrictedApi")
+        int themeColor = MaterialColors.getColor(SensorActivity.this, R.attr.colorPrimary, Color.BLACK);
+
+        chart.setDrawBorders(true);
+        chart.setBorderColor(themeColor);
+        chart.getXAxis().setTextColor(themeColor);
+        chart.setExtraRightOffset(20.0f);
+        chart.getXAxis().setYOffset(5.0f);
+        chart.getAxisLeft().setTextColor(themeColor);
+        chart.setDragEnabled(false);
+        chart.setScaleEnabled(false);
+        chart.getDescription().setEnabled(false);
+        chart.getXAxis().setDrawGridLines(true);
+        chart.getAxisRight().setEnabled(false);
+        chart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
+        chart.getLegend().setEnabled(false);
+
+    }
+//
+//    //Configuration of Data going into the chart using LineData Set.
+//    protected void setData( LineChart chart) {
+//        ArrayList<Entry> dataVals = new ArrayList<>();
+//        ArrayList<String> TimeArray = new ArrayList<>(graphTime);
+//
+//        LineDataSet lineDataSet = new LineDataSet(dataVals, "Test" + " Data Set");
+//        lineDataSet.setDrawValues(false);
+//        lineDataSet.setLineWidth(2);
+//
+//        // Get theme color
+//        @SuppressLint("RestrictedApi")
+//        int themeColor = MaterialColors.getColor(SensorActivity.this, R.attr.colorPrimary, Color.BLACK);
+//
+//        lineDataSet.setColor(themeColor);
+//        lineDataSet.setDrawCircles(false);
+//
+//        ArrayList<ILineDataSet> dataSets = new ArrayList<>();
+//        dataSets.add(lineDataSet);
+//
+//        XAxis xAxis = chart.getXAxis();
+//        xAxis.setLabelCount(6, true);
+//        xAxis.setTextSize(7);
+//        xAxis.setValueFormatter(new xAxisDateFormatter());
+//
+//        LineData linedata = new LineData(dataSets);
+//
+//        chart.setData(linedata);
+//        chart.invalidate();
+//    }
+//
+//    public class xAxisDateFormatter implements IAxisValueFormatter {
+//        @Override
+//        public String getFormattedValue(float value, AxisBase axis) {
+//            Date date = new Date((long) value);
+//            SimpleDateFormat  sdf = new SimpleDateFormat("MM/dd", Locale.ENGLISH);
+//            return  sdf.format(date);
+//        }
+//    }
+//
+//
+//    private void setXAxis() {
+//        XAxis xAxis = sensorChart.getXAxis();
+//        xAxis.setValueFormatter(new IAxisValueFormatter() {
+//            @Override
+//            public String getFormattedValue(float value, AxisBase axis) {
+//                return graphTime.get((int) value);
+//            }
+//        });
+//    }
 
     // Get the time scale of the X axis of the graph
     @RequiresApi(api = Build.VERSION_CODES.O)
