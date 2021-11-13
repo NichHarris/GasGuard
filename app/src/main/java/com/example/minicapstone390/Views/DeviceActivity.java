@@ -95,7 +95,7 @@ public class DeviceActivity extends AppCompatActivity {
         int id = item.getItemId();
         if(id == R.id.update_device) {
             UpdateDeviceFragment dialog = new UpdateDeviceFragment();
-            dialog.show(getSupportFragmentManager(), "Update Device");
+            dialog.show(getSupportFragmentManager(), "UpdateDeviceFragment");
         }
         if(id == R.id.disable_device) {
             disableDevice();

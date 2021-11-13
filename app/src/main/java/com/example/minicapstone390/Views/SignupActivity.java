@@ -35,7 +35,6 @@ public class SignupActivity extends AppCompatActivity {
 
     // Declare variables
     private final Database dB = new Database();
-    private final String passwordRegex = "^(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[`~!@#$%^&*()\\-=_+\\[\\]\\\\{}|;:'\",.\\/<>? ]).{8,}$";
 
     protected SharedPreferenceHelper sharePreferenceHelper;
     protected Button signUpButton, loginButton;
@@ -44,6 +43,8 @@ public class SignupActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        // Initialize SharedPref and check theme
         sharePreferenceHelper = new SharedPreferenceHelper(SignupActivity.this);
         // Set theme
         if (sharePreferenceHelper.getTheme()) {
@@ -55,6 +56,7 @@ public class SignupActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
 
+        // Initialize EditTexts
         usernameET = (EditText) findViewById(R.id.username);
         emailET = (EditText) findViewById(R.id.email);
         passwordET = (EditText) findViewById(R.id.password);
@@ -73,6 +75,7 @@ public class SignupActivity extends AppCompatActivity {
          forgotPassword.setOnClickListener(view -> sendReset());
     }
 
+    // Sign up a user
     private void userSignup() {
         String username = usernameET.getText().toString();
         String email = emailET.getText().toString();
@@ -86,15 +89,16 @@ public class SignupActivity extends AppCompatActivity {
             return;
         }
 
-        // (3) Email Must Be a Valid Email and Unique
+        // (2) Email Must Be a Valid Email and Unique
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             emailET.setError("Email Must Be Valid!");
             emailET.requestFocus();
             return;
         }
 
-        // (4) Password Must Be at Least 8 Characters with at least one Capitalized, one Number, one Special Character
+        // (3) Password Must Be at Least 8 Characters with at least one Capitalized, one Number, one Special Character
         // Regex for Password: Must Contain At Least 1 Lower and 1 Upper Case Character, 1 Number, 1 Special Characters, and Be 8 Characters Long
+        String passwordRegex = "^(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[`~!@#$%^&*()\\-=_+\\[\\]\\\\{}|;:'\",.\\/<>? ]).{8,}$";
         Pattern pattern = Pattern.compile(passwordRegex);
         if (!pattern.matcher(password).matches()) {
             passwordET.setError("Password Must Be Solid!");
@@ -102,7 +106,7 @@ public class SignupActivity extends AppCompatActivity {
             return;
         }
 
-        // (5) Password and Confirm Password Must Match
+        // (4) Password and Confirm Password Must Match
         if (!password.equals(confirmPass)) {
             confirmPasswordET.setError("Passwords Must Match!");
             confirmPasswordET.requestFocus();
@@ -133,12 +137,14 @@ public class SignupActivity extends AppCompatActivity {
                                 }
                             });
                 } else {
+                    Log.d(TAG, "Email is already registered");
                     emailET.setError("Email is already registered!");
                     emailET.requestFocus();
                 }
             });
     }
 
+    // Send reset email
     private void sendReset() {
         String email = emailET.getText().toString();
 
@@ -162,11 +168,13 @@ public class SignupActivity extends AppCompatActivity {
         });
     }
 
+    // Navigate to HomeActivity
     private void openHomeActivity() {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
 
+    // Navigate to LoginActivity
     private void openLoginActivity() {
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);

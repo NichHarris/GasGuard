@@ -171,11 +171,15 @@ public class HomeActivity extends AppCompatActivity {
 
     // Update Page information
     private void updatePage() {
-        dB.getUserChild(dB.getUserId()).addListenerForSingleValueEvent(new ValueEventListener() {
+        dB.getUserChild(dB.getUserId()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                String defaultMessage = getResources().getString(R.string.welcome_user).replace("{0}", snapshot.child("userName").getValue(String.class));
-                welcomeUserMessage.setText(defaultMessage);
+                try {
+                    String defaultMessage = getResources().getString(R.string.welcome_user).replace("{0}", snapshot.child("userName").getValue(String.class));
+                    welcomeUserMessage.setText(defaultMessage);
+                } catch (Exception e) {
+                    return;
+                }
             }
 
             @Override
@@ -217,7 +221,12 @@ public class HomeActivity extends AppCompatActivity {
             deviceRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    deviceNames.add(snapshot.child("deviceName").getValue(String.class));
+                    try {
+                        deviceNames.add(snapshot.child("deviceName").getValue(String.class));
+                    } catch (Exception e) {
+                        Log.d(TAG, e.toString());
+                        return;
+                    }
                     setDeviceList(deviceNames);
                 }
 
@@ -231,12 +240,13 @@ public class HomeActivity extends AppCompatActivity {
         setDeviceList(deviceNames);
     }
 
+    // Add Devices to ListView
     private void setDeviceList(List<String> devices) {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, devices);
-        // Add Devices to ListView
         deviceList.setAdapter(adapter);
     }
 
+    // Add device to deviceIds
     public void addToDeviceList(String id) {
         deviceIds.add(id);
     }

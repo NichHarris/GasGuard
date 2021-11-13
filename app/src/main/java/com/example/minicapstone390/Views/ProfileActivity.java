@@ -88,7 +88,7 @@ public class ProfileActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.update_info:
                 UpdateInfoFragment infoFragment = new UpdateInfoFragment();
-                infoFragment.show(getSupportFragmentManager(), "Update Info");
+                infoFragment.show(getSupportFragmentManager(), "UpdateInfoFragment");
                 updateAllInfo();
                 break;
             case R.id.theme:
@@ -102,7 +102,7 @@ public class ProfileActivity extends AppCompatActivity {
                 break;
             case R.id.update_notification:
                 NotificationsFragment notificationsFragment = new NotificationsFragment();
-                notificationsFragment.show(getSupportFragmentManager(), "Notifications");
+                notificationsFragment.show(getSupportFragmentManager(), "NotificationFragment");
                 updateAllInfo();
                 break;
             case R.id.logout_user:

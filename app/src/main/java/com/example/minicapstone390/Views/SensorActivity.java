@@ -9,6 +9,7 @@ import androidx.core.app.NotificationCompat;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -48,6 +49,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class SensorActivity extends AppCompatActivity {
+    private static final String TAG = "SensorActivity";
 
     // Declare variables
     private final Database dB = new Database();
@@ -81,6 +83,7 @@ public class SensorActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         graphTimesOptions = (RadioGroup) findViewById(R.id.graphTimeOptions);
+        graphTimesOptions.check(R.id.dayButton);
         sensorName = (TextView) findViewById(R.id.sensor_name);
         chartTitle = (TextView) findViewById(R.id.chart_title);
         sensorChart = (LineChart) findViewById(R.id.sensorChart);
@@ -124,6 +127,7 @@ public class SensorActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    // Set the graph scale when button is selected
     private void setGraphScale() {
         graphTimesOptions.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @RequiresApi(api = Build.VERSION_CODES.O)
@@ -143,7 +147,7 @@ public class SensorActivity extends AppCompatActivity {
                         graphTimeScale = 0;
                 }
 
-                System.out.println(graphTimeScale);
+                // Update graph when scale is set
                 System.out.println(updateGraphDates());
             }
         });
@@ -153,17 +157,23 @@ public class SensorActivity extends AppCompatActivity {
         dB.getSensorChild(sensorId).child("status").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.getValue(Boolean.class)) {
-                    dB.getSensorChild(sensorId).child("status").setValue(false);
-                } else {
-                    dB.getSensorChild(sensorId).child("status").setValue(true);
+                try {
+                    if (snapshot.getValue(Boolean.class)) {
+                        dB.getSensorChild(sensorId).child("status").setValue(false);
+                    } else {
+                        dB.getSensorChild(sensorId).child("status").setValue(true);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.d(TAG, e.toString());
+                    throw e;
                 }
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                // TODO: Add error catch
-                System.out.println(error.toString());
+            public void onCancelled(@NonNull DatabaseError e) {
+                Log.d(TAG, e.toString());
+                throw e.toException();
             }
         });
     }
@@ -200,6 +210,7 @@ public class SensorActivity extends AppCompatActivity {
         });
     }
 
+    // Display basic info of the sensor
     private void displaySensorInfo(String sensorId) {
         DatabaseReference sensorRef = dB.getSensorChild(sensorId);
 
@@ -211,23 +222,27 @@ public class SensorActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                System.out.println(error.toString());
+            public void onCancelled(@NonNull DatabaseError e) {
+                Log.d(TAG, e.toString());
+                throw e.toException();
             }
         });
     }
 
+    // Get the time scale of the X axis of the graph
     @RequiresApi(api = Build.VERSION_CODES.O)
     private List<String> updateGraphDates() {
         List<String> history = new ArrayList<>();
         long decrement = graphTimeScale / 7;
         if (decrement == 0) {
-            // split day
-            decrement = 4;
-        }
-
-        for (long i = graphTimeScale; i >= 0; i -= decrement) {
-            history.add(LocalDate.now().minusDays(i).format(DateTimeFormatter.ISO_DATE));
+            for (long i = 23; i >= 0; i -= 4) {
+                history.add(LocalTime.of(23, 0).minusHours(i).toString());
+            }
+            history.add(LocalTime.of(0, 0).toString());
+        } else {
+            for (long i = graphTimeScale; i >= 0; i -= decrement) {
+                history.add(LocalDate.now().minusDays(i).format(DateTimeFormatter.ISO_DATE));
+            }
         }
         return history;
     }
@@ -237,12 +252,13 @@ public class SensorActivity extends AppCompatActivity {
         return;
     }
 
+    // TODO
     private void getCurrentData() {
         dB.getSensorChild(sensorId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+
                 total += snapshot.child("SensorValue").getValue(Double.class);
-                System.out.println(total);
                 if (total >= 10) {
                     notification();
                     total = 0;
@@ -250,8 +266,9 @@ public class SensorActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                System.out.println(error.toString());
+            public void onCancelled(@NonNull DatabaseError e) {
+                Log.d(TAG, e.toString());
+                throw e.toException();
             }
         });
     }
