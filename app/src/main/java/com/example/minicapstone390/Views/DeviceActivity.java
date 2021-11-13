@@ -79,9 +79,9 @@ public class DeviceActivity extends AppCompatActivity {
             displayDeviceInfo(deviceId);
         } else {
             Toast.makeText(this, "Error fetching device", Toast.LENGTH_LONG).show();
+            Log.d(TAG, "No deviceId carry over, returning to HomeActivity");
             openHomeActivity();
         }
-
     }
 
     // Display options menu in task-bar
