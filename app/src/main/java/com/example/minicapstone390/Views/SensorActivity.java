@@ -74,6 +74,7 @@ public class SensorActivity extends AppCompatActivity {
 
     public double total = 0;
     public int graphTimeScale = 0;
+    public ArrayList<Double> sensorValues = new ArrayList<>();
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -116,7 +117,7 @@ public class SensorActivity extends AppCompatActivity {
         setGraphScale();
         getSensorData();
         getCurrentData();
-        setXAxisStyle();
+//        setXAxisStyle();
     }
 
     private void notification() {
@@ -212,8 +213,10 @@ public class SensorActivity extends AppCompatActivity {
                         System.out.println(e);
                     }
                     System.out.println(time);
+                    sensorValues.add(ds.child("Value").getValue(Double.class));
                     System.out.println(ds.child("Value").getValue(Double.class).toString());
                 }
+                setXAxisStyle();
             }
 
             @Override
@@ -271,6 +274,7 @@ public class SensorActivity extends AppCompatActivity {
         leftAxis.setGranularityEnabled(true);
         leftAxis.setAxisMinimum(0f);
         leftAxis.setAxisMaximum(1f);
+        leftAxis.setGranularity(0.1f);
         leftAxis.setYOffset(-9f);
         leftAxis.setTextColor(Color.rgb(0, 0, 0));
 
@@ -281,9 +285,8 @@ public class SensorActivity extends AppCompatActivity {
 
     protected void setData() {
         ArrayList<Entry> values = new ArrayList<>();
-        for (int x = 1; x < 24 - 1; x++) {
-            int y = x - 1;
-            values.add(new Entry(x, y));
+        for (int x = 1; x < sensorValues.size() - 1; x++) {
+            values.add(new Entry(x, sensorValues.get(x).floatValue()));
         }
         LineDataSet set = new LineDataSet(values, "Test");
         set.setDrawValues(false);
