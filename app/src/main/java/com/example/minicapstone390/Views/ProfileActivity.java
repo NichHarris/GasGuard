@@ -117,6 +117,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     // Delete user
     private void deleteUser() {
+        // TODO: Copied from android jdk just modify it
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(true);
         builder.setTitle("Delete Confirmation");

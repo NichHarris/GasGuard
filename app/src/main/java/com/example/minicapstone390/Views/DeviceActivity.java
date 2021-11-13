@@ -47,7 +47,6 @@ public class DeviceActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         // Initialize SharedPref and check theme
         sharePreferenceHelper = new SharedPreferenceHelper(DeviceActivity.this);
         // Set theme
@@ -64,6 +63,9 @@ public class DeviceActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+
+
+        // TODO: Add  BarGraph of each sensor
 
         // Initialize TextViews
         deviceName = (TextView) findViewById(R.id.device_name);
@@ -201,8 +203,13 @@ public class DeviceActivity extends AppCompatActivity {
             sensorRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    sensorNames.add(snapshot.child("SensorName").getValue(String.class));
-                    setSensorList(sensorNames);
+                    try {
+                        sensorNames.add(snapshot.child("SensorName").getValue(String.class));
+                        setSensorList(sensorNames);
+                    } catch (Exception e) {
+                        Log.d(TAG, e.toString());
+                        throw e;
+                    }
                 }
 
                 @Override

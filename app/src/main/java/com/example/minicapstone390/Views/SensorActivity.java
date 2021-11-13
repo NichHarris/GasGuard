@@ -155,7 +155,7 @@ public class SensorActivity extends AppCompatActivity {
                         graphTimeScale = 14;
                         break;
                     case R.id.monthButton:
-                        graphTimeScale = 30;
+                        graphTimeScale = 28;
                         break;
                     default:
                         graphTimeScale = 0;
@@ -245,6 +245,7 @@ public class SensorActivity extends AppCompatActivity {
         });
     }
 
+    // TODO: Fix spaghetti
     protected void setXAxisStyle() {
         XAxis xAxis = sensorChart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
@@ -267,22 +268,27 @@ public class SensorActivity extends AppCompatActivity {
             }
         });
 
+        setYAxisStyle();
+        setData();
+    }
+
+    protected void setYAxisStyle() {
         YAxis leftAxis = sensorChart.getAxisLeft();
         leftAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
-        leftAxis.setTextColor(ColorTemplate.getHoloBlue());
+        leftAxis.setTextColor(Color.GRAY);
         leftAxis.setDrawGridLines(true);
         leftAxis.setGranularityEnabled(true);
         leftAxis.setAxisMinimum(0f);
-        leftAxis.setAxisMaximum(1f);
+        leftAxis.setAxisMaximum(1.1f);
         leftAxis.setGranularity(0.1f);
-        leftAxis.setYOffset(-9f);
+        leftAxis.setYOffset(0f);
         leftAxis.setTextColor(Color.rgb(0, 0, 0));
 
         YAxis rightAxis = sensorChart.getAxisRight();
         rightAxis.setEnabled(false);
-        setData();
     }
 
+    // TODO: Fix spaghetti
     protected void setData() {
         ArrayList<Entry> values = new ArrayList<>();
         for (int x = 1; x < sensorValues.size() - 1; x++) {
@@ -322,7 +328,8 @@ public class SensorActivity extends AppCompatActivity {
         chart.getLegend().setEnabled(false);
 
     }
-//
+
+    // TODO: Fix spaghetti
 //    //Configuration of Data going into the chart using LineData Set.
 //    protected void setData( LineChart chart) {
 //        ArrayList<Entry> dataVals = new ArrayList<>();
@@ -373,6 +380,7 @@ public class SensorActivity extends AppCompatActivity {
 //        });
 //    }
 
+    // TODO: Fix spaghetti
     // Get the time scale of the X axis of the graph
     @RequiresApi(api = Build.VERSION_CODES.O)
     private List<String> updateGraphDates() {
@@ -388,6 +396,7 @@ public class SensorActivity extends AppCompatActivity {
                 history.add(LocalDate.now().minusDays(i).format(DateTimeFormatter.ISO_DATE));
             }
         }
+        System.out.println(history);
         return history;
     }
 
@@ -396,7 +405,7 @@ public class SensorActivity extends AppCompatActivity {
         return;
     }
 
-    // TODO
+    // TODO: Fix spaghetti
     private void getCurrentData() {
         dB.getSensorChild(sensorId).addValueEventListener(new ValueEventListener() {
             @Override
