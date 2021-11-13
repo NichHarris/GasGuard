@@ -116,5 +116,8 @@ public class LoginActivity extends AppCompatActivity {
     private void openSignupActivity() {
         Intent intent = new Intent(this, SignupActivity.class);
         startActivity(intent);
+        
+        //Remove transition
+        overridePendingTransition(0, 0);
     }
 }
