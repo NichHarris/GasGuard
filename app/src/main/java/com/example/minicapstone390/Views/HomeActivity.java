@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -253,8 +254,7 @@ public class HomeActivity extends AppCompatActivity {
                 // Add Ids to Device Ids List
                 deviceIds = devIds;
 
-                test = getDeviceNames(deviceIds);
-                setXAxisStyle(test);
+                setXAxisStyle(devIds);
                 // Get Device Names from DB given Ids
                 getDeviceNames(devIds);
             }
@@ -313,8 +313,8 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     // Get List of device names associated with the user
-    private ArrayList<String> getDeviceNames(List<String> devices) {
-        List<String> deviceNames = new ArrayList<>();
+    private void getDeviceNames(List<String> devices) {
+        ArrayList<Device> devData = new ArrayList<>();
 
         for (String id: devices) {
             //TODO: check if devices are part of the user
@@ -345,14 +345,7 @@ public class HomeActivity extends AppCompatActivity {
                 }
             });
         }
-        setDeviceList(deviceNames);
-        return new ArrayList<>(deviceNames);
-    }
-
-    // Add Devices to ListView
-    private void setDeviceList(List<String> devices) {
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, devices);
-        deviceList.setAdapter(adapter);
+        setDeviceList(devData);
     }
 
     // Add Devices to ListView from DB Snapshots
