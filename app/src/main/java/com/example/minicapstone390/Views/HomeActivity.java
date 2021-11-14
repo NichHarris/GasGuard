@@ -53,9 +53,9 @@ public class HomeActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         // Initialize SharedPref and check theme
         sharePreferenceHelper = new SharedPreferenceHelper(HomeActivity.this);
+
         // Set theme
         if (sharePreferenceHelper.getTheme()) {
             setTheme(R.style.NightMode);
@@ -73,10 +73,11 @@ public class HomeActivity extends AppCompatActivity {
         // Initialize Layouts
         // TODO: Replace progress bar with BarGraph of each device
         progressBar = (ProgressBar) findViewById(R.id.progress_bar);
-        deviceIds = new ArrayList<>();
         welcomeUserMessage = (TextView) findViewById(R.id.welcomeUserMessage);
 
+        // Initialize Dev List and Ids
         devList = new ArrayList<>();
+        deviceIds = new ArrayList<>();
 
         // Update page info
         updatePage();
@@ -86,18 +87,6 @@ public class HomeActivity extends AppCompatActivity {
         deviceListView.setLayoutManager(new LinearLayoutManager(this));
         deviceAdapter = new DeviceAdapter(devList);
         deviceListView.setAdapter(deviceAdapter);
-
-        /*
-        deviceAdapter.setOnDeviceClickListener(new DeviceAdapter.onDeviceClickListener() {
-            @Override
-            public void onDeviceClick(int pos) {
-                Device device = items.get(pos).getDevice();
-
-                Intent intent = new Intent(getActivity(), Device.class);
-                intent.putExtra("clickedDevice", device);
-                startActivity(intent);
-            }
-        */
     }
 
     @Override
@@ -163,24 +152,24 @@ public class HomeActivity extends AppCompatActivity {
 
     // Get, Initialize, and Update Devices - Display List of Devices
     protected void loadDeviceList() {
+        ArrayList<String> devIds = new ArrayList<>();
+
         //Get List of Devices from DB
         DatabaseReference usersRef = dB.getUserChild(dB.getUserId()).child("devices");
 
         usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                List<String> deviceIds = new ArrayList<>();
                 // Format List from DB for Adapter
                 for (DataSnapshot ds : snapshot.getChildren()) {
-                    deviceIds.add(ds.getValue(String.class));
-                    addToDeviceList(ds.getValue(String.class));
+                    devIds.add(ds.getValue(String.class));
                 }
 
-//                deviceList.setOnItemClickListener((parent, view, position, id) -> {
-//                    goToDeviceActivity(deviceIds.get(position));
-//                });
+                // Add Ids to Device Ids List
+                deviceIds = devIds;
 
-                getDeviceNames(deviceIds);
+                // Get Device Names from DB given Ids
+                getDeviceNames(devIds);
             }
 
             @Override
@@ -230,7 +219,14 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     // Navigation to Device Activity
-    private void goToDeviceActivity(String deviceId) {
+    public void goToDeviceActivity(int index) {
+        System.out.println("All Devices");
+        for(String id: deviceIds) {
+            System.out.println("Device: " + id);
+        }
+
+        String deviceId = deviceIds.get(index);
+
         Intent intent = new Intent(this, DeviceActivity.class);
         intent.putExtra("deviceId", deviceId);
         startActivity(intent);
@@ -238,7 +234,7 @@ public class HomeActivity extends AppCompatActivity {
 
     // Get List of device names associated with the user
     private void getDeviceNames(List<String> devices) {
-        ArrayList<Device> devicesData = new ArrayList<>();
+        ArrayList<Device> devData = new ArrayList<>();
 
         for (String id: devices) {
             //TODO: check if devices are part of the user
@@ -253,13 +249,13 @@ public class HomeActivity extends AppCompatActivity {
                         boolean devStatus = snapshot.child("status").getValue(Boolean.class);
 
                         //Add Device to Device List
-                        devicesData.add(new Device(devName, devLocation, devStatus));
+                        devData.add(new Device(devName, devLocation, devStatus));
                     } catch (Exception e) {
                         Log.d(TAG, e.toString());
                         return;
                     }
 
-                    setDeviceList(devicesData);
+                    setDeviceList(devData);
                 }
 
                 @Override
@@ -272,13 +268,8 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     // Add Devices to ListView from DB Snapshots
-    private void setDeviceList(ArrayList<Device> devicesData) {
-        deviceAdapter = new DeviceAdapter(devicesData);
+    private void setDeviceList(ArrayList<Device> devData) {
+        deviceAdapter = new DeviceAdapter(devData);
         deviceListView.setAdapter(deviceAdapter);
-    }
-
-    // Add device to deviceIds
-    public void addToDeviceList(String id) {
-        deviceIds.add(id);
     }
 }

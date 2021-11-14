@@ -7,7 +7,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <RelativeLayout
-        android:id="@+id/deviceRelativeLayout"
+        android:id="@+id/sensorRelativeLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginVertical="5dp"
@@ -18,7 +18,7 @@
         android:orientation="vertical"
         android:background="@drawable/list_view_shape">
         <TextView
-            android:id="@+id/deviceListName"
+            android:id="@+id/sensorListName"
             android:layout_width="275dp"
             android:layout_height="wrap_content"
             android:padding="5dp"
@@ -28,7 +28,7 @@
             android:textSize="24sp" />
 
         <TextView
-            android:id="@+id/deviceListStatus"
+            android:id="@+id/sensorListStatus"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="40dp"
@@ -38,12 +38,34 @@
             android:textColor="@color/black"/>
 
         <TextView
-            android:id="@+id/deviceListLocation"
+            android:id="@+id/sensorListType"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="40dp"
-            android:text="Dollard-des-Ormeaux, QC"
-            android:layout_marginStart="100dp"
+            android:text="Sensor: MQC-5"
+            android:layout_marginStart="120dp"
+            android:textSize="18sp"
+            android:textStyle="italic"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/sensorListCurrentValue"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="70dp"
+            android:text="Current: 1.5 ppm"
+            android:layout_marginStart="40dp"
+            android:textSize="18sp"
+            android:textStyle="italic"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/sensorListPastValue"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="70dp"
+            android:text="Past: 2.0 ppm"
+            android:layout_marginStart="200dp"
             android:textSize="18sp"
             android:textStyle="italic"
             android:textColor="@color/black" />

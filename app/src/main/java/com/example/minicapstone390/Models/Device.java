@@ -11,7 +11,7 @@ public class Device {
 
     public Device() {}
 
-    public Device( String deviceName, String location, boolean status) {
+    public Device(String deviceName, String location, boolean status) {
         this.deviceName = deviceName;
         this.location = location;
         this.status = status;
