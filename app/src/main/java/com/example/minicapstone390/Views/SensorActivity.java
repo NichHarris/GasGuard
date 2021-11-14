@@ -42,6 +42,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 // DateTime
+import java.sql.Time;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -100,9 +101,8 @@ public class SensorActivity extends AppCompatActivity {
         sensorName = (TextView) findViewById(R.id.sensor_name);
         chartTitle = (TextView) findViewById(R.id.chart_title);
         sensorChart = (LineChart) findViewById(R.id.sensorChart);
-        configureGraph(sensorChart);
+//        configureGraph(sensorChart);
         // setData(sensorChart)
-        // configureGraph(sensorChart)
 
         Bundle carryOver = getIntent().getExtras();
         if (carryOver != null) {
@@ -117,7 +117,6 @@ public class SensorActivity extends AppCompatActivity {
         setGraphScale();
         getSensorData();
         getCurrentData();
-//        setXAxisStyle();
     }
 
     private void notification() {
@@ -200,11 +199,11 @@ public class SensorActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 List<Pair<String, Double>> sensorData = new ArrayList<>();
                 for (DataSnapshot ds : snapshot.getChildren()) {
-                    System.out.println(ds.getKey());
+//                    System.out.println(ds.getKey());
                     // Gets the date
-                    System.out.println(LocalDate.parse(ds.getKey(), DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+//                    System.out.println(LocalDate.parse(ds.getKey(), DateTimeFormatter.ISO_LOCAL_DATE_TIME));
                     // Gets the time of day
-                    System.out.println(LocalTime.parse(ds.getKey(), DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+//                    System.out.println(LocalTime.parse(ds.getKey(), DateTimeFormatter.ISO_LOCAL_DATE_TIME));
                     Instant instant = Instant.parse(ds.getKey()+".521Z");
                     Date time = null;
                     try {
@@ -212,16 +211,17 @@ public class SensorActivity extends AppCompatActivity {
                     } catch (Exception e) {
                         System.out.println(e);
                     }
-                    System.out.println(time);
+//                    System.out.println(time);
                     sensorValues.add(ds.child("Value").getValue(Double.class));
-                    System.out.println(ds.child("Value").getValue(Double.class).toString());
+//                    System.out.println(ds.child("Value").getValue(Double.class).toString());
                 }
                 setXAxisStyle();
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                System.out.println(error.toString());
+            public void onCancelled(@NonNull DatabaseError e) {
+                Log.d(TAG, e.toString());
+                throw e.toException();
             }
         });
     }
@@ -246,6 +246,7 @@ public class SensorActivity extends AppCompatActivity {
     }
 
     // TODO: Fix spaghetti
+    @RequiresApi(api = Build.VERSION_CODES.O)
     protected void setXAxisStyle() {
         XAxis xAxis = sensorChart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
@@ -263,13 +264,30 @@ public class SensorActivity extends AppCompatActivity {
             @Override
             public String getFormattedValue(float value, AxisBase axis) {
 
-                long millis = TimeUnit.HOURS.toMillis((long) value);
+                long millis = TimeUnit.DAYS.toHours((long) value);
+                System.out.println("Value: " + value + " millis: " + millis);
+                System.out.println("Date: " + new Date(millis));
                 return mFormat.format(new Date(millis));
             }
         });
 
         setYAxisStyle();
+        System.out.println("Result: " + producer());
         setData();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    protected ArrayList<String> producer() {
+        ArrayList<String> result = new ArrayList<>();
+        ArrayList<String> dates = new ArrayList<>(updateGraphDates());
+        System.out.println("Dateee: " + dates);
+        long duration = Duration.between(Time.valueOf(dates.get(0)).toInstant() , Time.valueOf(dates.get(dates.size() - 1)).toInstant()).getSeconds();
+        long delta = duration / 7;
+
+        for (int x = 0; x < 8; x++) {
+            result.add(LocalDateTime.parse(dates.get(0)).plusSeconds(x * delta).format(DateTimeFormatter.ISO_DATE));
+        }
+        return result;
     }
 
     protected void setYAxisStyle() {
@@ -291,6 +309,8 @@ public class SensorActivity extends AppCompatActivity {
     // TODO: Fix spaghetti
     protected void setData() {
         ArrayList<Entry> values = new ArrayList<>();
+
+
         for (int x = 1; x < sensorValues.size() - 1; x++) {
             values.add(new Entry(x, sensorValues.get(x).floatValue()));
         }
@@ -306,78 +326,27 @@ public class SensorActivity extends AppCompatActivity {
         sensorChart.invalidate();
     }
 
-    //Configuration of each Chart on the activity.
-    protected void configureGraph(LineChart chart) {
-
-        // Get theme color
-        @SuppressLint("RestrictedApi")
-        int themeColor = MaterialColors.getColor(SensorActivity.this, R.attr.colorPrimary, Color.BLACK);
-
-        chart.setDrawBorders(true);
-        chart.setBorderColor(themeColor);
-        chart.getXAxis().setTextColor(themeColor);
-        chart.setExtraRightOffset(20.0f);
-        chart.getXAxis().setYOffset(5.0f);
-        chart.getAxisLeft().setTextColor(themeColor);
-        chart.setDragEnabled(false);
-        chart.setScaleEnabled(false);
-        chart.getDescription().setEnabled(false);
-        chart.getXAxis().setDrawGridLines(true);
-        chart.getAxisRight().setEnabled(false);
-        chart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
-        chart.getLegend().setEnabled(false);
-
-    }
-
-    // TODO: Fix spaghetti
-//    //Configuration of Data going into the chart using LineData Set.
-//    protected void setData( LineChart chart) {
-//        ArrayList<Entry> dataVals = new ArrayList<>();
-//        ArrayList<String> TimeArray = new ArrayList<>(graphTime);
-//
-//        LineDataSet lineDataSet = new LineDataSet(dataVals, "Test" + " Data Set");
-//        lineDataSet.setDrawValues(false);
-//        lineDataSet.setLineWidth(2);
+//    //Configuration of each Chart on the activity.
+//    protected void configureGraph(LineChart chart) {
 //
 //        // Get theme color
 //        @SuppressLint("RestrictedApi")
 //        int themeColor = MaterialColors.getColor(SensorActivity.this, R.attr.colorPrimary, Color.BLACK);
 //
-//        lineDataSet.setColor(themeColor);
-//        lineDataSet.setDrawCircles(false);
+//        chart.setDrawBorders(true);
+//        chart.setBorderColor(themeColor);
+//        chart.getXAxis().setTextColor(themeColor);
+//        chart.setExtraRightOffset(20.0f);
+//        chart.getXAxis().setYOffset(5.0f);
+//        chart.getAxisLeft().setTextColor(themeColor);
+//        chart.setDragEnabled(false);
+//        chart.setScaleEnabled(false);
+//        chart.getDescription().setEnabled(false);
+//        chart.getXAxis().setDrawGridLines(true);
+//        chart.getAxisRight().setEnabled(false);
+//        chart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
+//        chart.getLegend().setEnabled(false);
 //
-//        ArrayList<ILineDataSet> dataSets = new ArrayList<>();
-//        dataSets.add(lineDataSet);
-//
-//        XAxis xAxis = chart.getXAxis();
-//        xAxis.setLabelCount(6, true);
-//        xAxis.setTextSize(7);
-//        xAxis.setValueFormatter(new xAxisDateFormatter());
-//
-//        LineData linedata = new LineData(dataSets);
-//
-//        chart.setData(linedata);
-//        chart.invalidate();
-//    }
-//
-//    public class xAxisDateFormatter implements IAxisValueFormatter {
-//        @Override
-//        public String getFormattedValue(float value, AxisBase axis) {
-//            Date date = new Date((long) value);
-//            SimpleDateFormat  sdf = new SimpleDateFormat("MM/dd", Locale.ENGLISH);
-//            return  sdf.format(date);
-//        }
-//    }
-//
-//
-//    private void setXAxis() {
-//        XAxis xAxis = sensorChart.getXAxis();
-//        xAxis.setValueFormatter(new IAxisValueFormatter() {
-//            @Override
-//            public String getFormattedValue(float value, AxisBase axis) {
-//                return graphTime.get((int) value);
-//            }
-//        });
 //    }
 
     // TODO: Fix spaghetti
