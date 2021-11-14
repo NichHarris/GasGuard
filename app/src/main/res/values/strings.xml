@@ -45,4 +45,8 @@
     <string name="week">Week</string>
     <string name="_2_weeks">2 Weeks</string>
     <string name="month">Month</string>
+
+    <!-- Device List View -->
+    <string name="activeDeviceStatus">🟢 Active</string>
+    <string name="inactiveDeviceStatus">🔴 Inactive</string>
 </resources>

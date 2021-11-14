@@ -7,34 +7,33 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.minicapstone390.Controllers.Database;
 import com.example.minicapstone390.Controllers.SharedPreferenceHelper;
+import com.example.minicapstone390.DeviceAdapter;
+import com.example.minicapstone390.Models.Device;
 import com.example.minicapstone390.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.ConsoleHandler;
 
 public class HomeActivity extends AppCompatActivity {
     private static final String TAG = "HomeActivity";
@@ -45,8 +44,12 @@ public class HomeActivity extends AppCompatActivity {
     protected TextView welcomeUserMessage;
     protected ProgressBar progressBar;
     protected Toolbar toolbar;
+
     protected ListView deviceList;
     protected List<String> deviceIds;
+    protected ArrayList<Device> devList;
+    protected DeviceAdapter deviceAdapter;
+    protected RecyclerView rc;
 
     public static String wifiModuleIp = "";
     public static int wifiModulePort = 0;
@@ -77,14 +80,42 @@ public class HomeActivity extends AppCompatActivity {
         welcomeUserMessage = (TextView) findViewById(R.id.welcomeUserMessage);
         deviceList = (ListView) findViewById(R.id.deviceDataList);
 
+        devList = new ArrayList<>();
+
         // Update page info
+        // TODO: Commented for testing, uncomment now
         updatePage();
+
+        // Device Names
+//        ArrayList<Device> dnames = new ArrayList<>();
+//        dnames.add(new Device("nice", "Downtown Montreal, QC", false));
+//        dnames.add(new Device("many devices", "DDO, QC", true));
+//        dnames.add(new Device("cool", "Vaudreil, QC", true));
+
+        // Recycler View for Devices
+        rc = (RecyclerView) findViewById(R.id.devicesRecyclerView);
+        deviceAdapter = new DeviceAdapter(devList);
+        rc.setLayoutManager(new LinearLayoutManager(this));
+        rc.setAdapter(deviceAdapter);
+
+        /*
+        deviceAdapter.setOnDeviceClickListener(new DeviceAdapter.onDeviceClickListener() {
+            @Override
+            public void onDeviceClick(int pos) {
+                Device device = items.get(pos).getDevice();
+
+                Intent intent = new Intent(getActivity(), Device.class);
+                intent.putExtra("clickedDevice", device);
+                startActivity(intent);
+            }
+        */
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        updatePage();
+        // TODO: Commented for testing, uncomment now
+        //updatePage();
     }
 
     // Display options menu in task-bar
@@ -100,12 +131,14 @@ public class HomeActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.add_device:
                 connectDevice();
-                break;
+                return true;
             case R.id.profile:
                 goToProfileActivity();
-                break;
+                return true;
             case R.id.device_names:
                 //TODO: change list of device names to set names
+                return true;
+            default:
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -176,7 +209,8 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 try {
-                    String defaultMessage = getResources().getString(R.string.welcome_user).replace("{0}", snapshot.child("userName").getValue(String.class));
+                    String userName = snapshot.child("username").getValue(String.class);
+                    String defaultMessage = getResources().getString(R.string.welcome_user).replace("{0}", userName != null ? userName : "");
                     welcomeUserMessage.setText(defaultMessage);
                 } catch (Exception e) {
                     return;
@@ -189,7 +223,8 @@ public class HomeActivity extends AppCompatActivity {
                 throw e.toException();
             }
         });
-        loadDeviceList();
+        // TODO: Commented for testing, uncomment now
+        //loadDeviceList();
         updateProgressBar();
     }
 
