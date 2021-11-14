@@ -87,5 +87,4 @@
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/gg_corner"
         android:contentDescription="TODO"/>
-<!--   app:layout_constraintVertical_bias="0.354"       -->
 </androidx.constraintlayout.widget.ConstraintLayout>

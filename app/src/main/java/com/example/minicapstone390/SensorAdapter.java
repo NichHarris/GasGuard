@@ -20,7 +20,7 @@ public class SensorAdapter extends RecyclerView.Adapter<SensorAdapter.ViewHolder
 
     // Define Single Device Holder
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public ImageView editIcon, deleteIcon;
+        public ImageView sensorImg, editIcon, deleteIcon;
         public TextView sensorName, sensorStatus, sensorType, sensorCurrValue, sensorPrevValue;
 
         public ViewHolder(View v) {
@@ -36,6 +36,7 @@ public class SensorAdapter extends RecyclerView.Adapter<SensorAdapter.ViewHolder
             sensorCurrValue = (TextView) v.findViewById(R.id.sensorListCurrentValue);
             sensorPrevValue = (TextView) v.findViewById(R.id.sensorListPastValue);
 
+            sensorImg = (ImageView) v.findViewById(R.id.sensorListImage);
             editIcon = (ImageView) v.findViewById(R.id.sensorEditIcon);
             deleteIcon = (ImageView) v.findViewById(R.id.sensorDeleteIcon);
 
@@ -75,18 +76,47 @@ public class SensorAdapter extends RecyclerView.Adapter<SensorAdapter.ViewHolder
         // Set Data to Recycler View List
         Sensor s = sensors.get(position);
 
+        int type = s.getSensorType();
+
         holder.sensorName.setText(s.getSensorName());
         holder.sensorStatus.setText(s.getStatus() ? R.string.safeSensorValue : R.string.unsafeSensorValue);
-        holder.sensorType.setText("Sensor: MC" + s.getSensorType());
+        holder.sensorType.setText("Sensor: MC" + type);
 
         //TODO: Sensor Current and Previous Values
         holder.sensorCurrValue.setText("Live: 1.0 ppm");
         holder.sensorPrevValue.setText("Prev: 2.0 ppm");
+
+        // Update Image Based on Sensor Type
+        holder.sensorImg.setImageResource(getSensorImg(type));
     }
 
     @Override
     public int getItemCount() {
         // Return Num Devices
         return sensors.size();
+    }
+
+    // Get Sensor Drawable Image Resource Based on Type
+    public int getSensorImg(int type) {
+        switch(type) {
+            case 2:
+                return R.drawable.mc_2;
+            case 3:
+                return R.drawable.mc_3;
+            case 4:
+                return R.drawable.mc_4;
+            case 5:
+                return R.drawable.mc_5;
+            case 6:
+                return R.drawable.mc_6;
+            case 7:
+                return R.drawable.mc_7;
+            case 8:
+                return R.drawable.mc_8;
+            case 9:
+                return R.drawable.mc_9;
+            default:
+                return R.drawable.mc_135;
+        }
     }
 }

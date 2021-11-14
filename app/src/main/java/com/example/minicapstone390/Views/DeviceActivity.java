@@ -244,10 +244,14 @@ public class DeviceActivity extends AppCompatActivity {
     private void setSensorList(List<String> sensData) {
         ArrayList<Sensor> fakeData = new ArrayList<>();
         fakeData.add(new Sensor(2, "Stinky Sensor"));
-        fakeData.add(new Sensor(1, "Nice Sensor"));
-        fakeData.add(new Sensor(3, "Bad Sensor"));
-        fakeData.add(new Sensor(1, "Nice Sensor"));
-        fakeData.add(new Sensor(3, "Bad Sensor"));
+        fakeData.add(new Sensor(3, "Stinky Sensor"));
+        fakeData.add(new Sensor(4, "Bad Sensor"));
+        fakeData.add(new Sensor(5, "Nice Sensor"));
+        fakeData.add(new Sensor(6, "Bad Sensor"));
+        fakeData.add(new Sensor(7, "Nice Sensor"));
+        fakeData.add(new Sensor(8, "Bad Sensor"));
+        fakeData.add(new Sensor(9, "Bad Sensor"));
+        fakeData.add(new Sensor(135, "Bad Sensor"));
 
         sensorAdapter = new SensorAdapter(fakeData);
         sensorListView.setAdapter(sensorAdapter);
