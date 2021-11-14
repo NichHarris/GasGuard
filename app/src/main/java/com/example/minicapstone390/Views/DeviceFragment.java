@@ -67,7 +67,7 @@ public class DeviceFragment extends DialogFragment {
             if (deviceName.isEmpty()) {
                 Toast.makeText(getActivity().getApplicationContext(), "Must Fill All Input Fields!", Toast.LENGTH_LONG).show();
             } else {
-                Device device = new Device(deviceName, true);
+                Device device = new Device(deviceName, "Montreal", true);
 
                 // add the device, then add its deviceId to the user
                 DatabaseReference devicesRef = dB.getDeviceRef().push();

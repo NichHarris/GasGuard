@@ -7,7 +7,7 @@ public class Sensor {
     private int SensorType;
     private String SensorName;
     private Map<String, Object> SensorData;
-    private Boolean status;
+    private boolean status;
 
     public Sensor() {
     }
@@ -29,7 +29,7 @@ public class Sensor {
 
     public void setSensorData(Map<String, Object> sensorData) { this.SensorData = sensorData; }
 
-    public Boolean getStatus() { return status; }
+    public boolean getStatus() { return status; }
 
     public void setStatus(Boolean status) { this.status = status; }
 }

@@ -10,18 +10,15 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.ListView;
 
 import com.example.minicapstone390.Controllers.Database;
 import com.example.minicapstone390.Controllers.SharedPreferenceHelper;
+import com.example.minicapstone390.DeviceAdapter;
+import com.example.minicapstone390.Models.Device;
 import com.example.minicapstone390.R;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
@@ -41,8 +38,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -65,8 +63,12 @@ public class HomeActivity extends AppCompatActivity {
     protected TextView welcomeUserMessage;
     protected BarChart deviceChart;
     protected Toolbar toolbar;
-    protected ListView deviceList;
+
     protected List<String> deviceIds;
+    protected ArrayList<Device> devList;
+
+    protected RecyclerView deviceListView;
+    protected DeviceAdapter deviceAdapter;
 
     public static String wifiModuleIp = "";
     public static int wifiModulePort = 0;
@@ -74,9 +76,9 @@ public class HomeActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         // Initialize SharedPref and check theme
         sharePreferenceHelper = new SharedPreferenceHelper(HomeActivity.this);
+
         // Set theme
         if (sharePreferenceHelper.getTheme()) {
             setTheme(R.style.NightMode);
@@ -96,11 +98,19 @@ public class HomeActivity extends AppCompatActivity {
         deviceChart = (BarChart) findViewById(R.id.deviceChart);
         deviceIds = new ArrayList<>();
         welcomeUserMessage = (TextView) findViewById(R.id.welcomeUserMessage);
-        deviceList = (ListView) findViewById(R.id.deviceDataList);
+
+        // Initialize Dev List and Ids
+        devList = new ArrayList<>();
+        deviceIds = new ArrayList<>();
 
         // Update page info
         updatePage();
-//        setXAxisStyle();
+
+        // Recycler View for Devices
+        deviceListView = (RecyclerView) findViewById(R.id.devicesRecyclerView);
+        deviceListView.setLayoutManager(new LinearLayoutManager(this));
+        deviceAdapter = new DeviceAdapter(devList);
+        deviceListView.setAdapter(deviceAdapter);
     }
 
     @Override
@@ -122,12 +132,14 @@ public class HomeActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.add_device:
                 connectDevice();
-                break;
+                return true;
             case R.id.profile:
                 goToProfileActivity();
-                break;
+                return true;
             case R.id.device_names:
                 //TODO: change list of device names to set names
+                return true;
+            default:
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -224,6 +236,8 @@ public class HomeActivity extends AppCompatActivity {
 
     // Get, Initialize, and Update Devices - Display List of Devices
     protected void loadDeviceList() {
+        ArrayList<String> devIds = new ArrayList<>();
+
         //Get List of Devices from DB
         DatabaseReference usersRef = dB.getUserChild(dB.getUserId()).child("devices");
 
@@ -231,19 +245,18 @@ public class HomeActivity extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                List<String> deviceIds = new ArrayList<>();
                 // Format List from DB for Adapter
                 for (DataSnapshot ds : snapshot.getChildren()) {
-                    deviceIds.add(ds.getValue(String.class));
-                    addToDeviceList(ds.getValue(String.class));
+                    devIds.add(ds.getValue(String.class));
                 }
 
-                deviceList.setOnItemClickListener((parent, view, position, id) -> {
-                    goToDeviceActivity(deviceIds.get(position));
-                });
+                // Add Ids to Device Ids List
+                deviceIds = devIds;
 
                 test = getDeviceNames(deviceIds);
                 setXAxisStyle(test);
+                // Get Device Names from DB given Ids
+                getDeviceNames(devIds);
             }
 
             @Override
@@ -260,7 +273,9 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 try {
-                    String defaultMessage = getResources().getString(R.string.welcome_user).replace("{0}", snapshot.child("userName").getValue(String.class));
+                    String userFirstName = snapshot.child("userFirstName").getValue(String.class);
+
+                    String defaultMessage = getResources().getString(R.string.welcome_user).replace("{0}", userFirstName != null ? userFirstName : "");
                     welcomeUserMessage.setText(defaultMessage);
                 } catch (Exception e) {
                     return;
@@ -273,6 +288,7 @@ public class HomeActivity extends AppCompatActivity {
                 throw e.toException();
             }
         });
+
         loadDeviceList();
     }
 
@@ -283,7 +299,14 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     // Navigation to Device Activity
-    private void goToDeviceActivity(String deviceId) {
+    public void goToDeviceActivity(int index) {
+        System.out.println("All Devices");
+        for(String id: deviceIds) {
+            System.out.println("Device: " + id);
+        }
+
+        String deviceId = deviceIds.get(index);
+
         Intent intent = new Intent(this, DeviceActivity.class);
         intent.putExtra("deviceId", deviceId);
         startActivity(intent);
@@ -300,12 +323,19 @@ public class HomeActivity extends AppCompatActivity {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     try {
-                        deviceNames.add(snapshot.child("deviceName").getValue(String.class));
+                        // Get Device Data from DB
+                        String devName = snapshot.child("deviceName").getValue(String.class);
+                        String devLocation = snapshot.child("location").getValue(String.class);
+                        boolean devStatus = snapshot.child("status").getValue(Boolean.class);
+
+                        //Add Device to Device List
+                        devData.add(new Device(devName, devLocation, devStatus));
                     } catch (Exception e) {
                         Log.d(TAG, e.toString());
                         return;
                     }
-                    setDeviceList(deviceNames);
+
+                    setDeviceList(devData);
                 }
 
                 @Override
@@ -325,8 +355,9 @@ public class HomeActivity extends AppCompatActivity {
         deviceList.setAdapter(adapter);
     }
 
-    // Add device to deviceIds
-    public void addToDeviceList(String id) {
-        deviceIds.add(id);
+    // Add Devices to ListView from DB Snapshots
+    private void setDeviceList(ArrayList<Device> devData) {
+        deviceAdapter = new DeviceAdapter(devData);
+        deviceListView.setAdapter(deviceAdapter);
     }
 }

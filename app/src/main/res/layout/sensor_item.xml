@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginVertical="5dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <RelativeLayout
+        android:id="@+id/sensorRelativeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="5dp"
+        android:layout_marginHorizontal="15dp"
+        android:paddingHorizontal="10dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="10dp"
+        android:orientation="vertical"
+        android:background="@drawable/list_view_shape">
+        <TextView
+            android:id="@+id/sensorListName"
+            android:layout_width="275dp"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:layout_marginLeft="110dp"
+            android:text="Sensor Name"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/sensorListStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:layout_marginStart="115dp"
+            android:text="@string/inactiveDeviceStatus"
+            android:textSize="18sp"
+            android:textColor="@color/black"/>
+
+        <TextView
+            android:id="@+id/sensorListType"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:text="Sensor: MQC-5"
+            android:layout_marginStart="220dp"
+            android:textSize="18sp"
+            android:textStyle="italic"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/sensorListCurrentValue"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="70dp"
+            android:text="Current: 1.5 ppm"
+            android:layout_marginStart="115dp"
+            android:textSize="16sp"
+            android:textStyle="italic"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/sensorListPastValue"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="70dp"
+            android:text="Past: 2.0 ppm"
+            android:layout_marginStart="240dp"
+            android:textSize="16sp"
+            android:textStyle="italic"
+            android:textColor="@color/black" />
+
+        <ImageView
+            android:id="@+id/sensorEditIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="280dp"
+            android:layout_marginTop="10dp"
+            app:srcCompat="@drawable/edit_icon" />
+
+        <ImageView
+            android:id="@+id/sensorDeleteIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="320dp"
+            android:layout_marginTop="10dp"
+            app:srcCompat="@drawable/delete_icon" />
+
+        <ImageView
+            android:id="@+id/sensorListImage"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintVertical_bias="1.0"
+            app:srcCompat="@drawable/mq3"
+            tools:visibility="visible" />
+    </RelativeLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

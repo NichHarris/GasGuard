@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,7 +19,11 @@ import android.widget.Toast;
 
 import com.example.minicapstone390.Controllers.Database;
 import com.example.minicapstone390.Controllers.SharedPreferenceHelper;
+import com.example.minicapstone390.DeviceAdapter;
+
+import com.example.minicapstone390.Models.Sensor;
 import com.example.minicapstone390.R;
+import com.example.minicapstone390.SensorAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -26,10 +32,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public class DeviceActivity extends AppCompatActivity {
@@ -41,9 +47,13 @@ public class DeviceActivity extends AppCompatActivity {
     protected SharedPreferenceHelper sharePreferenceHelper;
     protected String deviceId;
     protected Toolbar toolbar;
-    protected ListView sensorList;
     protected TextView deviceName, deviceStatus;
+
     protected List<String> sensorIds = new ArrayList<>();
+    protected ArrayList<Sensor> sensorList;
+
+    protected RecyclerView sensorListView;
+    protected SensorAdapter sensorAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,8 +81,17 @@ public class DeviceActivity extends AppCompatActivity {
         deviceName = (TextView) findViewById(R.id.device_name);
         deviceStatus = (TextView) findViewById(R.id.device_status);
 
+        // Initialize Dev List and Ids
+        sensorList = new ArrayList<>();
+        sensorIds = new ArrayList<>();
+
+        // Recycler View for Sensors
+        sensorListView = (RecyclerView) findViewById(R.id.sensorsRecyclerView);
+        sensorListView.setLayoutManager(new LinearLayoutManager(this));
+        sensorAdapter = new SensorAdapter(sensorList);
+        sensorListView.setAdapter(sensorAdapter);
+
         // Display info for selected device
-        sensorList = (ListView) findViewById(R.id.sensorList);
         Bundle carryOver = getIntent().getExtras();
         if (carryOver != null) {
             deviceId = carryOver.getString("deviceId");
@@ -82,6 +101,9 @@ public class DeviceActivity extends AppCompatActivity {
             Log.d(TAG, "No deviceId carry over, returning to HomeActivity");
             openHomeActivity();
         }
+
+        // Update page info
+        //updatePage();
     }
 
     // Display options menu in task-bar
@@ -179,10 +201,6 @@ public class DeviceActivity extends AppCompatActivity {
                     sensorIds.add(ds.getValue(String.class));
                 }
 
-                sensorList.setOnItemClickListener((parent, view, position, id) -> {
-                    goToSensorActivity(sensorIds.get(position));
-                });
-
                 getSensorNames();
             }
 
@@ -223,9 +241,16 @@ public class DeviceActivity extends AppCompatActivity {
     }
 
     // Set ListView of sensors
-    private void setSensorList(List<String> sensors) {
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, sensors);
-        sensorList.setAdapter(adapter);
+    private void setSensorList(List<String> sensData) {
+        ArrayList<Sensor> fakeData = new ArrayList<>();
+        fakeData.add(new Sensor(2, "Stinky Sensor"));
+        fakeData.add(new Sensor(1, "Nice Sensor"));
+        fakeData.add(new Sensor(3, "Bad Sensor"));
+        fakeData.add(new Sensor(1, "Nice Sensor"));
+        fakeData.add(new Sensor(3, "Bad Sensor"));
+
+        sensorAdapter = new SensorAdapter(fakeData);
+        sensorListView.setAdapter(sensorAdapter);
     }
 
     // Open sensor activity for selected sensor
