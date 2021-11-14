@@ -135,7 +135,7 @@ public class SensorActivity extends AppCompatActivity {
     public  boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if(id == R.id.disable_sensor) {
-            disableSensor();
+//            disableSensor();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -166,6 +166,7 @@ public class SensorActivity extends AppCompatActivity {
         });
     }
 
+    // TODO: Add status to DB
     private void disableSensor() {
         dB.getSensorChild(sensorId).child("status").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -272,7 +273,7 @@ public class SensorActivity extends AppCompatActivity {
         });
 
         setYAxisStyle();
-        System.out.println("Result: " + producer());
+//        System.out.println("Result: " + producer());
         setData();
     }
 
