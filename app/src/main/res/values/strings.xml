@@ -49,4 +49,6 @@
     <!-- Device List View -->
     <string name="activeDeviceStatus">🟢 Active</string>
     <string name="inactiveDeviceStatus">🔴 Inactive</string>
+    <string name="safeSensorValue">🟢 Safe</string>
+    <string name="unsafeSensorValue">🔴 Unsafe</string>
 </resources>

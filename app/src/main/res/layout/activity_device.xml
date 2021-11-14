@@ -24,7 +24,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="20dp"
+        android:text="@string/device_name"
         android:textColor="@color/black"
         android:textSize="20sp"
         android:textStyle="bold"
@@ -38,9 +39,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="5dp"
         android:text="@string/status"
-        android:textColor="@color/g_guard_font"
+        android:textColor="@color/black"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -53,38 +54,38 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/sensors"
-        android:paddingTop="100dp"
-        android:paddingHorizontal="15dp"
+        android:layout_marginTop="160dp"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="10dp"
         android:textSize="25sp"
         android:textStyle="bold"
         android:textColor="@color/g_guard_font"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="50dp"
+        android:background="#bce2d8"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="@id/sensorsRecyclerView" />
 
-    <!-- Sensor ListView -->
-    <ListView
-        android:id="@+id/sensorList"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/sensorsRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginVertical="200dp"
-        android:textStyle="normal"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:layout_height="380dp"
+        android:layout_marginBottom="130dp"
+        android:background="#bce2d8"
+        android:translationZ="1dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
 
     <ImageView
         android:id="@+id/gg_cloud_device"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="361dp"
+        android:layout_height="146dp"
+        android:layout_below="@id/sensorsTitle"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sensorList"
-        app:layout_constraintVertical_bias="0.354"
-        app:srcCompat="@drawable/gg_corner" />
-
+        app:srcCompat="@drawable/gg_corner"
+        android:contentDescription="TODO"/>
+<!--   app:layout_constraintVertical_bias="0.354"       -->
 </androidx.constraintlayout.widget.ConstraintLayout>

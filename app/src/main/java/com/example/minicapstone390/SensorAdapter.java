@@ -9,20 +9,19 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.minicapstone390.Models.Device;
-import com.example.minicapstone390.Views.HomeActivity;
+import com.example.minicapstone390.Models.Sensor;
 
 import java.util.ArrayList;
 
-public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder> {
-    // Define ArrayList of Devices
-    private ArrayList<Device> devices;
+public class SensorAdapter extends RecyclerView.Adapter<SensorAdapter.ViewHolder> {
+    // Define ArrayList of Sensors
+    private ArrayList<Sensor> sensors;
     private Context mContext;
 
     // Define Single Device Holder
     public class ViewHolder extends RecyclerView.ViewHolder {
         public ImageView editIcon, deleteIcon;
-        public TextView deviceName, deviceStatus, deviceLocation;
+        public TextView sensorName, sensorStatus, sensorType, sensorCurrValue, sensorPrevValue;
 
         public ViewHolder(View v) {
             super(v);
@@ -31,11 +30,14 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
             mContext = v.getContext();
 
             // Initialize Values
-            deviceName = (TextView) v.findViewById(R.id.deviceListName);
-            deviceStatus = (TextView) v.findViewById(R.id.deviceListStatus);
-            deviceLocation = (TextView) v.findViewById(R.id.deviceListLocation);
-            editIcon = (ImageView) v.findViewById(R.id.deviceEditIcon);
-            deleteIcon = (ImageView) v.findViewById(R.id.deviceDeleteIcon);
+            sensorName = (TextView) v.findViewById(R.id.sensorListName);
+            sensorStatus = (TextView) v.findViewById(R.id.sensorListStatus);
+            sensorType = (TextView) v.findViewById(R.id.sensorListType);
+            sensorCurrValue = (TextView) v.findViewById(R.id.sensorListCurrentValue);
+            sensorPrevValue = (TextView) v.findViewById(R.id.sensorListPastValue);
+
+            editIcon = (ImageView) v.findViewById(R.id.sensorEditIcon);
+            deleteIcon = (ImageView) v.findViewById(R.id.sensorDeleteIcon);
 
             editIcon.setOnClickListener((view) -> {
                 //TODO: Add Device Edit Code Here
@@ -50,37 +52,41 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
             v.setOnClickListener((view) -> {
                 int deviceIndex = getAdapterPosition();
                 System.out.println("ACCESS " + deviceIndex);
-                ((HomeActivity)mContext).goToDeviceActivity(deviceIndex);
+                //((DeviceActivity)mContext).goToSensorActivity(deviceIndex);
             });
         }
     }
 
     // Define Adapter for Device List
-    public DeviceAdapter(ArrayList<Device> deviceNames) {
-        devices = deviceNames;
+    public SensorAdapter(ArrayList<Sensor> sensorNames) {
+        sensors = sensorNames;
     }
 
     @Override
-    public DeviceAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public SensorAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // Create View Based on Specified Layout for Holder
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View view = inflater.inflate(R.layout.device_item, parent, false);
+        View view = inflater.inflate(R.layout.sensor_item, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         // Set Data to Recycler View List
-        Device d = devices.get(position);
+        Sensor s = sensors.get(position);
 
-        holder.deviceName.setText(d.getDeviceName());
-        holder.deviceStatus.setText(d.isStatus() ? R.string.activeDeviceStatus : R.string.inactiveDeviceStatus);
-        holder.deviceLocation.setText(d.getDeviceLocation());
+        holder.sensorName.setText(s.getSensorName());
+        holder.sensorStatus.setText(s.getStatus() ? R.string.safeSensorValue : R.string.unsafeSensorValue);
+        holder.sensorType.setText("Sensor: MC" + s.getSensorType());
+
+        //TODO: Sensor Current and Previous Values
+        holder.sensorCurrValue.setText("Live: 1.0 ppm");
+        holder.sensorPrevValue.setText("Prev: 2.0 ppm");
     }
 
     @Override
     public int getItemCount() {
         // Return Num Devices
-        return devices.size();
+        return sensors.size();
     }
 }
