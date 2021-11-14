@@ -28,7 +28,7 @@ import java.util.Map;
 
 // Device Fragment
 public class UpdateDeviceFragment extends DialogFragment {
-    private static final String TAG = "Update Device";
+    private static final String TAG = "UpdateDeviceFragment";
 
     public interface OnInputListener{
         void sendInput(String input);

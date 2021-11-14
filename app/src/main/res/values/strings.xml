@@ -11,7 +11,7 @@
     <string name="confirm_password">Confirm Password</string>
 
     <string name="welcome_message"> Welcome to gasGuard </string>
-    <string name="welcome_user"> Welcome {0}! </string>
+    <string name="welcome_user"> Welcome, {0}! </string>
     <string name="status"> Status: {0} </string>
     <string name="devices"> Devices </string>
     <string name="logOut">Log Out</string>
@@ -42,4 +42,13 @@
     <string name="dark_mode_on_off">Dark Mode On/Off</string>
     <string name="add_device">Add Device</string>
     <string name="day">Day</string>
+    <string name="week">Week</string>
+    <string name="_2_weeks">2 Weeks</string>
+    <string name="month">Month</string>
+
+    <!-- Device List View -->
+    <string name="activeDeviceStatus">🟢 Active</string>
+    <string name="inactiveDeviceStatus">🔴 Inactive</string>
+    <string name="safeSensorValue">🟢 Safe</string>
+    <string name="unsafeSensorValue">🔴 Unsafe</string>
 </resources>

@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Patterns;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,7 +16,9 @@ import com.example.minicapstone390.Controllers.Database;
 import com.example.minicapstone390.Controllers.SharedPreferenceHelper;
 import com.example.minicapstone390.Models.User;
 import com.example.minicapstone390.R;
+import com.google.android.gms.tasks.OnCanceledListener;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -28,10 +31,10 @@ import java.util.Objects;
 import java.util.regex.Pattern;
 
 public class SignupActivity extends AppCompatActivity {
+    private static final String TAG = "SignupActivity";
 
     // Declare variables
     private final Database dB = new Database();
-    private final String passwordRegex = "^(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[`~!@#$%^&*()\\-=_+\\[\\]\\\\{}|;:'\",.\\/<>? ]).{8,}$";
 
     protected SharedPreferenceHelper sharePreferenceHelper;
     protected Button signUpButton, loginButton;
@@ -40,6 +43,8 @@ public class SignupActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        // Initialize SharedPref and check theme
         sharePreferenceHelper = new SharedPreferenceHelper(SignupActivity.this);
         // Set theme
         if (sharePreferenceHelper.getTheme()) {
@@ -51,6 +56,7 @@ public class SignupActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
 
+        // Initialize EditTexts
         usernameET = (EditText) findViewById(R.id.username);
         emailET = (EditText) findViewById(R.id.email);
         passwordET = (EditText) findViewById(R.id.password);
@@ -69,6 +75,7 @@ public class SignupActivity extends AppCompatActivity {
          forgotPassword.setOnClickListener(view -> sendReset());
     }
 
+    // Sign up a user
     private void userSignup() {
         String username = usernameET.getText().toString();
         String email = emailET.getText().toString();
@@ -82,15 +89,16 @@ public class SignupActivity extends AppCompatActivity {
             return;
         }
 
-        // (3) Email Must Be a Valid Email and Unique
+        // (2) Email Must Be a Valid Email and Unique
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             emailET.setError("Email Must Be Valid!");
             emailET.requestFocus();
             return;
         }
 
-        // (4) Password Must Be at Least 8 Characters with at least one Capitalized, one Number, one Special Character
+        // (3) Password Must Be at Least 8 Characters with at least one Capitalized, one Number, one Special Character
         // Regex for Password: Must Contain At Least 1 Lower and 1 Upper Case Character, 1 Number, 1 Special Characters, and Be 8 Characters Long
+        String passwordRegex = "^(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[`~!@#$%^&*()\\-=_+\\[\\]\\\\{}|;:'\",.\\/<>? ]).{8,}$";
         Pattern pattern = Pattern.compile(passwordRegex);
         if (!pattern.matcher(password).matches()) {
             passwordET.setError("Password Must Be Solid!");
@@ -98,7 +106,7 @@ public class SignupActivity extends AppCompatActivity {
             return;
         }
 
-        // (5) Password and Confirm Password Must Match
+        // (4) Password and Confirm Password Must Match
         if (!password.equals(confirmPass)) {
             confirmPasswordET.setError("Passwords Must Match!");
             confirmPasswordET.requestFocus();
@@ -121,18 +129,22 @@ public class SignupActivity extends AppCompatActivity {
                             .addOnCompleteListener(t -> {
                                 if (t.isSuccessful()) {
                                     Toast.makeText(getApplicationContext(), "User Registered Successfully!", Toast.LENGTH_SHORT).show();
+                                    Log.i(TAG, String.format("User: %s successfully registered.", username));
                                     openHomeActivity();
                                 } else {
+                                    Log.e(TAG, "Failed to create user on database");
                                     Toast.makeText(getApplicationContext(), "Failed to Register User!", Toast.LENGTH_SHORT).show();
                                 }
                             });
                 } else {
+                    Log.d(TAG, "Email is already registered");
                     emailET.setError("Email is already registered!");
                     emailET.requestFocus();
                 }
             });
     }
 
+    // Send reset email
     private void sendReset() {
         String email = emailET.getText().toString();
 
@@ -146,21 +158,28 @@ public class SignupActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
+                    Log.i(TAG, String.format("Password reset sent to: %s", email));
                     Toast.makeText(getApplicationContext(), "Password reset sent successfully!", Toast.LENGTH_SHORT).show();
                 } else {
+                    Log.e(TAG, "Failed to send password reset email");
                     Toast.makeText(getApplicationContext(), "Error sending password reset, email is not associated with an account!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
     }
 
+    // Navigate to HomeActivity
     private void openHomeActivity() {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
 
+    // Navigate to LoginActivity
     private void openLoginActivity() {
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
+
+        //Remove transition
+        overridePendingTransition(0, 0);
     }
 }

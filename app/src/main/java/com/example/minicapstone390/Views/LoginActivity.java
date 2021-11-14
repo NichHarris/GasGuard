@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -21,6 +22,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
 public class LoginActivity extends AppCompatActivity {
+    private static final String TAG = "LoginActivity";
 
     // Declare variables
     private final Database dB = new Database();
@@ -71,8 +73,10 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
+                    Log.i(TAG, String.format("Password reset sent to: %s", userEmail));
                     Toast.makeText(getApplicationContext(), "Password reset sent successfully!", Toast.LENGTH_SHORT).show();
                 } else {
+                    Log.e(TAG, "Failed to send password reset email");
                     Toast.makeText(getApplicationContext(), "Error sending password reset, email is not associated with an account!", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -94,9 +98,11 @@ public class LoginActivity extends AppCompatActivity {
         dB.getAuth().signInWithEmailAndPassword(userEmail, password)
             .addOnCompleteListener(this, task -> {
                 if (task.isSuccessful()) {
+                    Log.i(TAG,"Login attempt failed");
                     Toast.makeText(getApplicationContext(), "Successfully Logged In!", Toast.LENGTH_SHORT).show();
                     openHomeActivity();
                 } else {
+                    Log.i(TAG,String.format("Successfully logged in user: %s", userEmail));
                     Toast.makeText(getApplicationContext(), "Login failed. Try again!", Toast.LENGTH_LONG).show();
                 }
         });
@@ -110,5 +116,8 @@ public class LoginActivity extends AppCompatActivity {
     private void openSignupActivity() {
         Intent intent = new Intent(this, SignupActivity.class);
         startActivity(intent);
+        
+        //Remove transition
+        overridePendingTransition(0, 0);
     }
 }

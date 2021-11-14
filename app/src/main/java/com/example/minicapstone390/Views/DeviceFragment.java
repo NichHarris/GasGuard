@@ -30,6 +30,7 @@ import java.util.Map;
 
 // Device Fragment
 public class DeviceFragment extends DialogFragment {
+    private static final String TAG = "AddDeviceFragment";
 
     // Declare variables
     private final Database dB = new Database();
@@ -66,7 +67,7 @@ public class DeviceFragment extends DialogFragment {
             if (deviceName.isEmpty()) {
                 Toast.makeText(getActivity().getApplicationContext(), "Must Fill All Input Fields!", Toast.LENGTH_LONG).show();
             } else {
-                Device device = new Device(deviceName, true);
+                Device device = new Device(deviceName, "Montreal", true);
 
                 // add the device, then add its deviceId to the user
                 DatabaseReference devicesRef = dB.getDeviceRef().push();

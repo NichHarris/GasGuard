@@ -1,58 +1,85 @@
 package com.example.minicapstone390.Views;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
-import android.view.ContextMenu;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.ListView;
 
 import com.example.minicapstone390.Controllers.Database;
 import com.example.minicapstone390.Controllers.SharedPreferenceHelper;
+import com.example.minicapstone390.DeviceAdapter;
+import com.example.minicapstone390.Models.Device;
 import com.example.minicapstone390.R;
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.AxisBase;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.ConsoleHandler;
 
 public class HomeActivity extends AppCompatActivity {
+    private static final String TAG = "HomeActivity";
 
     // Declare variables
     private final Database dB = new Database();
     protected SharedPreferenceHelper sharePreferenceHelper;
     protected TextView welcomeUserMessage;
-    protected ProgressBar progressBar;
-    protected Button addDevice;
+    protected BarChart deviceChart;
     protected Toolbar toolbar;
-    protected ListView deviceList;
+
     protected List<String> deviceIds;
+    protected ArrayList<Device> devList;
+
+    protected RecyclerView deviceListView;
+    protected DeviceAdapter deviceAdapter;
 
     public static String wifiModuleIp = "";
     public static int wifiModulePort = 0;
-
+    public ArrayList<String> test;
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // Initialize SharedPref and check theme
         sharePreferenceHelper = new SharedPreferenceHelper(HomeActivity.this);
+
         // Set theme
         if (sharePreferenceHelper.getTheme()) {
             setTheme(R.style.NightMode);
@@ -63,18 +90,28 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        // Enable toolbar
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        addDevice = (Button) findViewById(R.id.add_device);
-        progressBar = (ProgressBar) findViewById(R.id.progress_bar);
+        // Initialize Layouts
+        // TODO: Replace progress bar with BarGraph of each device
+        deviceChart = (BarChart) findViewById(R.id.deviceChart);
         deviceIds = new ArrayList<>();
         welcomeUserMessage = (TextView) findViewById(R.id.welcomeUserMessage);
-        deviceList = (ListView) findViewById(R.id.deviceDataList);
 
-        addDevice.setOnClickListener(view -> connectDevice());
+        // Initialize Dev List and Ids
+        devList = new ArrayList<>();
+        deviceIds = new ArrayList<>();
 
+        // Update page info
         updatePage();
+
+        // Recycler View for Devices
+        deviceListView = (RecyclerView) findViewById(R.id.devicesRecyclerView);
+        deviceListView.setLayoutManager(new LinearLayoutManager(this));
+        deviceAdapter = new DeviceAdapter(devList);
+        deviceListView.setAdapter(deviceAdapter);
     }
 
     @Override
@@ -93,19 +130,80 @@ public class HomeActivity extends AppCompatActivity {
     // Create the action when an option on the task-bar is selected
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        // TODO: Convert to switch
-        if(id == R.id.add_device) {
-            //TODO:  call add device fragment
-        }
-        if(id == R.id.profile) {
-            goToProfileActivity();
-        }
-        //NOTE: DON'T IMPLEMENT FOR NOW
-        if(id == R.id.device_names) {
-            //TODO: change list of device names to set names
+        switch (item.getItemId()) {
+            case R.id.add_device:
+                connectDevice();
+                return true;
+            case R.id.profile:
+                goToProfileActivity();
+                return true;
+            case R.id.device_names:
+                //TODO: change list of device names to set names
+                return true;
+            default:
+                break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    // TODO: Fix spaghetti
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    protected void setXAxisStyle(ArrayList<String> test) {
+        XAxis xAxis = deviceChart.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setTextSize(10f);
+        xAxis.setTextColor(Color.WHITE);
+        xAxis.setDrawAxisLine(false);
+        xAxis.setDrawGridLines(true);
+        xAxis.setTextColor(Color.rgb(0, 0, 0));
+        xAxis.setCenterAxisLabels(true);
+        xAxis.setGranularity(1f);
+        xAxis.setValueFormatter(new IAxisValueFormatter() {
+            @Override
+            public String getFormattedValue(float value, AxisBase axis) {
+                return test.get((int) value);
+            }
+        });
+
+        setYAxisStyle();
+//        System.out.println("Result: " + producer());
+        setData(test);
+    }
+
+    protected void setYAxisStyle() {
+        YAxis leftAxis = deviceChart.getAxisLeft();
+        leftAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
+        leftAxis.setTextColor(Color.GRAY);
+        leftAxis.setDrawGridLines(true);
+        leftAxis.setGranularityEnabled(true);
+        leftAxis.setAxisMinimum(0f);
+        leftAxis.setAxisMaximum(1.1f);
+        leftAxis.setGranularity(0.1f);
+        leftAxis.setYOffset(0f);
+        leftAxis.setTextColor(Color.rgb(0, 0, 0));
+
+        YAxis rightAxis = deviceChart.getAxisRight();
+        rightAxis.setEnabled(false);
+    }
+
+    // TODO: Fix spaghetti
+    protected void setData(ArrayList<String> test) {
+        List<BarEntry> values = new ArrayList<>();
+
+        for (int x = 1; x < test.size(); x++) {
+            long y = x + 1;
+            values.add(new BarEntry(x, y));
+        }
+        BarDataSet set = new BarDataSet(values, "Test");
+        set.setDrawValues(false);
+        set.setBarBorderWidth(2f);
+
+        BarData data = new BarData(set);
+        data.setValueTextColor(Color.BLACK);
+        data.setValueTextSize(9f);
+
+        deviceChart.setData(data);
+        deviceChart.invalidate();
     }
 
     // TODO: IMPLEMENT DEVICE CONNECTION
@@ -115,10 +213,13 @@ public class HomeActivity extends AppCompatActivity {
         connect_device.execute();
     }
 
+    // TODO
     public void getIpAndPort() {
-        return;
+        DeviceFragment dialog = new DeviceFragment();
+        dialog.show(getSupportFragmentManager(), "AddDeviceFragment");
     }
 
+    // TODO
     public static class Socket_AsyncTask extends AsyncTask<Void, Void, Void> {
         Socket socket;
 
@@ -136,57 +237,59 @@ public class HomeActivity extends AppCompatActivity {
 
     // Get, Initialize, and Update Devices - Display List of Devices
     protected void loadDeviceList() {
+        ArrayList<String> devIds = new ArrayList<>();
+
         //Get List of Devices from DB
         DatabaseReference usersRef = dB.getUserChild(dB.getUserId()).child("devices");
 
         usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                List<String> deviceIds = new ArrayList<>();
                 // Format List from DB for Adapter
                 for (DataSnapshot ds : snapshot.getChildren()) {
-                    deviceIds.add(ds.getValue(String.class));
-                    addToDeviceList(ds.getValue(String.class));
+                    devIds.add(ds.getValue(String.class));
                 }
 
-                deviceList.setOnItemClickListener((parent, view, position, id) -> {
-                    System.out.println("Here");
-                    System.out.println(deviceIds.get(position));
-                    goToDeviceActivity(deviceIds.get(position));
-                });
+                // Add Ids to Device Ids List
+                deviceIds = devIds;
 
-                getDeviceNames(deviceIds);
+                setXAxisStyle(devIds);
+                // Get Device Names from DB given Ids
+                getDeviceNames(devIds);
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                // TODO: Add error catch
-                System.out.println(error.toString());
+            public void onCancelled(@NonNull DatabaseError e) {
+                Log.d(TAG, e.toString());
+                throw e.toException();
             }
         });
     }
 
-    // Update Page
+    // Update Page information
     private void updatePage() {
-        dB.getUserChild(dB.getUserId()).addListenerForSingleValueEvent(new ValueEventListener() {
+        dB.getUserChild(dB.getUserId()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                String defaultMessage = getResources().getString(R.string.welcome_user).replace("{0}", snapshot.child("userName").getValue(String.class));
-                welcomeUserMessage.setText(defaultMessage);
+                try {
+                    String userFirstName = snapshot.child("userFirstName").getValue(String.class);
+
+                    String defaultMessage = getResources().getString(R.string.welcome_user).replace("{0}", userFirstName != null ? userFirstName : "");
+                    welcomeUserMessage.setText(defaultMessage);
+                } catch (Exception e) {
+                    return;
+                }
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                throw error.toException();
+            public void onCancelled(@NonNull DatabaseError e) {
+                Log.d(TAG, e.toString());
+                throw e.toException();
             }
         });
-        loadDeviceList();
-        updateProgressBar();
-    }
 
-    private void updateProgressBar() {
-        // TODO: Get an aggregate of the data from active sensors and devices and display relative health
-        progressBar.setProgress(66);
+        loadDeviceList();
     }
 
     // Navigation to Profile Activity
@@ -196,14 +299,22 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     // Navigation to Device Activity
-    private void goToDeviceActivity(String deviceId) {
+    public void goToDeviceActivity(int index) {
+        System.out.println("All Devices");
+        for(String id: deviceIds) {
+            System.out.println("Device: " + id);
+        }
+
+        String deviceId = deviceIds.get(index);
+
         Intent intent = new Intent(this, DeviceActivity.class);
         intent.putExtra("deviceId", deviceId);
         startActivity(intent);
     }
 
+    // Get List of device names associated with the user
     private void getDeviceNames(List<String> devices) {
-        List<String> deviceNames = new ArrayList<>();
+        ArrayList<Device> devData = new ArrayList<>();
 
         for (String id: devices) {
             //TODO: check if devices are part of the user
@@ -211,27 +322,35 @@ public class HomeActivity extends AppCompatActivity {
             deviceRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    deviceNames.add(snapshot.child("deviceName").getValue(String.class));
-                    setDeviceList(deviceNames);
+                    try {
+                        // Get Device Data from DB
+                        String devName = snapshot.child("deviceName").getValue(String.class);
+                        String devLocation = snapshot.child("location").getValue(String.class);
+                        boolean devStatus = snapshot.child("status").getValue(Boolean.class);
+
+                        //Add Device to Device List
+                        devData.add(new Device(devName, devLocation, devStatus));
+                    } catch (Exception e) {
+                        Log.d(TAG, e.toString());
+                        return;
+                    }
+
+                    setDeviceList(devData);
                 }
 
                 @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-                    // TODO: Add error catch
-                    System.out.println(error.toString());
+                public void onCancelled(@NonNull DatabaseError e) {
+                    Log.d(TAG, e.toString());
+                    throw e.toException();
                 }
             });
         }
-        setDeviceList(deviceNames);
+        setDeviceList(devData);
     }
 
-    private void setDeviceList(List<String> devices) {
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, devices);
-        // Add Devices to ListView
-        deviceList.setAdapter(adapter);
-    }
-
-    public void addToDeviceList(String id) {
-        deviceIds.add(id);
+    // Add Devices to ListView from DB Snapshots
+    private void setDeviceList(ArrayList<Device> devData) {
+        deviceAdapter = new DeviceAdapter(devData);
+        deviceListView.setAdapter(deviceAdapter);
     }
 }

@@ -25,7 +25,6 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:layout_marginTop="56dp"
-        android:paddingHorizontal="15dp"
         android:paddingVertical="8dp"
         android:text="@string/welcome_user"
         android:textColor="@color/black"
@@ -36,62 +35,49 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ProgressBar
-        android:id="@+id/progress_bar"
-        style="@android:style/Widget.ProgressBar.Horizontal"
-        android:layout_width="281dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="144dp"
+    <com.github.mikephil.charting.charts.BarChart
+        android:id="@+id/deviceChart"
+        android:layout_width="350dp"
+        android:layout_height="200dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.491"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
-
-    <Button
-        android:id="@+id/add_device"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/add_device"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/welcomeUserMessage" />
 
     <TextView
         android:id="@+id/devicesTitle"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:layout_marginTop="50dp"
-        android:paddingHorizontal="15dp"
-        android:paddingTop="100dp"
         android:text="@string/devices"
-        android:textColor="@color/black"
+        android:background="#bce2d8"
+        android:textColor="@color/g_guard_font"
         android:textSize="25sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/deviceDataList"
+        app:layout_constraintBottom_toTopOf="@id/devicesRecyclerView"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <ListView
-        android:id="@+id/deviceDataList"
-        android:layout_width="413dp"
-        android:layout_height="252dp"
-        android:layout_marginVertical="200dp"
-        android:layout_marginTop="200dp"
-        android:textStyle="normal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/welcomeUserMessage" />
-
-    <ImageView
-        android:id="@+id/gg_cloud_home"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/devicesTitle"
-        android:layout_alignParentRight="true"
-        android:layout_marginTop="468dp"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/devicesRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="340dp"
+        android:layout_marginTop="36dp"
+        android:background="#bce2d8"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/gg_corner" />
+        app:layout_constraintTop_toBottomOf="@+id/deviceChart" />
+
+    <ImageView
+        android:id="@+id/gg_cloud_home"
+        android:layout_width="361dp"
+        android:layout_height="146dp"
+        android:layout_below="@id/devicesTitle"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/gg_corner"
+        android:contentDescription="TODO" />
 </androidx.constraintlayout.widget.ConstraintLayout>
