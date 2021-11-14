@@ -246,6 +246,21 @@ public class SensorActivity extends AppCompatActivity {
         });
     }
 
+    // TODO
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    protected ArrayList<String> producer() {
+        ArrayList<String> result = new ArrayList<>();
+        ArrayList<String> dates = new ArrayList<>(updateGraphDates());
+        System.out.println("Dateee: " + dates);
+        long duration = Duration.between(Time.valueOf(dates.get(0)).toInstant() , Time.valueOf(dates.get(dates.size() - 1)).toInstant()).getSeconds();
+        long delta = duration / 7;
+
+        for (int x = 0; x < 8; x++) {
+            result.add(LocalDateTime.parse(dates.get(0)).plusSeconds(x * delta).format(DateTimeFormatter.ISO_DATE));
+        }
+        return result;
+    }
+
     // TODO: Fix spaghetti
     @RequiresApi(api = Build.VERSION_CODES.O)
     protected void setXAxisStyle() {
@@ -275,20 +290,6 @@ public class SensorActivity extends AppCompatActivity {
         setYAxisStyle();
 //        System.out.println("Result: " + producer());
         setData();
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    protected ArrayList<String> producer() {
-        ArrayList<String> result = new ArrayList<>();
-        ArrayList<String> dates = new ArrayList<>(updateGraphDates());
-        System.out.println("Dateee: " + dates);
-        long duration = Duration.between(Time.valueOf(dates.get(0)).toInstant() , Time.valueOf(dates.get(dates.size() - 1)).toInstant()).getSeconds();
-        long delta = duration / 7;
-
-        for (int x = 0; x < 8; x++) {
-            result.add(LocalDateTime.parse(dates.get(0)).plusSeconds(x * delta).format(DateTimeFormatter.ISO_DATE));
-        }
-        return result;
     }
 
     protected void setYAxisStyle() {
