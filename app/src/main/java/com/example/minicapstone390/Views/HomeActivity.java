@@ -9,11 +9,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.ListView;
-import android.widget.Toast;
 
 import com.example.minicapstone390.Controllers.Database;
 import com.example.minicapstone390.Controllers.SharedPreferenceHelper;
@@ -45,11 +42,11 @@ public class HomeActivity extends AppCompatActivity {
     protected ProgressBar progressBar;
     protected Toolbar toolbar;
 
-    protected ListView deviceList;
     protected List<String> deviceIds;
     protected ArrayList<Device> devList;
+
+    protected RecyclerView deviceListView;
     protected DeviceAdapter deviceAdapter;
-    protected RecyclerView rc;
 
     public static String wifiModuleIp = "";
     public static int wifiModulePort = 0;
@@ -78,25 +75,17 @@ public class HomeActivity extends AppCompatActivity {
         progressBar = (ProgressBar) findViewById(R.id.progress_bar);
         deviceIds = new ArrayList<>();
         welcomeUserMessage = (TextView) findViewById(R.id.welcomeUserMessage);
-        deviceList = (ListView) findViewById(R.id.deviceDataList);
 
         devList = new ArrayList<>();
 
         // Update page info
-        // TODO: Commented for testing, uncomment now
         updatePage();
 
-        // Device Names
-//        ArrayList<Device> dnames = new ArrayList<>();
-//        dnames.add(new Device("nice", "Downtown Montreal, QC", false));
-//        dnames.add(new Device("many devices", "DDO, QC", true));
-//        dnames.add(new Device("cool", "Vaudreil, QC", true));
-
         // Recycler View for Devices
-        rc = (RecyclerView) findViewById(R.id.devicesRecyclerView);
+        deviceListView = (RecyclerView) findViewById(R.id.devicesRecyclerView);
+        deviceListView.setLayoutManager(new LinearLayoutManager(this));
         deviceAdapter = new DeviceAdapter(devList);
-        rc.setLayoutManager(new LinearLayoutManager(this));
-        rc.setAdapter(deviceAdapter);
+        deviceListView.setAdapter(deviceAdapter);
 
         /*
         deviceAdapter.setOnDeviceClickListener(new DeviceAdapter.onDeviceClickListener() {
@@ -114,8 +103,7 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        // TODO: Commented for testing, uncomment now
-        //updatePage();
+        updatePage();
     }
 
     // Display options menu in task-bar
@@ -188,9 +176,9 @@ public class HomeActivity extends AppCompatActivity {
                     addToDeviceList(ds.getValue(String.class));
                 }
 
-                deviceList.setOnItemClickListener((parent, view, position, id) -> {
-                    goToDeviceActivity(deviceIds.get(position));
-                });
+//                deviceList.setOnItemClickListener((parent, view, position, id) -> {
+//                    goToDeviceActivity(deviceIds.get(position));
+//                });
 
                 getDeviceNames(deviceIds);
             }
@@ -209,8 +197,9 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 try {
-                    String userName = snapshot.child("username").getValue(String.class);
-                    String defaultMessage = getResources().getString(R.string.welcome_user).replace("{0}", userName != null ? userName : "");
+                    String userFirstName = snapshot.child("userFirstName").getValue(String.class);
+
+                    String defaultMessage = getResources().getString(R.string.welcome_user).replace("{0}", userFirstName != null ? userFirstName : "");
                     welcomeUserMessage.setText(defaultMessage);
                 } catch (Exception e) {
                     return;
@@ -223,15 +212,15 @@ public class HomeActivity extends AppCompatActivity {
                 throw e.toException();
             }
         });
-        // TODO: Commented for testing, uncomment now
-        //loadDeviceList();
+
+        loadDeviceList();
         updateProgressBar();
     }
 
     // TODO
     private void updateProgressBar() {
         // TODO: Get an aggregate of the data from active sensors and devices and display relative health
-        progressBar.setProgress(66);
+        progressBar.setProgress(69);
     }
 
     // Navigation to Profile Activity
@@ -249,7 +238,7 @@ public class HomeActivity extends AppCompatActivity {
 
     // Get List of device names associated with the user
     private void getDeviceNames(List<String> devices) {
-        List<String> deviceNames = new ArrayList<>();
+        ArrayList<Device> devicesData = new ArrayList<>();
 
         for (String id: devices) {
             //TODO: check if devices are part of the user
@@ -258,12 +247,19 @@ public class HomeActivity extends AppCompatActivity {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     try {
-                        deviceNames.add(snapshot.child("deviceName").getValue(String.class));
+                        // Get Device Data from DB
+                        String devName = snapshot.child("deviceName").getValue(String.class);
+                        String devLocation = snapshot.child("location").getValue(String.class);
+                        boolean devStatus = snapshot.child("status").getValue(Boolean.class);
+
+                        //Add Device to Device List
+                        devicesData.add(new Device(devName, devLocation, devStatus));
                     } catch (Exception e) {
                         Log.d(TAG, e.toString());
                         return;
                     }
-                    setDeviceList(deviceNames);
+
+                    setDeviceList(devicesData);
                 }
 
                 @Override
@@ -273,13 +269,12 @@ public class HomeActivity extends AppCompatActivity {
                 }
             });
         }
-        setDeviceList(deviceNames);
     }
 
-    // Add Devices to ListView
-    private void setDeviceList(List<String> devices) {
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, devices);
-        deviceList.setAdapter(adapter);
+    // Add Devices to ListView from DB Snapshots
+    private void setDeviceList(ArrayList<Device> devicesData) {
+        deviceAdapter = new DeviceAdapter(devicesData);
+        deviceListView.setAdapter(deviceAdapter);
     }
 
     // Add device to deviceIds
