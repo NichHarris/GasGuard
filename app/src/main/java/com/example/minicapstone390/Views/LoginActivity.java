@@ -16,10 +16,6 @@ import com.example.minicapstone390.Controllers.SharedPreferenceHelper;
 import com.example.minicapstone390.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.ValueEventListener;
 
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
@@ -33,7 +29,9 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // Initialize SharedPref and check theme
         sharePreferenceHelper = new SharedPreferenceHelper(LoginActivity.this);
+
         // Set theme
         if (sharePreferenceHelper.getTheme()) {
             setTheme(R.style.NightMode);

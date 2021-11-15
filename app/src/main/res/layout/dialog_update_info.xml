@@ -19,7 +19,9 @@
             android:layout_marginTop="15dp"
             android:ems="16"
             android:maxLength="20"
-            android:hint="@string/username" />
+            android:hint="@string/username"
+            android:autofillHints="name"
+            android:inputType="textPersonName"/>
 
         <EditText
             android:id="@+id/updateEmail"
@@ -30,7 +32,9 @@
             android:layout_marginTop="75dp"
             android:ems="16"
             android:maxLength="50"
-            android:hint="@string/email" />
+            android:hint="@string/email"
+            android:autofillHints="emailAddress"
+            android:inputType="textEmailAddress"/>
 
         <EditText
             android:id="@+id/updatePhone"
@@ -41,7 +45,9 @@
             android:layout_marginTop="135dp"
             android:ems="16"
             android:maxLength="20"
-            android:hint="@string/phone" />
+            android:hint="@string/phone"
+            android:autofillHints="phone"
+            android:inputType="phone"/>
 
         <EditText
             android:id="@+id/updateFirstName"
@@ -52,7 +58,9 @@
             android:layout_marginTop="195dp"
             android:ems="16"
             android:maxLength="20"
-            android:hint="@string/first_name" />
+            android:hint="@string/first_name"
+            android:autofillHints="name"
+            android:inputType="textPersonName"/>
 
         <EditText
             android:id="@+id/updateLastName"
@@ -63,7 +71,9 @@
             android:layout_marginTop="255dp"
             android:ems="16"
             android:maxLength="20"
-            android:hint="@string/last_name" />
+            android:hint="@string/last_name"
+            android:autofillHints="name"
+            android:inputType="textPersonName"/>
 
         <Button
             android:layout_width="wrap_content"
@@ -79,7 +89,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/cancel_add_device_button"
-            android:text="@string/cancel"
+            android:text="@android:string/cancel"
             android:textSize="14sp"
             android:layout_alignParentBottom="true"
             android:layout_alignParentStart="true"

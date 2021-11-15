@@ -74,12 +74,14 @@ public class SensorActivity extends AppCompatActivity {
     protected String sensorId;
 
     public double total = 0;
+    public double liveData = 0;
     public int graphTimeScale = 0;
     public ArrayList<Double> sensorValues = new ArrayList<>();
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // Initialize SharedPref and check theme
         sharePreferenceHelper = new SharedPreferenceHelper(SensorActivity.this);
         // Set theme
         if (sharePreferenceHelper.getTheme()) {
@@ -267,7 +269,6 @@ public class SensorActivity extends AppCompatActivity {
         XAxis xAxis = sensorChart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setTextSize(10f);
-        xAxis.setTextColor(Color.WHITE);
         xAxis.setDrawAxisLine(false);
         xAxis.setDrawGridLines(true);
         xAxis.setTextColor(Color.rgb(0, 0, 0));
@@ -295,7 +296,6 @@ public class SensorActivity extends AppCompatActivity {
     protected void setYAxisStyle() {
         YAxis leftAxis = sensorChart.getAxisLeft();
         leftAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
-        leftAxis.setTextColor(Color.GRAY);
         leftAxis.setDrawGridLines(true);
         leftAxis.setGranularityEnabled(true);
         leftAxis.setAxisMinimum(0f);
@@ -396,6 +396,25 @@ public class SensorActivity extends AppCompatActivity {
             }
         });
     }
+
+    public double getLiveData() {
+        dB.getSensorChild(sensorId).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.child("SensorValue").getValue(Double.class) != null) {
+                    liveData = snapshot.child("SensorValue").getValue(Double.class);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError e) {
+                Log.d(TAG, e.toString());
+                throw e.toException();
+            }
+        });
+        return liveData;
+    }
+
 
     // Navigate back to Home Activity
     private void openHomeActivity() {

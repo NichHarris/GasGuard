@@ -1,23 +1,34 @@
 package com.example.minicapstone390;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.minicapstone390.Controllers.Database;
 import com.example.minicapstone390.Models.Sensor;
 import com.example.minicapstone390.Views.DeviceActivity;
+import com.example.minicapstone390.Views.SensorActivity;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
 public class SensorAdapter extends RecyclerView.Adapter<SensorAdapter.ViewHolder> {
-    // Define ArrayList of Sensors
-    private ArrayList<Sensor> sensors;
+    private static final String TAG = "SensorAdapter";
+
+    // Define Context and ArrayList of Sensors
+    private final Database dB = new Database();
     private Context mContext;
+    private final ArrayList<Sensor> sensors;
+    public double liveData = 0;
 
     // Define Single Device Holder
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -64,6 +75,7 @@ public class SensorAdapter extends RecyclerView.Adapter<SensorAdapter.ViewHolder
         sensors = sensorNames;
     }
 
+    @NonNull
     @Override
     public SensorAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // Create View Based on Specified Layout for Holder
@@ -76,16 +88,17 @@ public class SensorAdapter extends RecyclerView.Adapter<SensorAdapter.ViewHolder
     public void onBindViewHolder(ViewHolder holder, int position) {
         // Set Data to Recycler View List
         Sensor s = sensors.get(position);
-
         int type = s.getSensorType();
-
+        String sensorTypeText = "Sensor: MC" + type;
+        String liveDataText = String.format("Live: %.3f", s.getSensorValue());
+        String pastDataText = "Prev: 2.0 ppm";
         holder.sensorName.setText(s.getSensorName());
         holder.sensorStatus.setText(s.getStatus() ? R.string.safeSensorValue : R.string.unsafeSensorValue);
-        holder.sensorType.setText("Sensor: MC" + type);
+        holder.sensorType.setText(sensorTypeText);
 
         //TODO: Sensor Current and Previous Values
-        holder.sensorCurrValue.setText("Live: 1.0 ppm");
-        holder.sensorPrevValue.setText("Prev: 2.0 ppm");
+        holder.sensorCurrValue.setText(liveDataText);
+        holder.sensorPrevValue.setText(pastDataText);
 
         // Update Image Based on Sensor Type
         holder.sensorImg.setImageResource(getSensorImg(type));

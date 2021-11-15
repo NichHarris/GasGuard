@@ -19,6 +19,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!--  Device Details  -->
     <TextView
         android:id="@+id/device_name"
         android:layout_width="wrap_content"
@@ -49,6 +50,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/device_name" />
 
+    <!-- Recycler View Title -->
     <TextView
         android:id="@+id/sensorsTitle"
         android:layout_width="fill_parent"
@@ -65,6 +67,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="@id/sensorsRecyclerView" />
 
+    <!-- Custom Recycler View for Sensors -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/sensorsRecyclerView"
         android:layout_width="match_parent"
@@ -76,15 +79,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
 
+    <!-- Gas Guard Banner -->
     <ImageView
         android:id="@+id/gg_cloud_device"
         android:layout_width="361dp"
         android:layout_height="146dp"
         android:layout_below="@id/sensorsTitle"
+        android:contentDescription="@string/gasGuardBannerDescription"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/gg_corner"
-        android:contentDescription="TODO"/>
+        app:srcCompat="@drawable/gg_corner"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
