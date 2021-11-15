@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class DeviceActivity extends AppCompatActivity {
+public class DeviceActivity extends AppCompatActivity implements SensorFragment.IOnDataPass {
     private static final String TAG = "DeviceActivity";
 
     // Declare variables
@@ -218,8 +218,8 @@ public class DeviceActivity extends AppCompatActivity {
                     try {
                         String sensorName = snapshot.child("SensorName").getValue(String.class);
                         int sensorType = snapshot.child("SensorType").getValue(Integer.class);
-
-                        sensData.add(new Sensor(sensorType, sensorName));
+                        double sensorValue = snapshot.child("SensorValue").getValue(Double.class);
+                        sensData.add(new Sensor(id, sensorType, sensorName, sensorValue));
                         setSensorList(sensData);
                     } catch (Exception e) {
                         Log.d(TAG, e.toString());
@@ -234,6 +234,8 @@ public class DeviceActivity extends AppCompatActivity {
                 }
             });
         }
+
+
     }
 
     // Set ListView of sensors
@@ -257,5 +259,10 @@ public class DeviceActivity extends AppCompatActivity {
     public boolean onSupportNavigateUp() {
         finish();
         return true;
+    }
+
+    @Override
+    public void onDataPass(String name, String type) {
+
     }
 }

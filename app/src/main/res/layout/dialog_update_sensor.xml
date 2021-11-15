@@ -11,7 +11,7 @@
         android:layout_height="175dp" >
 
         <EditText
-            android:id="@+id/device_name"
+            android:id="@+id/sensorName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
@@ -19,22 +19,34 @@
             android:layout_marginTop="15dp"
             android:ems="16"
             android:maxLength="20"
-            android:hint="@string/device_name"
+            android:hint="@string/sensorname"
             android:autofillHints="name"
             android:inputType="textShortMessage" />
 
-        <EditText
-            android:id="@+id/device_id"
-            android:layout_width="wrap_content"
+        <RadioGroup
+            android:id="@+id/sensorOptions"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginTop="75dp"
-            android:ems="16"
-            android:maxLength="20"
-            android:hint="@string/device_id"
-            android:autofillHints="name"
-            android:inputType="numberDecimal" />
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="70dp"
+            android:layout_marginRight="30dp"
+            android:orientation="horizontal"
+            android:gravity="center" >
+
+            <RadioButton
+                android:id="@+id/typeOutput"
+                android:layout_marginEnd="60dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/type"/>
+
+            <RadioButton
+                android:id="@+id/gasOutput"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/gas"/>
+
+        </RadioGroup>
 
         <Button
             android:layout_width="wrap_content"
