@@ -271,7 +271,12 @@ public class HomeActivity extends AppCompatActivity {
         xAxis.setValueFormatter(new IAxisValueFormatter() {
             @Override
             public String getFormattedValue(float value, AxisBase axis) {
-                return xAxisLabel.get((int) value);
+                if (value < xAxisLabel.size()) {
+                    return xAxisLabel.get((int) value);
+
+                } else {
+                    return "";
+                }
             }
         });
         setYAxis();

@@ -58,15 +58,12 @@ public class SensorActivity extends AppCompatActivity {
     protected LineChart sensorChart;
     protected TextView sensorName, chartTitle;
     protected RadioGroup graphTimesOptions;
-    protected SensorData allSensorData;
-    protected SensorData rangeSensorData;
-    protected List<LocalDateTime> history;
     protected Toolbar toolbar;
     protected String sensorId;
 
     public double total = 0;
     public double liveData = 0;
-    public int graphTimeScale = 0;
+    public int graphTimeScale = 7;
     public ArrayList<Double> sensorValues = new ArrayList<>();
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -89,7 +86,7 @@ public class SensorActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         graphTimesOptions = (RadioGroup) findViewById(R.id.graphTimeOptions);
-        graphTimesOptions.check(R.id.dayButton);
+        graphTimesOptions.check(R.id.weekButton);
 
         sensorName = (TextView) findViewById(R.id.sensor_name);
         chartTitle = (TextView) findViewById(R.id.chart_title);
@@ -100,19 +97,10 @@ public class SensorActivity extends AppCompatActivity {
             sensorId = carryOver.getString("sensorId");
             displaySensorInfo(sensorId);
             setGraphScale();
-//            getAllSensorData();
-            System.out.println(allSensorData);
         } else {
             Toast.makeText(this, "Error fetching device", Toast.LENGTH_LONG).show();
             openHomeActivity();
         }
-
-
-//        getSensorData();
-//        System.out.println(graphTime);
-//        getSensorData(graphTime.get(0), graphTime.get(graphTime.size() - 1));
-//        setXAxisLabels(graphTime);
-//        getCurrentData();
     }
 
     // Display basic info of the sensor
@@ -142,8 +130,8 @@ public class SensorActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int id) {
                 switch (id) {
-                    case R.id.weekButton:
-                        graphTimeScale = 7;
+                    case R.id.dayButton:
+                        graphTimeScale = 0;
                         break;
                     case R.id.weeksButton:
                         graphTimeScale = 14;
@@ -152,11 +140,12 @@ public class SensorActivity extends AppCompatActivity {
                         graphTimeScale = 28;
                         break;
                     default:
-                        graphTimeScale = 0;
+                        graphTimeScale = 7;
                 }
                 updateGraphDates();
             }
         });
+        updateGraphDates();
     }
 
     // TODO: Fix spaghetti
