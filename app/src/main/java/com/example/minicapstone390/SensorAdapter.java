@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.minicapstone390.Models.Sensor;
+import com.example.minicapstone390.Views.DeviceActivity;
 
 import java.util.ArrayList;
 
@@ -51,9 +52,9 @@ public class SensorAdapter extends RecyclerView.Adapter<SensorAdapter.ViewHolder
             });
 
             v.setOnClickListener((view) -> {
-                int deviceIndex = getAdapterPosition();
-                System.out.println("ACCESS " + deviceIndex);
-                //((DeviceActivity)mContext).goToSensorActivity(deviceIndex);
+                int sensorIndex = getAdapterPosition();
+                System.out.println("ACCESS " + sensorIndex);
+                ((DeviceActivity)mContext).goToSensorActivity(sensorIndex);
             });
         }
     }

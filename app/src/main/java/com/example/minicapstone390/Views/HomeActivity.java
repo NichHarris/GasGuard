@@ -121,7 +121,7 @@ public class HomeActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    // TODO: IMPLEMENT DEVICE CONNECTION
+    // TODO: IMPLEMENT DEVICE CONNECTION - Pls put this in its own class
     public void connectDevice() {
         getIpAndPort();
         Socket_AsyncTask connect_device = new Socket_AsyncTask();
