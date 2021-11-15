@@ -7,6 +7,7 @@ import androidx.annotation.Nullable;
 
 import androidx.fragment.app.DialogFragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -88,8 +89,8 @@ public class DeviceFragment extends DialogFragment {
                     }
 
                     @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                        // TODO: Add error catch
+                    public void onCancelled(@NonNull DatabaseError e) {
+                        Log.d(TAG, e.toString());
                         dismiss();
                     }
                 });

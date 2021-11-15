@@ -25,7 +25,6 @@ public class SignupActivity extends AppCompatActivity {
     // Declare variables
     private final Database dB = new Database();
     protected SharedPreferenceHelper sharePreferenceHelper;
-
     protected Button signUpButton, loginButton;
     protected EditText usernameET, emailET, passwordET, confirmPasswordET;
 

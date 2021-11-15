@@ -81,6 +81,7 @@ public class SensorActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // Initialize SharedPref and check theme
         sharePreferenceHelper = new SharedPreferenceHelper(SensorActivity.this);
         // Set theme
         if (sharePreferenceHelper.getTheme()) {

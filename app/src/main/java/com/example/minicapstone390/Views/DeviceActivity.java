@@ -1,11 +1,13 @@
 package com.example.minicapstone390.Views;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,6 +22,8 @@ import com.example.minicapstone390.Controllers.SharedPreferenceHelper;
 import com.example.minicapstone390.Models.Sensor;
 import com.example.minicapstone390.R;
 import com.example.minicapstone390.SensorAdapter;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -113,7 +117,6 @@ public class DeviceActivity extends AppCompatActivity implements SensorFragment.
             disableDevice();
         } else if(id == R.id.remove_device) {
             deleteDevice();
-            openHomeActivity();
         } else {
             return super.onOptionsItemSelected(item);
         }
@@ -150,7 +153,37 @@ public class DeviceActivity extends AppCompatActivity implements SensorFragment.
 
     // Remove device from the user
     private void deleteDevice() {
-        // TODO
+        // TODO: Copied from android jdk just modify it
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(true);
+        builder.setTitle("Delete Device Confirmation");
+        builder.setMessage("Deleting will completely remove the device from user and its stored data");
+        builder.setPositiveButton("Confirm",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dB.getUser().delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    openHomeActivity();
+                                } else {
+                                    // TODO: Send toast for failed delete
+                                }
+                            }
+                        });
+                    }
+                });
+        builder.setNegativeButton("Cancel",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        // TODO LOG THAT IT IS A CANCEL
+                    }
+                });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     // Navigate to the HomeActivity
