@@ -9,6 +9,7 @@
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="confirm_password">Confirm Password</string>
+    <string name="passwordCreationRequirements"><b>Password Complexity:</b> Password Must Be Min 8 Characters Long With At Least 1 Uppercase, Lowercase, Digit and Special Character</string>
 
     <string name="welcome_message"> Welcome to gasGuard </string>
     <string name="welcome_user"> Welcome, {0}! </string>
@@ -27,7 +28,7 @@
     <string name="last_name">Last Name</string>
     <string name="sensors">Sensors</string>
     <string name="sensor_graph">{0} Readings History</string>
-    <string name="forgot_password"><u>Forgot Password</u></string>
+    <string name="forgot_password"><u>Forgot Password?</u></string>
     <string name="delete_user">Delete User</string>
     <string name="disable_sensor">Disable Sensor</string>
     <string name="remove_device">Remove Device</string>

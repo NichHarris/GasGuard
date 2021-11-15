@@ -76,6 +76,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="40dp"
+        android:layout_marginTop="45dp"
         android:orientation="vertical"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -130,16 +131,6 @@
             android:inputType="textPassword"
             android:autofillHints="password"/>
 
-        <TextView
-            android:id="@+id/signUpForgot"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:text="@string/forgot_password"
-            android:textColor="@color/blue"
-            android:textAlignment="center"
-            android:focusable="true" />
-
         <android.widget.Button
             android:id="@+id/signUpButton"
             android:layout_width="fill_parent"
@@ -150,6 +141,18 @@
             android:textColor="@color/white"
             android:textSize="16sp"
             android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/signUpForgot"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:layout_marginStart="10dp"
+            android:layout_marginVertical="5dp"
+            android:text="@string/passwordCreationRequirements"
+            android:textColor="@color/black"
+            android:textAlignment="textStart"
+            android:focusable="true" />
     </LinearLayout>
 
     <ImageView

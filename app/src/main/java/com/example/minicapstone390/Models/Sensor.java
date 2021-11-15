@@ -1,16 +1,15 @@
 package com.example.minicapstone390.Models;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class Sensor {
+    //TODO: C
     private int SensorType;
     private String SensorName;
     private Map<String, Object> SensorData;
     private boolean status;
 
-    public Sensor() {
-    }
+    public Sensor() {}
 
     public Sensor(int sensorType, String sensorName) {
         this.SensorType = sensorType;

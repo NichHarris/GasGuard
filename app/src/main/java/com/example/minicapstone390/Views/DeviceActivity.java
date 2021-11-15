@@ -59,6 +59,7 @@ public class DeviceActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         // Initialize SharedPref and check theme
         sharePreferenceHelper = new SharedPreferenceHelper(DeviceActivity.this);
+
         // Set theme
         if (sharePreferenceHelper.getTheme()) {
             setTheme(R.style.NightMode);
@@ -73,7 +74,6 @@ public class DeviceActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-
 
         // TODO: Add  BarGraph of each sensor
 
@@ -101,9 +101,6 @@ public class DeviceActivity extends AppCompatActivity {
             Log.d(TAG, "No deviceId carry over, returning to HomeActivity");
             openHomeActivity();
         }
-
-        // Update page info
-        //updatePage();
     }
 
     // Display options menu in task-bar
@@ -174,11 +171,11 @@ public class DeviceActivity extends AppCompatActivity {
         dB.getDeviceChild(deviceId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                deviceName.setText(snapshot.child("deviceName").getValue(String.class));
-                String status = "Disabled";
+                deviceName.setText("Device: " + snapshot.child("deviceName").getValue(String.class));
+                String status = getResources().getString(R.string.inactiveDeviceStatus);
                 try {
                     if (snapshot.child("status").getValue(Boolean.class)) {
-                        status = "Active";
+                        status = getResources().getString(R.string.activeDeviceStatus);
                     }
                 } catch (NullPointerException e) {
                     e.printStackTrace();
@@ -215,6 +212,7 @@ public class DeviceActivity extends AppCompatActivity {
     // Get List of all sensor names
     private void getSensorNames() {
         List<String> sensorNames = new ArrayList<>();
+        ArrayList<Sensor> sensData = new ArrayList<>();
 
         for (String id: sensorIds) {
             DatabaseReference sensorRef = dB.getSensorChild(id);
@@ -222,8 +220,11 @@ public class DeviceActivity extends AppCompatActivity {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     try {
-                        sensorNames.add(snapshot.child("SensorName").getValue(String.class));
-                        setSensorList(sensorNames);
+                        String sensorName = snapshot.child("SensorName").getValue(String.class);
+                        int sensorType = snapshot.child("SensorType").getValue(Integer.class);
+
+                        sensData.add(new Sensor(sensorType, sensorName));
+                        setSensorList(sensData);
                     } catch (Exception e) {
                         Log.d(TAG, e.toString());
                         throw e;
@@ -237,28 +238,34 @@ public class DeviceActivity extends AppCompatActivity {
                 }
             });
         }
-        setSensorList(sensorNames);
     }
 
     // Set ListView of sensors
-    private void setSensorList(List<String> sensData) {
+    private void setSensorList(ArrayList<Sensor> sensData) {
+        /*
+        //Dummy Data
         ArrayList<Sensor> fakeData = new ArrayList<>();
-        fakeData.add(new Sensor(2, "Stinky Sensor"));
-        fakeData.add(new Sensor(3, "Stinky Sensor"));
-        fakeData.add(new Sensor(4, "Bad Sensor"));
-        fakeData.add(new Sensor(5, "Nice Sensor"));
-        fakeData.add(new Sensor(6, "Bad Sensor"));
-        fakeData.add(new Sensor(7, "Nice Sensor"));
-        fakeData.add(new Sensor(8, "Bad Sensor"));
-        fakeData.add(new Sensor(9, "Bad Sensor"));
-        fakeData.add(new Sensor(135, "Bad Sensor"));
+        fakeData.add(new Sensor(2, "Smoke"));
+        fakeData.add(new Sensor(3, "Alcohol"));
+        fakeData.add(new Sensor(4, "Methane"));
+        fakeData.add(new Sensor(5, "Propane"));
+        fakeData.add(new Sensor(6, "Butane"));
+        fakeData.add(new Sensor(7, "Carbon Mono"));
+        fakeData.add(new Sensor(8, "Hydrogen"));
+        fakeData.add(new Sensor(9, "Methane"));
+        fakeData.add(new Sensor(135, "Ammonia Sulf"));
+         */
 
-        sensorAdapter = new SensorAdapter(fakeData);
+        // TODO: Limit Sensor Name to 13 Characters
+
+        sensorAdapter = new SensorAdapter(sensData);
         sensorListView.setAdapter(sensorAdapter);
     }
 
     // Open sensor activity for selected sensor
-    private void goToSensorActivity(String sensorId) {
+    public void goToSensorActivity(int sensorIndex) {
+        String sensorId = sensorIds.get(sensorIndex);
+
         Intent intent = new Intent(this, SensorActivity.class);
         intent.putExtra("sensorId", sensorId);
         startActivity(intent);

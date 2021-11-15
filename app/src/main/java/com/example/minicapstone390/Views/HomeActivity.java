@@ -146,6 +146,7 @@ public class HomeActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    // TODO: IMPLEMENT DEVICE CONNECTION - Pls put this in its own class
     // TODO: Fix spaghetti
     @RequiresApi(api = Build.VERSION_CODES.O)
     protected void setXAxisStyle(ArrayList<String> test) {
