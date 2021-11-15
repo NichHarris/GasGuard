@@ -67,7 +67,7 @@ public class SensorActivity extends AppCompatActivity {
     private final Database dB = new Database();
     protected SharedPreferenceHelper sharePreferenceHelper;
     protected LineChart sensorChart;
-    protected TextView sensorName, chartTitle;
+    protected TextView chartTitle;
     protected RadioGroup graphTimesOptions;
     protected List<String> graphTime;
     protected Toolbar toolbar;
@@ -100,7 +100,6 @@ public class SensorActivity extends AppCompatActivity {
         graphTimesOptions = (RadioGroup) findViewById(R.id.graphTimeOptions);
         graphTimesOptions.check(R.id.dayButton);
 
-        sensorName = (TextView) findViewById(R.id.sensor_name);
         chartTitle = (TextView) findViewById(R.id.chart_title);
         sensorChart = (LineChart) findViewById(R.id.sensorChart);
 //        configureGraph(sensorChart);
@@ -236,7 +235,6 @@ public class SensorActivity extends AppCompatActivity {
         sensorRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                sensorName.setText(snapshot.child("SensorName").getValue(String.class));
                 chartTitle.setText(getResources().getString(R.string.sensor_graph).replace("{0}", Objects.requireNonNull(snapshot.child("SensorName").getValue(String.class))));
             }
 

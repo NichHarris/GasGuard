@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     // Sleep Run for 5s (Delay Home/Main Screen Load)
                     super.run();
-                    sleep(5000);
+                    sleep(1000);
                 } catch (Exception e) {
                     // Nothing to Catch
                     Log.i(TAG, e.getMessage());
