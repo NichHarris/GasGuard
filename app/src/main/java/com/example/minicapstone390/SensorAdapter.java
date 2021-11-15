@@ -9,12 +9,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.minicapstone390.Controllers.Database;
 import com.example.minicapstone390.Models.Sensor;
 import com.example.minicapstone390.Views.DeviceActivity;
 import com.example.minicapstone390.Views.SensorActivity;
+import com.example.minicapstone390.Views.SensorFragment;
+import com.example.minicapstone390.Views.UpdateDeviceFragment;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
@@ -54,6 +58,7 @@ public class SensorAdapter extends RecyclerView.Adapter<SensorAdapter.ViewHolder
 
             editIcon.setOnClickListener((view) -> {
                 //TODO: Add Device Edit Code Here
+//                SensorFragment dialog = new SensorFragment();
                 System.out.println("EDIT " + getAdapterPosition());
             });
 
@@ -68,6 +73,7 @@ public class SensorAdapter extends RecyclerView.Adapter<SensorAdapter.ViewHolder
                 ((DeviceActivity)mContext).goToSensorActivity(sensorIndex);
             });
         }
+
     }
 
     // Define Adapter for Device List

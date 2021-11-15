@@ -35,12 +35,9 @@ public class SensorFragment extends DialogFragment {
     private static final String TAG = "SensorFragment";
 
     // Declare variables
-    private final Database dB = new Database();
-    private IOnDataPass callBack;
     protected Button cancelButton, saveButton;
     protected RadioGroup sensorTypeOptions;
     protected EditText sensorNameInput;
-
 
     // TODO: Replace with check for device ID in database and add it to user
     @Nullable
@@ -73,20 +70,6 @@ public class SensorFragment extends DialogFragment {
             }
         });
         return view;
-    }
-
-    public interface IOnDataPass {
-        public void onDataPass(String name, String type);
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        try {
-            callBack = (IOnDataPass) activity;
-        } catch (ClassCastException e) {
-            Log.d(TAG, e.toString());
-        }
     }
 
 }

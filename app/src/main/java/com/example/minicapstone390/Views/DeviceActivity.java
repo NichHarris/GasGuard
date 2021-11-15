@@ -33,7 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class DeviceActivity extends AppCompatActivity implements SensorFragment.IOnDataPass {
+public class DeviceActivity extends AppCompatActivity {
     private static final String TAG = "DeviceActivity";
 
     // Declare variables
@@ -292,10 +292,5 @@ public class DeviceActivity extends AppCompatActivity implements SensorFragment.
     public boolean onSupportNavigateUp() {
         finish();
         return true;
-    }
-
-    @Override
-    public void onDataPass(String name, String type) {
-
     }
 }
