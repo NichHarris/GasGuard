@@ -1,14 +1,18 @@
 package com.example.minicapstone390.Views;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -17,6 +21,19 @@ import com.example.minicapstone390.Controllers.SharedPreferenceHelper;
 import com.example.minicapstone390.DeviceAdapter;
 import com.example.minicapstone390.Models.Device;
 import com.example.minicapstone390.R;
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.AxisBase;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -29,8 +46,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.net.UnknownHostException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.ConsoleHandler;
 
 public class HomeActivity extends AppCompatActivity {
     private static final String TAG = "HomeActivity";
@@ -39,7 +62,7 @@ public class HomeActivity extends AppCompatActivity {
     private final Database dB = new Database();
     protected SharedPreferenceHelper sharePreferenceHelper;
     protected TextView welcomeUserMessage;
-    protected ProgressBar progressBar;
+    protected BarChart deviceChart;
     protected Toolbar toolbar;
 
     protected List<String> deviceIds;
@@ -50,7 +73,8 @@ public class HomeActivity extends AppCompatActivity {
 
     public static String wifiModuleIp = "";
     public static int wifiModulePort = 0;
-
+    public ArrayList<String> test;
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // Initialize SharedPref and check theme
@@ -72,7 +96,8 @@ public class HomeActivity extends AppCompatActivity {
 
         // Initialize Layouts
         // TODO: Replace progress bar with BarGraph of each device
-        progressBar = (ProgressBar) findViewById(R.id.progress_bar);
+        deviceChart = (BarChart) findViewById(R.id.deviceChart);
+        deviceIds = new ArrayList<>();
         welcomeUserMessage = (TextView) findViewById(R.id.welcomeUserMessage);
 
         // Initialize Dev List and Ids
@@ -122,6 +147,67 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     // TODO: IMPLEMENT DEVICE CONNECTION - Pls put this in its own class
+    // TODO: Fix spaghetti
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    protected void setXAxisStyle(ArrayList<String> test) {
+        XAxis xAxis = deviceChart.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setTextSize(10f);
+        xAxis.setTextColor(Color.WHITE);
+        xAxis.setDrawAxisLine(false);
+        xAxis.setDrawGridLines(true);
+        xAxis.setTextColor(Color.rgb(0, 0, 0));
+        xAxis.setCenterAxisLabels(true);
+        xAxis.setGranularity(1f);
+        xAxis.setValueFormatter(new IAxisValueFormatter() {
+            @Override
+            public String getFormattedValue(float value, AxisBase axis) {
+                return test.get((int) value);
+            }
+        });
+
+        setYAxisStyle();
+//        System.out.println("Result: " + producer());
+        setData(test);
+    }
+
+    protected void setYAxisStyle() {
+        YAxis leftAxis = deviceChart.getAxisLeft();
+        leftAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
+        leftAxis.setTextColor(Color.GRAY);
+        leftAxis.setDrawGridLines(true);
+        leftAxis.setGranularityEnabled(true);
+        leftAxis.setAxisMinimum(0f);
+        leftAxis.setAxisMaximum(1.1f);
+        leftAxis.setGranularity(0.1f);
+        leftAxis.setYOffset(0f);
+        leftAxis.setTextColor(Color.rgb(0, 0, 0));
+
+        YAxis rightAxis = deviceChart.getAxisRight();
+        rightAxis.setEnabled(false);
+    }
+
+    // TODO: Fix spaghetti
+    protected void setData(ArrayList<String> test) {
+        List<BarEntry> values = new ArrayList<>();
+
+        for (int x = 1; x < test.size(); x++) {
+            long y = x + 1;
+            values.add(new BarEntry(x, y));
+        }
+        BarDataSet set = new BarDataSet(values, "Test");
+        set.setDrawValues(false);
+        set.setBarBorderWidth(2f);
+
+        BarData data = new BarData(set);
+        data.setValueTextColor(Color.BLACK);
+        data.setValueTextSize(9f);
+
+        deviceChart.setData(data);
+        deviceChart.invalidate();
+    }
+
+    // TODO: IMPLEMENT DEVICE CONNECTION
     public void connectDevice() {
         getIpAndPort();
         Socket_AsyncTask connect_device = new Socket_AsyncTask();
@@ -158,6 +244,7 @@ public class HomeActivity extends AppCompatActivity {
         DatabaseReference usersRef = dB.getUserChild(dB.getUserId()).child("devices");
 
         usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 // Format List from DB for Adapter
@@ -168,6 +255,7 @@ public class HomeActivity extends AppCompatActivity {
                 // Add Ids to Device Ids List
                 deviceIds = devIds;
 
+                setXAxisStyle(devIds);
                 // Get Device Names from DB given Ids
                 getDeviceNames(devIds);
             }
@@ -203,13 +291,6 @@ public class HomeActivity extends AppCompatActivity {
         });
 
         loadDeviceList();
-        updateProgressBar();
-    }
-
-    // TODO
-    private void updateProgressBar() {
-        // TODO: Get an aggregate of the data from active sensors and devices and display relative health
-        progressBar.setProgress(69);
     }
 
     // Navigation to Profile Activity
@@ -265,6 +346,7 @@ public class HomeActivity extends AppCompatActivity {
                 }
             });
         }
+        setDeviceList(devData);
     }
 
     // Add Devices to ListView from DB Snapshots

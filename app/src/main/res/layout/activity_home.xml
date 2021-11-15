@@ -25,7 +25,6 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:layout_marginTop="56dp"
-        android:paddingHorizontal="15dp"
         android:paddingVertical="8dp"
         android:text="@string/welcome_user"
         android:textColor="@color/black"
@@ -36,22 +35,21 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ProgressBar
-        android:id="@+id/progress_bar"
-        style="@android:style/Widget.ProgressBar.Horizontal"
-        android:layout_width="281dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="112dp"
+    <com.github.mikephil.charting.charts.BarChart
+        android:id="@+id/deviceChart"
+        android:layout_width="350dp"
+        android:layout_height="200dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.491"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/welcomeUserMessage" />
 
     <TextView
         android:id="@+id/devicesTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingHorizontal="15dp"
-        android:paddingVertical="10dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="50dp"
         android:text="@string/devices"
         android:background="#bce2d8"
         android:textColor="@color/g_guard_font"
@@ -64,11 +62,12 @@
         android:id="@+id/devicesRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="340dp"
-        android:layout_marginBottom="150dp"
+        android:layout_marginTop="36dp"
         android:background="#bce2d8"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/deviceChart" />
 
     <ImageView
         android:id="@+id/gg_cloud_home"

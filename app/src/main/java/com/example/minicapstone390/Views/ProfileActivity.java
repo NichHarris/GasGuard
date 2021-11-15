@@ -120,8 +120,8 @@ public class ProfileActivity extends AppCompatActivity {
         // TODO: Copied from android jdk just modify it
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(true);
-        builder.setTitle("Delete Confirmation");
-        builder.setMessage("WARNING: Deleting user will completely remove it.");
+        builder.setTitle("Delete Account Confirmation");
+        builder.setMessage("Deleting user account will completely remove the associated account and its owned devices.");
         builder.setPositiveButton("Confirm",
                 new DialogInterface.OnClickListener() {
                     @Override

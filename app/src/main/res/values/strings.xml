@@ -12,7 +12,7 @@
     <string name="passwordCreationRequirements"><b>Password Complexity:</b> Password Must Be Min 8 Characters Long With At Least 1 Uppercase, Lowercase, Digit and Special Character</string>
 
     <string name="welcome_message"> Welcome to gasGuard </string>
-    <string name="welcome_user"> Welcome {0}! </string>
+    <string name="welcome_user"> Welcome, {0}! </string>
     <string name="status"> Status: {0} </string>
     <string name="devices"> Devices </string>
     <string name="logOut">Log Out</string>
