@@ -1,6 +1,5 @@
 package com.example.minicapstone390.Views;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -9,23 +8,13 @@ import android.util.Log;
 import android.util.Patterns;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.minicapstone390.Controllers.Database;
 import com.example.minicapstone390.Controllers.SharedPreferenceHelper;
 import com.example.minicapstone390.Models.User;
 import com.example.minicapstone390.R;
-import com.google.android.gms.tasks.OnCanceledListener;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.Objects;
 import java.util.regex.Pattern;
@@ -35,17 +24,16 @@ public class SignupActivity extends AppCompatActivity {
 
     // Declare variables
     private final Database dB = new Database();
-
     protected SharedPreferenceHelper sharePreferenceHelper;
+
     protected Button signUpButton, loginButton;
-    protected TextView forgotPassword;
     protected EditText usernameET, emailET, passwordET, confirmPasswordET;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         // Initialize SharedPref and check theme
         sharePreferenceHelper = new SharedPreferenceHelper(SignupActivity.this);
+
         // Set theme
         if (sharePreferenceHelper.getTheme()) {
             setTheme(R.style.NightMode);
@@ -69,10 +57,6 @@ public class SignupActivity extends AppCompatActivity {
         // Switch to Login Page
         loginButton = (Button) findViewById(R.id.loginPage);
         loginButton.setOnClickListener(view -> openLoginActivity());
-
-        // Send password reset email
-         forgotPassword = (TextView) findViewById(R.id.signUpForgot);
-         forgotPassword.setOnClickListener(view -> sendReset());
     }
 
     // Sign up a user
@@ -142,30 +126,6 @@ public class SignupActivity extends AppCompatActivity {
                     emailET.requestFocus();
                 }
             });
-    }
-
-    // Send reset email
-    private void sendReset() {
-        String email = emailET.getText().toString();
-
-        if (email.equals("")) {
-            emailET.setError("Please enter email to send reset to");
-            emailET.requestFocus();
-            return;
-        }
-
-        dB.getAuth().sendPasswordResetEmail(email).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()) {
-                    Log.i(TAG, String.format("Password reset sent to: %s", email));
-                    Toast.makeText(getApplicationContext(), "Password reset sent successfully!", Toast.LENGTH_SHORT).show();
-                } else {
-                    Log.e(TAG, "Failed to send password reset email");
-                    Toast.makeText(getApplicationContext(), "Error sending password reset, email is not associated with an account!", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
     }
 
     // Navigate to HomeActivity

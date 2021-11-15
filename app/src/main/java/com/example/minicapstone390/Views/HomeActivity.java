@@ -12,8 +12,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.minicapstone390.Controllers.Database;
@@ -22,18 +20,13 @@ import com.example.minicapstone390.DeviceAdapter;
 import com.example.minicapstone390.Models.Device;
 import com.example.minicapstone390.R;
 import com.github.mikephil.charting.charts.BarChart;
-import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
-import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -46,14 +39,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.net.UnknownHostException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.ConsoleHandler;
 
 public class HomeActivity extends AppCompatActivity {
     private static final String TAG = "HomeActivity";
@@ -65,7 +52,7 @@ public class HomeActivity extends AppCompatActivity {
     protected BarChart deviceChart;
     protected Toolbar toolbar;
 
-    protected List<String> deviceIds;
+    protected ArrayList<String> deviceIds;
     protected ArrayList<Device> devList;
 
     protected RecyclerView deviceListView;
@@ -73,7 +60,7 @@ public class HomeActivity extends AppCompatActivity {
 
     public static String wifiModuleIp = "";
     public static int wifiModulePort = 0;
-    public ArrayList<String> test;
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,9 +82,8 @@ public class HomeActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         // Initialize Layouts
-        // TODO: Replace progress bar with BarGraph of each device
+        // TODO: Bar Chart Used to Display Health Score for Each Device
         deviceChart = (BarChart) findViewById(R.id.deviceChart);
-        deviceIds = new ArrayList<>();
         welcomeUserMessage = (TextView) findViewById(R.id.welcomeUserMessage);
 
         // Initialize Dev List and Ids
@@ -130,20 +116,20 @@ public class HomeActivity extends AppCompatActivity {
     // Create the action when an option on the task-bar is selected
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.add_device:
-                connectDevice();
-                return true;
-            case R.id.profile:
-                goToProfileActivity();
-                return true;
-            case R.id.device_names:
-                //TODO: change list of device names to set names
-                return true;
-            default:
-                break;
+        long itemId = item.getItemId();
+
+        if(itemId == R.id.add_device) {
+            connectDevice();
+        } else if(itemId == R.id.profile) {
+            goToProfileActivity();
+        } else if(itemId == R.id.device_names) {
+            //TODO: Change List of Device Names to Set Names
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
+
+        return true;
     }
 
     // TODO: IMPLEMENT DEVICE CONNECTION - Pls put this in its own class
@@ -159,15 +145,19 @@ public class HomeActivity extends AppCompatActivity {
         xAxis.setTextColor(Color.rgb(0, 0, 0));
         xAxis.setCenterAxisLabels(true);
         xAxis.setGranularity(1f);
+
+        //TODO: Change to Lambda Function
+        // Causes App to Crash since Value is Out of Bounds
         xAxis.setValueFormatter(new IAxisValueFormatter() {
             @Override
             public String getFormattedValue(float value, AxisBase axis) {
-                return test.get((int) value);
+                //System.out.println("Test Value " + value);
+                return test.size() > value ? test.get((int) value) : "";
             }
         });
 
         setYAxisStyle();
-//        System.out.println("Result: " + producer());
+        //System.out.println("Result: " + producer());
         setData(test);
     }
 
@@ -220,7 +210,7 @@ public class HomeActivity extends AppCompatActivity {
         dialog.show(getSupportFragmentManager(), "AddDeviceFragment");
     }
 
-    // TODO
+    // TODO: android.os.AsyncTask is Deprecated
     public static class Socket_AsyncTask extends AsyncTask<Void, Void, Void> {
         Socket socket;
 
@@ -255,7 +245,9 @@ public class HomeActivity extends AppCompatActivity {
                 // Add Ids to Device Ids List
                 deviceIds = devIds;
 
-                setXAxisStyle(devIds);
+                // Add Device To Health Graph
+                setXAxisStyle(deviceIds);
+
                 // Get Device Names from DB given Ids
                 getDeviceNames(devIds);
             }
@@ -274,12 +266,12 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 try {
-                    String userFirstName = snapshot.child("userFirstName").getValue(String.class);
+                    String userName = snapshot.child("userName").getValue(String.class);
 
-                    String defaultMessage = getResources().getString(R.string.welcome_user).replace("{0}", userFirstName != null ? userFirstName : "");
+                    String defaultMessage = getResources().getString(R.string.welcome_user).replace("{0}", userName != null ? userName : "");
                     welcomeUserMessage.setText(defaultMessage);
                 } catch (Exception e) {
-                    return;
+                    // Call onCancelled to Throw Exception
                 }
             }
 
@@ -301,13 +293,10 @@ public class HomeActivity extends AppCompatActivity {
 
     // Navigation to Device Activity
     public void goToDeviceActivity(int index) {
-        System.out.println("All Devices");
-        for(String id: deviceIds) {
-            System.out.println("Device: " + id);
-        }
-
+        //Get Device Id from Index
         String deviceId = deviceIds.get(index);
 
+        //Pass Device Id to Get Data for Device Page
         Intent intent = new Intent(this, DeviceActivity.class);
         intent.putExtra("deviceId", deviceId);
         startActivity(intent);
@@ -346,7 +335,6 @@ public class HomeActivity extends AppCompatActivity {
                 }
             });
         }
-        setDeviceList(devData);
     }
 
     // Add Devices to ListView from DB Snapshots

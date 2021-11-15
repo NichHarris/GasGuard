@@ -1,7 +1,6 @@
 package com.example.minicapstone390.Views;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -12,30 +11,22 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.minicapstone390.Controllers.Database;
 import com.example.minicapstone390.Controllers.SharedPreferenceHelper;
-import com.example.minicapstone390.DeviceAdapter;
 
 import com.example.minicapstone390.Models.Sensor;
 import com.example.minicapstone390.R;
 import com.example.minicapstone390.SensorAdapter;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 public class DeviceActivity extends AppCompatActivity {
@@ -114,18 +105,20 @@ public class DeviceActivity extends AppCompatActivity {
     @Override
     public  boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
+
         if(id == R.id.update_device) {
             UpdateDeviceFragment dialog = new UpdateDeviceFragment();
             dialog.show(getSupportFragmentManager(), "UpdateDeviceFragment");
-        }
-        if(id == R.id.disable_device) {
+        } else if(id == R.id.disable_device) {
             disableDevice();
-        }
-        if(id == R.id.remove_device) {
+        } else if(id == R.id.remove_device) {
             deleteDevice();
             openHomeActivity();
+        } else {
+            return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
+
+        return true;
     }
 
     // Change the active status of a device
@@ -171,7 +164,9 @@ public class DeviceActivity extends AppCompatActivity {
         dB.getDeviceChild(deviceId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                deviceName.setText("Device: " + snapshot.child("deviceName").getValue(String.class));
+                String devNameText = "Device: " + snapshot.child("deviceName").getValue(String.class);
+                deviceName.setText(devNameText);
+
                 String status = getResources().getString(R.string.inactiveDeviceStatus);
                 try {
                     if (snapshot.child("status").getValue(Boolean.class)) {
@@ -181,7 +176,9 @@ public class DeviceActivity extends AppCompatActivity {
                     e.printStackTrace();
                     throw e;
                 }
-                deviceStatus.setText(getResources().getString(R.string.status).replace("{0}", status));
+
+                String devStatusText = getResources().getString(R.string.status) +  status;
+                deviceStatus.setText(devStatusText);
             }
 
             @Override
@@ -211,7 +208,6 @@ public class DeviceActivity extends AppCompatActivity {
 
     // Get List of all sensor names
     private void getSensorNames() {
-        List<String> sensorNames = new ArrayList<>();
         ArrayList<Sensor> sensData = new ArrayList<>();
 
         for (String id: sensorIds) {
@@ -242,22 +238,7 @@ public class DeviceActivity extends AppCompatActivity {
 
     // Set ListView of sensors
     private void setSensorList(ArrayList<Sensor> sensData) {
-        /*
-        //Dummy Data
-        ArrayList<Sensor> fakeData = new ArrayList<>();
-        fakeData.add(new Sensor(2, "Smoke"));
-        fakeData.add(new Sensor(3, "Alcohol"));
-        fakeData.add(new Sensor(4, "Methane"));
-        fakeData.add(new Sensor(5, "Propane"));
-        fakeData.add(new Sensor(6, "Butane"));
-        fakeData.add(new Sensor(7, "Carbon Mono"));
-        fakeData.add(new Sensor(8, "Hydrogen"));
-        fakeData.add(new Sensor(9, "Methane"));
-        fakeData.add(new Sensor(135, "Ammonia Sulf"));
-         */
-
         // TODO: Limit Sensor Name to 13 Characters
-
         sensorAdapter = new SensorAdapter(sensData);
         sensorListView.setAdapter(sensorAdapter);
     }

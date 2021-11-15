@@ -18,7 +18,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Welcome Message   -->
+    <!-- Welcome Message -->
     <TextView
         android:id="@+id/welcomeUserMessage"
         android:layout_width="wrap_content"
@@ -35,6 +35,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- User Health Score Bar Chart from Devices -->
     <com.github.mikephil.charting.charts.BarChart
         android:id="@+id/deviceChart"
         android:layout_width="350dp"
@@ -44,11 +45,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/welcomeUserMessage" />
 
+    <!--  Recycler View Title  -->
     <TextView
         android:id="@+id/devicesTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
+        android:paddingHorizontal="20dp"
         android:layout_marginTop="50dp"
         android:text="@string/devices"
         android:background="#bce2d8"
@@ -58,26 +60,29 @@
         app:layout_constraintBottom_toTopOf="@id/devicesRecyclerView"
         app:layout_constraintStart_toStartOf="parent" />
 
+    <!-- Custom Recycler View for Devices    -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/devicesRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="340dp"
         android:layout_marginTop="36dp"
         android:background="#bce2d8"
+        android:translationZ="1dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/deviceChart" />
 
+    <!-- Gas Guard Banner -->
     <ImageView
         android:id="@+id/gg_cloud_home"
         android:layout_width="361dp"
         android:layout_height="146dp"
         android:layout_below="@id/devicesTitle"
+        android:contentDescription="@string/gasGuardBannerDescription"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/gg_corner"
-        android:contentDescription="GG Banner" />
+        app:srcCompat="@drawable/gg_corner"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

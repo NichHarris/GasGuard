@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.minicapstone390.Models.Device;
@@ -15,9 +16,9 @@ import com.example.minicapstone390.Views.HomeActivity;
 import java.util.ArrayList;
 
 public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder> {
-    // Define ArrayList of Devices
-    private ArrayList<Device> devices;
+    // Define Context and ArrayList of Devices
     private Context mContext;
+    private final ArrayList<Device> devices;
 
     // Define Single Device Holder
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -60,6 +61,7 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
         devices = deviceNames;
     }
 
+    @NonNull
     @Override
     public DeviceAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // Create View Based on Specified Layout for Holder
