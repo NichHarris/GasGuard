@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.example.minicapstone390.Controllers.Database;
 import com.example.minicapstone390.Controllers.SharedPreferenceHelper;
 import com.example.minicapstone390.Models.Device;
+import com.example.minicapstone390.Models.Sensor;
 import com.example.minicapstone390.Models.SensorData;
 import com.example.minicapstone390.R;
 import com.github.mikephil.charting.charts.LineChart;
@@ -164,29 +165,22 @@ public class SensorActivity extends AppCompatActivity {
     private void updateGraphDates() {
         List<LocalDateTime> history = new ArrayList<>();
         long decrement = graphTimeScale / 7;
-//        if (decrement == 0) {
-//            for (long i = 23; i >= 0; i -= 4) {
-//                history.add(LocalTime.of(23, 0).minusHours(i).toString());
-//            }
-//            history.add(LocalTime.of(0, 0).toString());
-//        } else {
-//            for (long i = graphTimeScale; i >= 0; i -= decrement) {
-//                history.add(LocalDateTime.now().minusDays(i));
-//            }
-//        }
-        for (long i = graphTimeScale; i >= 0; i -= decrement) {
-            history.add(LocalDateTime.now().minusDays(i));
+        if (decrement == 0) {
+            for (long i = 23; i >= 0; i -= 4) {
+                history.add(LocalDateTime.of(LocalDate.now(), LocalTime.of(23, 0)).minusHours(i));
+            }
+            history.add(LocalDateTime.of(LocalDate.now(), LocalTime.of(0, 0)));
+        } else {
+            for (long i = graphTimeScale; i >= 0; i -= decrement) {
+                history.add(LocalDateTime.now().minusDays(i));
+            }
         }
         System.out.println(history);
         getAllSensorData(history);
-//        if (graphTimeScale != 0) {
-//            producer(history);
-//        }
-        //        setXAxisLabels(history);
     }
 
     public void getAllSensorData(List<LocalDateTime> history) {
-        ArrayList<SensorData> allData = new ArrayList<>();
+        ArrayList<SensorData> validData = new ArrayList<>();
         dB.getSensorChild(sensorId).child("SensorPastValues").addValueEventListener(new ValueEventListener() {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
@@ -202,11 +196,8 @@ public class SensorActivity extends AppCompatActivity {
                         times.add(LocalDateTime.parse(ds.getKey(), DateTimeFormatter.ISO_LOCAL_DATE_TIME));
                     }
                 }
-                allData.add(new SensorData(values, times));
-                System.out.println("Times: " + allData.get(0).getTimes());
-                System.out.println("Values: " + allData.get(0).getValues());
-                allSensorData = allData.get(0);
-//                setGraphScale();
+                validData.add(new SensorData(values, times));
+                producer(history, validData.get(0));
             }
 
 
@@ -217,6 +208,79 @@ public class SensorActivity extends AppCompatActivity {
             }
         });
     }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    protected void producer(List<LocalDateTime> history, SensorData data) {
+        if (data.getValues().size() != 0) {
+            LocalDateTime start = history.get(0);
+            LocalDateTime end = history.get(history.size() - 1);
+            long duration = Duration.between(start, end).getSeconds();
+            long cuts = data.getValues().size();
+            long delta = duration / (cuts - 1);
+            ArrayList<String> results = new ArrayList<>();
+
+            for (int i = 0; i < cuts; i++) {
+                results.add(start.plusSeconds(i * delta).format(DateTimeFormatter.ofPattern("MM/dd")));
+            }
+            setXAxisLabels(history, data, results);
+        }
+    }
+
+    // Setting LineChart
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void setXAxisLabels(List<LocalDateTime> history, SensorData data, ArrayList<String> results) {
+        ArrayList<String> xAxisLabel = new ArrayList<>(results.size());
+        xAxisLabel.addAll(results);
+
+        XAxis xAxis = sensorChart.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setCenterAxisLabels(true);
+        xAxis.setValueFormatter(new IAxisValueFormatter() {
+            @Override
+            public String getFormattedValue(float value, AxisBase axis) {
+                if (value < results.size()) {
+                    return xAxisLabel.get((int) value).toString();
+                } else {
+                    return "";
+                }
+            }
+        });
+        setYAxis();
+        setData(data, results);
+    }
+
+    private void setYAxis() {
+        YAxis leftAxis = sensorChart.getAxisLeft();
+        leftAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
+        leftAxis.setTextColor(Color.BLACK);
+        leftAxis.setGranularityEnabled(true);
+        leftAxis.setAxisMinimum(0f);
+        leftAxis.setAxisMaximum(1.1f);
+        leftAxis.setGranularity(0.1f);
+
+        YAxis rightAxis = sensorChart.getAxisRight();
+        rightAxis.setEnabled(false);
+    }
+
+    // TODO: Fix spaghetti
+    protected void setData(SensorData data, ArrayList<String> results) {
+        ArrayList<Entry> values = new ArrayList<>();
+        for (int x = 1; x < results.size() - 1; x++) {
+            values.add(new Entry(x, data.getValues().get(x).floatValue()));
+        }
+        LineDataSet set = new LineDataSet(values, "Test");
+        set.setDrawValues(false);
+        set.setLineWidth(2);
+
+        LineData lineData = new LineData(set);
+        lineData.setValueTextColor(Color.BLACK);
+        lineData.setValueTextSize(9f);
+
+        sensorChart.setData(lineData);
+
+        sensorChart.invalidate();
+    }
+
 
     private void notification() {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "id").setContentTitle("Notif").setContentText("Over 10").setPriority(NotificationCompat.PRIORITY_DEFAULT);
@@ -239,80 +303,6 @@ public class SensorActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    protected void producer(List<LocalDateTime> history) {
-        LocalDateTime start = history.get(0);
-        LocalDateTime end = history.get(history.size() - 1);
-        System.out.println("Start: " + start.format(DateTimeFormatter.ISO_DATE));
-        System.out.println("End: " + end.format(DateTimeFormatter.ISO_DATE));
-        long duration = Duration.between(start, end).getSeconds();
-        System.out.println("Duration : " + duration);
-        long cuts = sensorValues.size();
-        System.out.println("Size : " + cuts);
-        long delta = duration/ (cuts - 1);
-        ArrayList<String> results = new ArrayList<>();
-
-        for (int i = 0; i < cuts; i++) {
-            results.add(start.plusSeconds(i*delta).format(DateTimeFormatter.ofPattern("MM/dd")));
-        }
-        System.out.println("Results: " + results);
-//        return results;
-    }
-
-    // Setting BarChart
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    private void setXAxisLabels(List<LocalDateTime> history) {
-//        System.out.println(producer(history));
-        ArrayList<String> xAxisLabel = new ArrayList<>();
-        for (int i = 0; i < history.size(); i++) {
-            xAxisLabel.add(history.get(i).format(DateTimeFormatter.ofPattern("MM/dd")));
-        }
-
-        XAxis xAxis = sensorChart.getXAxis();
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setCenterAxisLabels(true);
-        xAxis.setValueFormatter(new IAxisValueFormatter() {
-            @Override
-            public String getFormattedValue(float value, AxisBase axis) {
-                return xAxisLabel.get((int) value).toString();
-            }
-        });
-        setYAxis();
-        setData(new ArrayList<LocalDateTime>(history));
-    }
-
-    private void setYAxis() {
-        YAxis leftAxis = sensorChart.getAxisLeft();
-        leftAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
-        leftAxis.setTextColor(Color.BLACK);
-        leftAxis.setGranularityEnabled(true);
-        leftAxis.setAxisMinimum(0f);
-        leftAxis.setAxisMaximum(1.1f);
-        leftAxis.setGranularity(0.1f);
-
-        YAxis rightAxis = sensorChart.getAxisRight();
-        rightAxis.setEnabled(false);
-    }
-
-    // TODO: Fix spaghetti
-    protected void setData(ArrayList<LocalDateTime> history) {
-        ArrayList<Entry> values = new ArrayList<>();
-
-
-        for (int x = 1; x < history.size() - 1; x++) {
-            values.add(new Entry(x, sensorValues.get(x).floatValue()));
-        }
-        LineDataSet set = new LineDataSet(values, "Test");
-        set.setDrawValues(false);
-        set.setLineWidth(2);
-
-        LineData data = new LineData(set);
-        data.setValueTextColor(Color.BLACK);
-        data.setValueTextSize(9f);
-
-        sensorChart.setData(data);
-        sensorChart.invalidate();
-    }
 
     // TODO: Add status to DB
     private void disableSensor() {
