@@ -56,13 +56,12 @@ public class SensorActivity extends AppCompatActivity {
     private final Database dB = new Database();
     protected SharedPreferenceHelper sharePreferenceHelper;
     protected LineChart sensorChart;
-    protected TextView sensorName, chartTitle;
+    protected TextView chartTitle;
     protected RadioGroup graphTimesOptions;
     protected Toolbar toolbar;
     protected String sensorId;
 
     public double total = 0;
-    public double liveData = 0;
     public int graphTimeScale = 7;
     public ArrayList<Double> sensorValues = new ArrayList<>();
 
@@ -88,7 +87,6 @@ public class SensorActivity extends AppCompatActivity {
         graphTimesOptions = (RadioGroup) findViewById(R.id.graphTimeOptions);
         graphTimesOptions.check(R.id.weekButton);
 
-        sensorName = (TextView) findViewById(R.id.sensor_name);
         chartTitle = (TextView) findViewById(R.id.chart_title);
         sensorChart = (LineChart) findViewById(R.id.sensorChart);
 
@@ -110,7 +108,6 @@ public class SensorActivity extends AppCompatActivity {
         sensorRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                sensorName.setText(snapshot.child("SensorName").getValue(String.class));
                 chartTitle.setText(getResources().getString(R.string.sensor_graph).replace("{0}", Objects.requireNonNull(snapshot.child("SensorName").getValue(String.class))));
             }
 
@@ -270,7 +267,6 @@ public class SensorActivity extends AppCompatActivity {
         sensorChart.invalidate();
     }
 
-
     private void notification() {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "id").setContentTitle("Notif").setContentText("Over 10").setPriority(NotificationCompat.PRIORITY_DEFAULT);
     }
@@ -308,87 +304,6 @@ public class SensorActivity extends AppCompatActivity {
                     e.printStackTrace();
                     Log.d(TAG, e.toString());
                     throw e;
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError e) {
-                Log.d(TAG, e.toString());
-                throw e.toException();
-            }
-        });
-    }
-
-    // TODO LocalDateTime from, LocalDateTime to
-    private void getSensorDataDay() {
-        dB.getSensorChild(sensorId).child("SensorPastValues").addValueEventListener(new ValueEventListener() {
-            @RequiresApi(api = Build.VERSION_CODES.O)
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                ArrayList<Double> sensorData = new ArrayList<>();
-                for (DataSnapshot ds : snapshot.getChildren()) {
-
-                    // Gets the date
-                    System.out.println(LocalDate.parse(ds.getKey(), DateTimeFormatter.ISO_LOCAL_DATE_TIME));
-                    // Gets the time of day
-                    System.out.println(LocalTime.parse(ds.getKey(), DateTimeFormatter.ISO_LOCAL_DATE_TIME));
-
-                    sensorValues.add(ds.child("Value").getValue(Double.class));
-                    sensorData.add(ds.child("Value").getValue(Double.class));
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError e) {
-                Log.d(TAG, e.toString());
-                throw e.toException();
-            }
-        });
-    }
-
-//    // TODO LocalDateTime from, LocalDateTime to
-//    private void getSensorData() {
-//        dB.getSensorChild(sensorId).child("SensorPastValues").addValueEventListener(new ValueEventListener() {
-//            @RequiresApi(api = Build.VERSION_CODES.O)
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                ArrayList<Double> sensorData = new ArrayList<>();
-//                for (DataSnapshot ds : snapshot.getChildren()) {
-//                    // Gets the date
-//                    System.out.println(LocalDate.parse(ds.getKey(), DateTimeFormatter.ISO_LOCAL_DATE_TIME));
-//                    // Gets the time of day
-//                    System.out.println(LocalTime.parse(ds.getKey(), DateTimeFormatter.ISO_LOCAL_DATE_TIME));
-//                    Instant instant = Instant.parse(ds.getKey()+".521Z");
-//                    Date time = null;
-//                    try {
-//                        time = Date.from(instant);
-//                        System.out.println("Time: " + time);
-//                    } catch (Exception e) {
-//                        System.out.println(e);
-//                    }
-//                }
-//                System.out.println(sensorData);
-////                setGraphScale();
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError e) {
-//                Log.d(TAG, e.toString());
-//                throw e.toException();
-//            }
-//        });
-//    }
-
-    // TODO: Fix spaghetti
-    private void getCurrentData() {
-        dB.getSensorChild(sensorId).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                total += snapshot.child("SensorValue").getValue(Double.class);
-                if (total >= 10) {
-                    notification();
-                    total = 0;
                 }
             }
 
