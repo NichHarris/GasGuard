@@ -197,6 +197,7 @@ public class HomeActivity extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+
                 // Format List from DB for Adapter
                 for (DataSnapshot ds : snapshot.getChildren()) {
                     devIds.add(ds.getValue(String.class));
@@ -225,6 +226,8 @@ public class HomeActivity extends AppCompatActivity {
             //TODO: check if devices are part of the user
             DatabaseReference deviceRef = dB.getDeviceRef().child(id);
             deviceRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                public String test = "Test";
+
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     try {
@@ -249,31 +252,40 @@ public class HomeActivity extends AppCompatActivity {
                 }
             });
         }
+
     }
 
     // Add Devices to ListView from DB Snapshots
     private void setDeviceList(ArrayList<Device> devData) {
         deviceAdapter = new DeviceAdapter(devData);
         deviceListView.setAdapter(deviceAdapter);
-        setXAxisLabels(devData);
+        ArrayList<String> devices = new ArrayList<>();
+        System.out.println(deviceAdapter.getItemCount());
+        for (int i = 0; i < deviceAdapter.getItemCount(); i++) {
+            System.out.println(deviceAdapter.getDeviceName(i));
+            devices.add(deviceAdapter.getDeviceName(i));
+        }
+        setXAxisLabels(devices);
     }
 
     // Setting BarChart
-    private void setXAxisLabels(ArrayList<Device> deviceData) {
-        ArrayList<String> xAxisLabel = new ArrayList<>();
+    private void setXAxisLabels(ArrayList<String> deviceData) {
+        ArrayList<String> xAxisLabel = new ArrayList<>(deviceData.size());
         for (int i = 0; i < deviceData.size(); i++) {
-            xAxisLabel.add(deviceData.get(i).getDeviceName());
+            if (!xAxisLabel.contains(deviceData.get(i))) {
+                xAxisLabel.add(deviceData.get(i));
+            }
         }
 
         XAxis xAxis = deviceChart.getXAxis();
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setLabelCount(3,true);
         xAxis.setCenterAxisLabels(true);
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setValueFormatter(new IAxisValueFormatter() {
             @Override
             public String getFormattedValue(float value, AxisBase axis) {
                 if (value < xAxisLabel.size()) {
                     return xAxisLabel.get((int) value);
-
                 } else {
                     return "";
                 }
@@ -296,21 +308,19 @@ public class HomeActivity extends AppCompatActivity {
         rightAxis.setEnabled(false);
     }
 
-    protected void setData(ArrayList<Device> devices) {
+    protected void setData(ArrayList<String> devices) {
+        deviceChart.clear();
         List<BarEntry> values = new ArrayList<>();
-
-        for (int x = 0; x < devices.size(); x++) {
+        for (int x = 1; x < devices.size() + 1; x++) {
             long y = 1;
             values.add(new BarEntry(x, y));
         }
         BarDataSet set = new BarDataSet(values, "Test");
         set.setDrawValues(false);
         set.setBarBorderWidth(2f);
-
         BarData data = new BarData(set);
         data.setValueTextColor(Color.BLACK);
         data.setBarWidth(0.25f);
-
         data.setValueTextSize(2f);
         deviceChart.setData(data);
         deviceChart.invalidate();

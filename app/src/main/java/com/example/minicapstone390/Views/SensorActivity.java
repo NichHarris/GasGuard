@@ -220,12 +220,13 @@ public class SensorActivity extends AppCompatActivity {
 
         XAxis xAxis = sensorChart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setLabelCount(8,true);
         xAxis.setCenterAxisLabels(true);
         xAxis.setValueFormatter(new IAxisValueFormatter() {
             @Override
             public String getFormattedValue(float value, AxisBase axis) {
                 if (value < results.size()) {
-                    return xAxisLabel.get((int) value).toString();
+                    return xAxisLabel.get((int) value);
                 } else {
                     return "";
                 }

@@ -85,4 +85,8 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
         // Return Num Devices
         return devices.size();
     }
+
+    public String getDeviceName(int position) {
+        return devices.get(position).getDeviceName();
+    }
 }
