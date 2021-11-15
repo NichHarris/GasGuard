@@ -92,7 +92,7 @@ public class HomeActivity extends AppCompatActivity {
         deviceData = new ArrayList<>();
         // Update page info
         updatePage();
-//        setXAxisLabels();
+
         // Recycler View for Devices
         deviceListView = (RecyclerView) findViewById(R.id.devicesRecyclerView);
         deviceListView.setLayoutManager(new LinearLayoutManager(this));
@@ -259,21 +259,16 @@ public class HomeActivity extends AppCompatActivity {
     private void setDeviceList(ArrayList<Device> devData) {
         deviceAdapter = new DeviceAdapter(devData);
         deviceListView.setAdapter(deviceAdapter);
-        ArrayList<String> devices = new ArrayList<>();
-        System.out.println(deviceAdapter.getItemCount());
-        for (int i = 0; i < deviceAdapter.getItemCount(); i++) {
-            System.out.println(deviceAdapter.getDeviceName(i));
-            devices.add(deviceAdapter.getDeviceName(i));
-        }
-        setXAxisLabels(devices);
+
+        setXAxisLabels(devData);
     }
 
     // Setting BarChart
-    private void setXAxisLabels(ArrayList<String> deviceData) {
+    private void setXAxisLabels(ArrayList<Device> deviceData) {
         ArrayList<String> xAxisLabel = new ArrayList<>(deviceData.size());
         for (int i = 0; i < deviceData.size(); i++) {
-            if (!xAxisLabel.contains(deviceData.get(i))) {
-                xAxisLabel.add(deviceData.get(i));
+            if (!xAxisLabel.contains(deviceData.get(i).getDeviceName())) {
+                xAxisLabel.add(deviceData.get(i).getDeviceName());
             }
         }
 
@@ -308,7 +303,7 @@ public class HomeActivity extends AppCompatActivity {
         rightAxis.setEnabled(false);
     }
 
-    protected void setData(ArrayList<String> devices) {
+    protected void setData(ArrayList<Device> devices) {
         deviceChart.clear();
         List<BarEntry> values = new ArrayList<>();
         for (int x = 1; x < devices.size() + 1; x++) {
