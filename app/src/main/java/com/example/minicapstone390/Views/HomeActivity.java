@@ -54,7 +54,7 @@ public class HomeActivity extends AppCompatActivity {
 
     protected ArrayList<String> deviceIds;
     protected ArrayList<Device> devList;
-
+    protected ArrayList<Device> deviceData;
     protected RecyclerView deviceListView;
     protected DeviceAdapter deviceAdapter;
 
@@ -89,10 +89,10 @@ public class HomeActivity extends AppCompatActivity {
         // Initialize Dev List and Ids
         devList = new ArrayList<>();
         deviceIds = new ArrayList<>();
-
+        deviceData = new ArrayList<>();
         // Update page info
         updatePage();
-
+//        setXAxisLabels();
         // Recycler View for Devices
         deviceListView = (RecyclerView) findViewById(R.id.devicesRecyclerView);
         deviceListView.setLayoutManager(new LinearLayoutManager(this));
@@ -132,71 +132,6 @@ public class HomeActivity extends AppCompatActivity {
         return true;
     }
 
-    // TODO: IMPLEMENT DEVICE CONNECTION - Pls put this in its own class
-    // TODO: Fix spaghetti
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    protected void setXAxisStyle(ArrayList<String> test) {
-        XAxis xAxis = deviceChart.getXAxis();
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setTextSize(10f);
-        xAxis.setTextColor(Color.WHITE);
-        xAxis.setDrawAxisLine(false);
-        xAxis.setDrawGridLines(true);
-        xAxis.setTextColor(Color.rgb(0, 0, 0));
-        xAxis.setCenterAxisLabels(true);
-        xAxis.setGranularity(1f);
-
-        //TODO: Change to Lambda Function
-        // Causes App to Crash since Value is Out of Bounds
-        xAxis.setValueFormatter(new IAxisValueFormatter() {
-            @Override
-            public String getFormattedValue(float value, AxisBase axis) {
-                //System.out.println("Test Value " + value);
-                return test.size() > value ? test.get((int) value) : "";
-            }
-        });
-
-        setYAxisStyle();
-        //System.out.println("Result: " + producer());
-        setData(test);
-    }
-
-    protected void setYAxisStyle() {
-        YAxis leftAxis = deviceChart.getAxisLeft();
-        leftAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
-        leftAxis.setTextColor(Color.GRAY);
-        leftAxis.setDrawGridLines(true);
-        leftAxis.setGranularityEnabled(true);
-        leftAxis.setAxisMinimum(0f);
-        leftAxis.setAxisMaximum(1.1f);
-        leftAxis.setGranularity(0.1f);
-        leftAxis.setYOffset(0f);
-        leftAxis.setTextColor(Color.rgb(0, 0, 0));
-
-        YAxis rightAxis = deviceChart.getAxisRight();
-        rightAxis.setEnabled(false);
-    }
-
-    // TODO: Fix spaghetti
-    protected void setData(ArrayList<String> test) {
-        List<BarEntry> values = new ArrayList<>();
-
-        for (int x = 1; x < test.size(); x++) {
-            long y = x + 1;
-            values.add(new BarEntry(x, y));
-        }
-        BarDataSet set = new BarDataSet(values, "Test");
-        set.setDrawValues(false);
-        set.setBarBorderWidth(2f);
-
-        BarData data = new BarData(set);
-        data.setValueTextColor(Color.BLACK);
-        data.setValueTextSize(9f);
-
-        deviceChart.setData(data);
-        deviceChart.invalidate();
-    }
-
     // TODO: IMPLEMENT DEVICE CONNECTION
     public void connectDevice() {
         getIpAndPort();
@@ -226,43 +161,9 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
-    // Get, Initialize, and Update Devices - Display List of Devices
-    protected void loadDeviceList() {
-        ArrayList<String> devIds = new ArrayList<>();
-
-        //Get List of Devices from DB
-        DatabaseReference usersRef = dB.getUserChild(dB.getUserId()).child("devices");
-
-        usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @RequiresApi(api = Build.VERSION_CODES.O)
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                // Format List from DB for Adapter
-                for (DataSnapshot ds : snapshot.getChildren()) {
-                    devIds.add(ds.getValue(String.class));
-                }
-
-                // Add Ids to Device Ids List
-                deviceIds = devIds;
-
-                // Add Device To Health Graph
-                setXAxisStyle(deviceIds);
-
-                // Get Device Names from DB given Ids
-                getDeviceNames(devIds);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError e) {
-                Log.d(TAG, e.toString());
-                throw e.toException();
-            }
-        });
-    }
-
     // Update Page information
     private void updatePage() {
-        dB.getUserChild(dB.getUserId()).addValueEventListener(new ValueEventListener() {
+        dB.getUserChild(dB.getUserId()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 try {
@@ -285,21 +186,35 @@ public class HomeActivity extends AppCompatActivity {
         loadDeviceList();
     }
 
-    // Navigation to Profile Activity
-    private void goToProfileActivity() {
-        Intent intent = new Intent(this, ProfileActivity.class);
-        startActivity(intent);
-    }
+    // Get, Initialize, and Update Devices - Display List of Devices
+    protected void loadDeviceList() {
+        ArrayList<String> devIds = new ArrayList<>();
 
-    // Navigation to Device Activity
-    public void goToDeviceActivity(int index) {
-        //Get Device Id from Index
-        String deviceId = deviceIds.get(index);
+        //Get List of Devices from DB
+        DatabaseReference usersRef = dB.getUserChild(dB.getUserId()).child("devices");
 
-        //Pass Device Id to Get Data for Device Page
-        Intent intent = new Intent(this, DeviceActivity.class);
-        intent.putExtra("deviceId", deviceId);
-        startActivity(intent);
+        usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                // Format List from DB for Adapter
+                for (DataSnapshot ds : snapshot.getChildren()) {
+                    devIds.add(ds.getValue(String.class));
+                }
+
+                // Add Ids to Device Ids List
+                deviceIds = devIds;
+
+                // Get Device Names from DB given Ids
+                getDeviceNames(devIds);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError e) {
+                Log.d(TAG, e.toString());
+                throw e.toException();
+            }
+        });
     }
 
     // Get List of device names associated with the user
@@ -324,7 +239,6 @@ public class HomeActivity extends AppCompatActivity {
                         Log.d(TAG, e.toString());
                         return;
                     }
-
                     setDeviceList(devData);
                 }
 
@@ -341,5 +255,76 @@ public class HomeActivity extends AppCompatActivity {
     private void setDeviceList(ArrayList<Device> devData) {
         deviceAdapter = new DeviceAdapter(devData);
         deviceListView.setAdapter(deviceAdapter);
+        setXAxisLabels(devData);
+    }
+
+    // Setting BarChart
+    private void setXAxisLabels(ArrayList<Device> deviceData) {
+        ArrayList<String> xAxisLabel = new ArrayList<>();
+        for (int i = 0; i < deviceData.size(); i++) {
+            xAxisLabel.add(deviceData.get(i).getDeviceName());
+        }
+
+        XAxis xAxis = deviceChart.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setCenterAxisLabels(true);
+        xAxis.setValueFormatter(new IAxisValueFormatter() {
+            @Override
+            public String getFormattedValue(float value, AxisBase axis) {
+                return xAxisLabel.get((int) value);
+            }
+        });
+        setYAxis();
+        setData(deviceData);
+    }
+
+    private void setYAxis() {
+        YAxis leftAxis = deviceChart.getAxisLeft();
+        leftAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
+        leftAxis.setTextColor(Color.BLACK);
+        leftAxis.setGranularityEnabled(true);
+        leftAxis.setAxisMinimum(0f);
+        leftAxis.setAxisMaximum(1.1f);
+        leftAxis.setGranularity(0.1f);
+
+        YAxis rightAxis = deviceChart.getAxisRight();
+        rightAxis.setEnabled(false);
+    }
+
+    protected void setData(ArrayList<Device> devices) {
+        List<BarEntry> values = new ArrayList<>();
+
+        for (int x = 0; x < devices.size(); x++) {
+            long y = 1;
+            values.add(new BarEntry(x, y));
+        }
+        BarDataSet set = new BarDataSet(values, "Test");
+        set.setDrawValues(false);
+        set.setBarBorderWidth(2f);
+
+        BarData data = new BarData(set);
+        data.setValueTextColor(Color.BLACK);
+        data.setBarWidth(0.25f);
+
+        data.setValueTextSize(2f);
+        deviceChart.setData(data);
+        deviceChart.invalidate();
+    }
+
+    // Navigation to Profile Activity
+    private void goToProfileActivity() {
+        Intent intent = new Intent(this, ProfileActivity.class);
+        startActivity(intent);
+    }
+
+    // Navigation to Device Activity
+    public void goToDeviceActivity(int index) {
+        //Get Device Id from Index
+        String deviceId = deviceIds.get(index);
+
+        //Pass Device Id to Get Data for Device Page
+        Intent intent = new Intent(this, DeviceActivity.class);
+        intent.putExtra("deviceId", deviceId);
+        startActivity(intent);
     }
 }
