@@ -106,7 +106,6 @@ public class SensorActivity extends AppCompatActivity {
             if (sensorId != null) {
                 displaySensorInfo(sensorId);
                 getAllSensorData();
-//                setGraphScale();
             } else {
                 Log.e(TAG, "Id is null");
             }
@@ -191,9 +190,8 @@ public class SensorActivity extends AppCompatActivity {
                 history.add(LocalDateTime.now().minusDays(i));
             }
         }
-        System.out.println(history);
+//        System.out.println(history);
         return new ArrayList<>(history);
-//        getAllSensorData(history);
     }
 
     public void getAllSensorData() {
@@ -209,16 +207,12 @@ public class SensorActivity extends AppCompatActivity {
                 LocalDateTime end = history.get(history.size() - 1);
                 for (DataSnapshot ds : snapshot.getChildren()) {
                     LocalDateTime time = LocalDateTime.parse(ds.getKey(), DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-                    System.out.println("Time" + time.toString());
-                    System.out.println("Start" + start.toString());
-                    System.out.println("End" + end.toString());
                     if (start.isBefore(time) && end.isAfter(time)) {
                         values.add(ds.child("Value").getValue(Double.class));
                         times.add(LocalDateTime.parse(ds.getKey(), DateTimeFormatter.ISO_LOCAL_DATE_TIME));
                     }
                 }
                 validData.add(new SensorData(values, times));
-                System.out.println("Size" + validData.get(0).getValues().size());
                 producer(history, validData.get(0));
                 validData.clear();
             }
@@ -243,7 +237,11 @@ public class SensorActivity extends AppCompatActivity {
             ArrayList<String> results = new ArrayList<>();
 
             for (int i = 0; i < cuts; i++) {
-                results.add(start.plusSeconds(i * delta).format(DateTimeFormatter.ofPattern("MM/dd")));
+                if (graphTimesOptions.getCheckedRadioButtonId() == R.id.dayButton) {
+                    results.add(start.plusSeconds(i * delta).format(DateTimeFormatter.ofPattern("HH:mm")));
+                } else {
+                    results.add(start.plusSeconds(i * delta).format(DateTimeFormatter.ofPattern("MM/dd")));
+                }
             }
             setXAxisLabels(history, data, results);
         }
