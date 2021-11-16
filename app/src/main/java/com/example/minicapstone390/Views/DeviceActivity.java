@@ -75,6 +75,8 @@ public class DeviceActivity extends AppCompatActivity {
         // TODO: Add  BarGraph of each sensor
         sensorListView = (RecyclerView) findViewById(R.id.sensorsRecyclerView);
         sensorListView.setLayoutManager(new LinearLayoutManager(this));
+        sensorAdapter = new SensorAdapter(sensorList);
+        sensorListView.setAdapter(sensorAdapter);
 
         // Initialize TextViews
         deviceName = (TextView) findViewById(R.id.device_name);

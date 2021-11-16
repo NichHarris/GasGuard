@@ -120,7 +120,10 @@ public class SensorAdapter extends RecyclerView.Adapter<SensorAdapter.ViewHolder
     @Override
     public int getItemCount() {
         // Return Num Devices
-        return sensors.size();
+        if (sensors != null) {
+            return sensors.size();
+        }
+        return 0;
     }
 
     // Get Sensor Drawable Image Resource Based on Type

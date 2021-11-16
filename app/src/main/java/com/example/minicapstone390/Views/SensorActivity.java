@@ -105,7 +105,8 @@ public class SensorActivity extends AppCompatActivity {
             }
             if (sensorId != null) {
                 displaySensorInfo(sensorId);
-                setGraphScale();
+                getAllSensorData();
+//                setGraphScale();
             } else {
                 Log.e(TAG, "Id is null");
             }
@@ -169,33 +170,33 @@ public class SensorActivity extends AppCompatActivity {
                     default:
                         graphTimeScale = 7;
                 }
-                updateGraphDates();
             }
         });
-        updateGraphDates();
     }
 
     // TODO: Fix spaghetti
     // Get the time scale of the X axis of the graph
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void updateGraphDates() {
+    private ArrayList<LocalDateTime> updateGraphDates() {
         List<LocalDateTime> history = new ArrayList<>();
+        setGraphScale();
         long decrement = graphTimeScale / 7;
         if (decrement == 0) {
             for (long i = 23; i >= 0; i -= 4) {
                 history.add(LocalDateTime.of(LocalDate.now(), LocalTime.of(23, 0)).minusHours(i));
             }
-            history.add(LocalDateTime.of(LocalDate.now(), LocalTime.of(0, 0)));
+            history.add(LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(0, 0)));
         } else {
             for (long i = graphTimeScale; i >= 0; i -= decrement) {
                 history.add(LocalDateTime.now().minusDays(i));
             }
         }
         System.out.println(history);
-        getAllSensorData(history);
+        return new ArrayList<>(history);
+//        getAllSensorData(history);
     }
 
-    public void getAllSensorData(List<LocalDateTime> history) {
+    public void getAllSensorData() {
         ArrayList<SensorData> validData = new ArrayList<>();
         dB.getSensorChild(sensorId).child("SensorPastValues").addValueEventListener(new ValueEventListener() {
             @RequiresApi(api = Build.VERSION_CODES.O)
@@ -203,17 +204,21 @@ public class SensorActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 ArrayList<Double> values = new ArrayList<>();
                 ArrayList<LocalDateTime> times = new ArrayList<>();
+                ArrayList<LocalDateTime> history = updateGraphDates();
                 LocalDateTime start = history.get(0);
                 LocalDateTime end = history.get(history.size() - 1);
                 for (DataSnapshot ds : snapshot.getChildren()) {
                     LocalDateTime time = LocalDateTime.parse(ds.getKey(), DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+                    System.out.println("Time" + time.toString());
+                    System.out.println("Start" + start.toString());
+                    System.out.println("End" + end.toString());
                     if (start.isBefore(time) && end.isAfter(time)) {
                         values.add(ds.child("Value").getValue(Double.class));
                         times.add(LocalDateTime.parse(ds.getKey(), DateTimeFormatter.ISO_LOCAL_DATE_TIME));
                     }
                 }
                 validData.add(new SensorData(values, times));
-                System.out.println("Data: " + validData);
+                System.out.println("Size" + validData.get(0).getValues().size());
                 producer(history, validData.get(0));
                 validData.clear();
             }
