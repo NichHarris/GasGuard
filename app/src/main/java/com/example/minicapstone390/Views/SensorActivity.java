@@ -25,6 +25,7 @@ import com.example.minicapstone390.Models.SensorData;
 import com.example.minicapstone390.R;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.AxisBase;
+import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
@@ -90,6 +91,9 @@ public class SensorActivity extends AppCompatActivity {
 
         chartTitle = (TextView) findViewById(R.id.chart_title);
         sensorChart = (LineChart) findViewById(R.id.sensorChart);
+        // Disable legend and description
+        sensorChart.getLegend().setEnabled(false);
+        sensorChart.getDescription().setEnabled(false);
 
         Bundle carryOver = getIntent().getExtras();
         if (carryOver != null) {
@@ -101,7 +105,7 @@ public class SensorActivity extends AppCompatActivity {
             }
             if (sensorId != null) {
                 displaySensorInfo(sensorId);
-                setGraphScale();
+                getAllSensorData();
             } else {
                 Log.e(TAG, "Id is null");
             }
@@ -165,33 +169,33 @@ public class SensorActivity extends AppCompatActivity {
                     default:
                         graphTimeScale = 7;
                 }
-                updateGraphDates();
+                getAllSensorData();
             }
         });
-        updateGraphDates();
     }
 
     // TODO: Fix spaghetti
     // Get the time scale of the X axis of the graph
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void updateGraphDates() {
+    private ArrayList<LocalDateTime> updateGraphDates() {
         List<LocalDateTime> history = new ArrayList<>();
+        setGraphScale();
         long decrement = graphTimeScale / 7;
         if (decrement == 0) {
             for (long i = 23; i >= 0; i -= 4) {
                 history.add(LocalDateTime.of(LocalDate.now(), LocalTime.of(23, 0)).minusHours(i));
             }
-            history.add(LocalDateTime.of(LocalDate.now(), LocalTime.of(0, 0)));
+            history.add(LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(0, 0)));
         } else {
             for (long i = graphTimeScale; i >= 0; i -= decrement) {
                 history.add(LocalDateTime.now().minusDays(i));
             }
         }
-        System.out.println(history);
-        getAllSensorData(history);
+//        System.out.println(history);
+        return new ArrayList<>(history);
     }
 
-    public void getAllSensorData(List<LocalDateTime> history) {
+    public void getAllSensorData() {
         ArrayList<SensorData> validData = new ArrayList<>();
         dB.getSensorChild(sensorId).child("SensorPastValues").addValueEventListener(new ValueEventListener() {
             @RequiresApi(api = Build.VERSION_CODES.O)
@@ -199,6 +203,7 @@ public class SensorActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 ArrayList<Double> values = new ArrayList<>();
                 ArrayList<LocalDateTime> times = new ArrayList<>();
+                ArrayList<LocalDateTime> history = updateGraphDates();
                 LocalDateTime start = history.get(0);
                 LocalDateTime end = history.get(history.size() - 1);
                 for (DataSnapshot ds : snapshot.getChildren()) {
@@ -210,6 +215,7 @@ public class SensorActivity extends AppCompatActivity {
                 }
                 validData.add(new SensorData(values, times));
                 producer(history, validData.get(0));
+                validData.clear();
             }
 
 
@@ -229,10 +235,10 @@ public class SensorActivity extends AppCompatActivity {
             long duration = Duration.between(start, end).getSeconds();
             long cuts = data.getValues().size();
             long delta = duration / (cuts - 1);
-            ArrayList<String> results = new ArrayList<>();
+            ArrayList<LocalDateTime> results = new ArrayList<>();
 
             for (int i = 0; i < cuts; i++) {
-                results.add(start.plusSeconds(i * delta).format(DateTimeFormatter.ofPattern("MM/dd")));
+                results.add(start.plusSeconds(i * delta));
             }
             setXAxisLabels(history, data, results);
         }
@@ -240,13 +246,22 @@ public class SensorActivity extends AppCompatActivity {
 
     // Setting LineChart
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void setXAxisLabels(List<LocalDateTime> history, SensorData data, ArrayList<String> results) {
+    private void setXAxisLabels(List<LocalDateTime> history, SensorData data, ArrayList<LocalDateTime> results) {
         ArrayList<String> xAxisLabel = new ArrayList<>(results.size());
-        xAxisLabel.addAll(results);
+        DateTimeFormatter format;
+        if (graphTimesOptions.getCheckedRadioButtonId() == R.id.dayButton) {
+            format = DateTimeFormatter.ofPattern("HH:mm");
+        } else {
+            format = DateTimeFormatter.ofPattern("MM/dd");
+        }
+
+        for (int i = 0; i < results.size(); i++) {
+            xAxisLabel.add(results.get(i).format(format));
+        }
 
         XAxis xAxis = sensorChart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setLabelCount(8,true);
+        xAxis.setLabelCount(history.size() + 1,true);
         xAxis.setCenterAxisLabels(true);
         xAxis.setValueFormatter(new IAxisValueFormatter() {
             @Override
@@ -276,11 +291,34 @@ public class SensorActivity extends AppCompatActivity {
     }
 
     // TODO: Fix spaghetti
-    protected void setData(SensorData data, ArrayList<String> results) {
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    protected void setData(SensorData data, ArrayList<LocalDateTime> results) {
         ArrayList<Entry> values = new ArrayList<>();
         for (int x = 1; x < results.size() - 1; x++) {
-            values.add(new Entry(x, data.getValues().get(x).floatValue()));
+            DateTimeFormatter format;
+            if (graphTimesOptions.getCheckedRadioButtonId() == R.id.dayButton) {
+                format = DateTimeFormatter.ofPattern("HH:mm");
+            } else {
+                format = DateTimeFormatter.ofPattern("MM/dd");
+            }
+            LocalDateTime start = results.get(0);
+            LocalDateTime end = results.get(results.size() - 1);
+
+            // TODO: Check if first state is ever passing? Appending -1 to start isn't working
+            if (data.getTimes().get(x).isBefore(start) || data.getTimes().get(x).isAfter(end)) {
+                values.add(new Entry(x, -1));
+            } else {
+                values.add(new Entry(x, data.getValues().get(x).floatValue()));
+            }
+
+//            if (data.getTimes().get(x).isAfter(start) && data.getTimes().get(x).isBefore(end)) {
+//                values.add(new Entry(x, data.getValues().get(x).floatValue()));
+//            } else {
+//                values.add(new Entry(x, -1));
+//            }
         }
+        System.out.println(values.size());
+
         LineDataSet set = new LineDataSet(values, "Test");
         set.setDrawValues(false);
         set.setLineWidth(2);
