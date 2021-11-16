@@ -235,14 +235,10 @@ public class SensorActivity extends AppCompatActivity {
             long duration = Duration.between(start, end).getSeconds();
             long cuts = data.getValues().size();
             long delta = duration / (cuts - 1);
-            ArrayList<String> results = new ArrayList<>();
+            ArrayList<LocalDateTime> results = new ArrayList<>();
 
             for (int i = 0; i < cuts; i++) {
-                if (graphTimesOptions.getCheckedRadioButtonId() == R.id.dayButton) {
-                    results.add(start.plusSeconds(i * delta).format(DateTimeFormatter.ofPattern("HH:mm")));
-                } else {
-                    results.add(start.plusSeconds(i * delta).format(DateTimeFormatter.ofPattern("MM/dd")));
-                }
+                results.add(start.plusSeconds(i * delta));
             }
             setXAxisLabels(history, data, results);
         }
@@ -250,9 +246,18 @@ public class SensorActivity extends AppCompatActivity {
 
     // Setting LineChart
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void setXAxisLabels(List<LocalDateTime> history, SensorData data, ArrayList<String> results) {
+    private void setXAxisLabels(List<LocalDateTime> history, SensorData data, ArrayList<LocalDateTime> results) {
         ArrayList<String> xAxisLabel = new ArrayList<>(results.size());
-        xAxisLabel.addAll(results);
+        DateTimeFormatter format;
+        if (graphTimesOptions.getCheckedRadioButtonId() == R.id.dayButton) {
+            format = DateTimeFormatter.ofPattern("HH:mm");
+        } else {
+            format = DateTimeFormatter.ofPattern("MM/dd");
+        }
+
+        for (int i = 0; i < results.size(); i++) {
+            xAxisLabel.add(results.get(i).format(format));
+        }
 
         XAxis xAxis = sensorChart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
@@ -286,11 +291,34 @@ public class SensorActivity extends AppCompatActivity {
     }
 
     // TODO: Fix spaghetti
-    protected void setData(SensorData data, ArrayList<String> results) {
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    protected void setData(SensorData data, ArrayList<LocalDateTime> results) {
         ArrayList<Entry> values = new ArrayList<>();
         for (int x = 1; x < results.size() - 1; x++) {
-            values.add(new Entry(x, data.getValues().get(x).floatValue()));
+            DateTimeFormatter format;
+            if (graphTimesOptions.getCheckedRadioButtonId() == R.id.dayButton) {
+                format = DateTimeFormatter.ofPattern("HH:mm");
+            } else {
+                format = DateTimeFormatter.ofPattern("MM/dd");
+            }
+            LocalDateTime start = results.get(0);
+            LocalDateTime end = results.get(results.size() - 1);
+
+            // TODO: Check if first state is ever passing? Appending -1 to start isn't working
+            if (data.getTimes().get(x).isBefore(start) || data.getTimes().get(x).isAfter(end)) {
+                values.add(new Entry(x, -1));
+            } else {
+                values.add(new Entry(x, data.getValues().get(x).floatValue()));
+            }
+
+//            if (data.getTimes().get(x).isAfter(start) && data.getTimes().get(x).isBefore(end)) {
+//                values.add(new Entry(x, data.getValues().get(x).floatValue()));
+//            } else {
+//                values.add(new Entry(x, -1));
+//            }
         }
+        System.out.println(values.size());
+
         LineDataSet set = new LineDataSet(values, "Test");
         set.setDrawValues(false);
         set.setLineWidth(2);
