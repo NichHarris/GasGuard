@@ -213,7 +213,9 @@ public class SensorActivity extends AppCompatActivity {
                     }
                 }
                 validData.add(new SensorData(values, times));
+                System.out.println("Data: " + validData);
                 producer(history, validData.get(0));
+                validData.clear();
             }
 
 
