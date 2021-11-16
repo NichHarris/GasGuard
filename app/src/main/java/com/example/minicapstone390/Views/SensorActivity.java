@@ -169,6 +169,7 @@ public class SensorActivity extends AppCompatActivity {
                     default:
                         graphTimeScale = 7;
                 }
+                getAllSensorData();
             }
         });
     }
