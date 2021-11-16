@@ -63,9 +63,7 @@ public class SensorActivity extends AppCompatActivity {
     protected String sensorId;
     protected String function;
 
-    public double total = 0;
     public int graphTimeScale = 7;
-    public ArrayList<Double> sensorValues = new ArrayList<>();
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -99,7 +97,7 @@ public class SensorActivity extends AppCompatActivity {
         if (carryOver != null) {
             sensorId = carryOver.getString("sensorId");
             function = carryOver.getString("editDialog", "");
-            System.out.println(function);
+
             if(function.equals("editSensor()")) {
                 editSensor(sensorId);
             }
@@ -108,9 +106,11 @@ public class SensorActivity extends AppCompatActivity {
                 getAllSensorData();
             } else {
                 Log.e(TAG, "Id is null");
+                openHomeActivity();
             }
         } else {
             Toast.makeText(this, "Error fetching device", Toast.LENGTH_LONG).show();
+            Log.e(TAG, "Error fetching device");
             openHomeActivity();
         }
     }
@@ -191,7 +191,6 @@ public class SensorActivity extends AppCompatActivity {
                 history.add(LocalDateTime.now().minusDays(i));
             }
         }
-//        System.out.println(history);
         return new ArrayList<>(history);
     }
 
@@ -204,8 +203,10 @@ public class SensorActivity extends AppCompatActivity {
                 ArrayList<Double> values = new ArrayList<>();
                 ArrayList<LocalDateTime> times = new ArrayList<>();
                 ArrayList<LocalDateTime> history = updateGraphDates();
+
                 LocalDateTime start = history.get(0);
                 LocalDateTime end = history.get(history.size() - 1);
+
                 for (DataSnapshot ds : snapshot.getChildren()) {
                     LocalDateTime time = LocalDateTime.parse(ds.getKey(), DateTimeFormatter.ISO_LOCAL_DATE_TIME);
                     if (start.isBefore(time) && end.isAfter(time)) {
@@ -217,7 +218,6 @@ public class SensorActivity extends AppCompatActivity {
                 producer(history, validData.get(0));
                 validData.clear();
             }
-
 
             @Override
             public void onCancelled(@NonNull DatabaseError e) {
@@ -268,9 +268,8 @@ public class SensorActivity extends AppCompatActivity {
             public String getFormattedValue(float value, AxisBase axis) {
                 if (value < results.size()) {
                     return xAxisLabel.get((int) value);
-                } else {
-                    return "";
                 }
+                return "";
             }
         });
         setYAxis();
@@ -295,12 +294,6 @@ public class SensorActivity extends AppCompatActivity {
     protected void setData(SensorData data, ArrayList<LocalDateTime> results) {
         ArrayList<Entry> values = new ArrayList<>();
         for (int x = 1; x < results.size() - 1; x++) {
-            DateTimeFormatter format;
-            if (graphTimesOptions.getCheckedRadioButtonId() == R.id.dayButton) {
-                format = DateTimeFormatter.ofPattern("HH:mm");
-            } else {
-                format = DateTimeFormatter.ofPattern("MM/dd");
-            }
             LocalDateTime start = results.get(0);
             LocalDateTime end = results.get(results.size() - 1);
 
@@ -310,16 +303,9 @@ public class SensorActivity extends AppCompatActivity {
             } else {
                 values.add(new Entry(x, data.getValues().get(x).floatValue()));
             }
-
-//            if (data.getTimes().get(x).isAfter(start) && data.getTimes().get(x).isBefore(end)) {
-//                values.add(new Entry(x, data.getValues().get(x).floatValue()));
-//            } else {
-//                values.add(new Entry(x, -1));
-//            }
         }
-        System.out.println(values.size());
 
-        LineDataSet set = new LineDataSet(values, "Test");
+        LineDataSet set = new LineDataSet(values, "SensorGraph");
         set.setDrawValues(false);
         set.setLineWidth(2);
 
@@ -328,7 +314,6 @@ public class SensorActivity extends AppCompatActivity {
         lineData.setValueTextSize(9f);
 
         sensorChart.setData(lineData);
-
         sensorChart.invalidate();
     }
 

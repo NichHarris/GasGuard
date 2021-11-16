@@ -1,9 +1,8 @@
-package com.example.minicapstone390;
+package com.example.minicapstone390.Controllers;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,19 +10,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.minicapstone390.Controllers.Database;
 import com.example.minicapstone390.Models.Sensor;
+import com.example.minicapstone390.R;
 import com.example.minicapstone390.Views.DeviceActivity;
 import com.example.minicapstone390.Views.SensorActivity;
 import com.example.minicapstone390.Views.SensorFragment;
-import com.example.minicapstone390.Views.UpdateDeviceFragment;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 

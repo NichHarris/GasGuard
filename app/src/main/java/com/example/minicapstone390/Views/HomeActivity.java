@@ -16,7 +16,7 @@ import android.widget.TextView;
 
 import com.example.minicapstone390.Controllers.Database;
 import com.example.minicapstone390.Controllers.SharedPreferenceHelper;
-import com.example.minicapstone390.DeviceAdapter;
+import com.example.minicapstone390.Controllers.DeviceAdapter;
 import com.example.minicapstone390.Models.Device;
 import com.example.minicapstone390.R;
 import com.github.mikephil.charting.charts.BarChart;
@@ -311,7 +311,7 @@ public class HomeActivity extends AppCompatActivity {
             long y = 1;
             values.add(new BarEntry(x, y));
         }
-        BarDataSet set = new BarDataSet(values, "Test");
+        BarDataSet set = new BarDataSet(values, "DeviceGraph");
         set.setDrawValues(false);
         set.setBarBorderWidth(2f);
         BarData data = new BarData(set);

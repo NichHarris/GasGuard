@@ -21,7 +21,7 @@ import com.example.minicapstone390.Controllers.SharedPreferenceHelper;
 
 import com.example.minicapstone390.Models.Sensor;
 import com.example.minicapstone390.R;
-import com.example.minicapstone390.SensorAdapter;
+import com.example.minicapstone390.Controllers.SensorAdapter;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
@@ -154,6 +154,7 @@ public class DeviceActivity extends AppCompatActivity {
     // Remove device from the user
     private void deleteDevice() {
         // TODO: Copied from android jdk just modify it
+        // TODO: Create a builder class...
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(true);
         builder.setTitle("Delete Device Confirmation");

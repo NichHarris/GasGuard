@@ -1,8 +1,6 @@
-package com.example.minicapstone390;
+package com.example.minicapstone390.Controllers;
 
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,16 +8,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.minicapstone390.Models.Device;
-import com.example.minicapstone390.Views.DeviceActivity;
+import com.example.minicapstone390.R;
 import com.example.minicapstone390.Views.HomeActivity;
-import com.example.minicapstone390.Views.ProfileActivity;
-import com.example.minicapstone390.Views.SensorActivity;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 
 import java.util.ArrayList;
 
