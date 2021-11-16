@@ -18,7 +18,6 @@ public class Sensor {
         this.SensorType = sensorType;
         this.SensorName = sensorName;
         this.SensorValue = sensorValue;
-
     }
 
     public String getId() { return id; }

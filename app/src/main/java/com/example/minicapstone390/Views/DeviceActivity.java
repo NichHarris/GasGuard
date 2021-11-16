@@ -30,7 +30,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public class DeviceActivity extends AppCompatActivity {
@@ -71,6 +73,8 @@ public class DeviceActivity extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
         // TODO: Add  BarGraph of each sensor
+        sensorListView = (RecyclerView) findViewById(R.id.sensorsRecyclerView);
+        sensorListView.setLayoutManager(new LinearLayoutManager(this));
 
         // Initialize TextViews
         deviceName = (TextView) findViewById(R.id.device_name);
@@ -79,12 +83,6 @@ public class DeviceActivity extends AppCompatActivity {
         // Initialize Dev List and Ids
         sensorList = new ArrayList<>();
         sensorIds = new ArrayList<>();
-
-        // Recycler View for Sensors
-        sensorListView = (RecyclerView) findViewById(R.id.sensorsRecyclerView);
-        sensorListView.setLayoutManager(new LinearLayoutManager(this));
-        sensorAdapter = new SensorAdapter(sensorList);
-        sensorListView.setAdapter(sensorAdapter);
 
         // Display info for selected device
         Bundle carryOver = getIntent().getExtras();
@@ -242,7 +240,7 @@ public class DeviceActivity extends AppCompatActivity {
     // Get List of all sensor names
     private void getSensorNames() {
         ArrayList<Sensor> sensData = new ArrayList<>();
-
+        Map<String, Sensor> sensorMap = new HashMap<String, Sensor>();
         for (String id: sensorIds) {
             DatabaseReference sensorRef = dB.getSensorChild(id);
             sensorRef.addValueEventListener(new ValueEventListener() {
@@ -252,7 +250,18 @@ public class DeviceActivity extends AppCompatActivity {
                         String sensorName = snapshot.child("SensorName").getValue(String.class);
                         int sensorType = snapshot.child("SensorType").getValue(Integer.class);
                         double sensorValue = snapshot.child("SensorValue").getValue(Double.class);
-                        sensData.add(new Sensor(id, sensorType, sensorName, sensorValue));
+                        if (!sensorMap.containsKey(id)) {
+                            Sensor sensor = new Sensor(id, sensorType, sensorName, sensorValue);
+                            sensData.add(sensor);
+                            sensorMap.put(id, sensor);
+                        } else {
+                            Sensor sensor = sensorMap.get(id);
+                            assert sensor != null;
+                            sensor.setSensorName(sensorName);
+                            sensor.setSensorValue(sensorValue);
+                            sensor.setSensorType(sensorType);
+                            sensData.set(sensData.indexOf(sensor), sensor);
+                        }
                         setSensorList(sensData);
                     } catch (Exception e) {
                         Log.d(TAG, e.toString());
@@ -274,6 +283,7 @@ public class DeviceActivity extends AppCompatActivity {
     // Set ListView of sensors
     private void setSensorList(ArrayList<Sensor> sensData) {
         // TODO: Limit Sensor Name to 13 Characters
+        // Recycler View for Sensors
         sensorAdapter = new SensorAdapter(sensData);
         sensorListView.setAdapter(sensorAdapter);
     }
