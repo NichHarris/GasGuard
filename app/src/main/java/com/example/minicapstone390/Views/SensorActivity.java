@@ -60,6 +60,7 @@ public class SensorActivity extends AppCompatActivity {
     protected RadioGroup graphTimesOptions;
     protected Toolbar toolbar;
     protected String sensorId;
+    protected String function;
 
     public double total = 0;
     public int graphTimeScale = 7;
@@ -93,12 +94,37 @@ public class SensorActivity extends AppCompatActivity {
         Bundle carryOver = getIntent().getExtras();
         if (carryOver != null) {
             sensorId = carryOver.getString("sensorId");
-            displaySensorInfo(sensorId);
-            setGraphScale();
+            function = carryOver.getString("editDialog", "");
+            System.out.println(function);
+            if(function.equals("editSensor()")) {
+                editSensor(sensorId);
+            }
+            if (sensorId != null) {
+                displaySensorInfo(sensorId);
+                setGraphScale();
+            } else {
+                Log.e(TAG, "Id is null");
+            }
         } else {
             Toast.makeText(this, "Error fetching device", Toast.LENGTH_LONG).show();
             openHomeActivity();
         }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    @Override
+    protected void onResume() {
+        super.onResume();
+        displaySensorInfo(sensorId);
+        setGraphScale();
+    }
+
+    private void editSensor(String sensorId) {
+        Bundle bundle = new Bundle();
+        bundle.putString("id", sensorId);
+        SensorFragment dialog = new SensorFragment();
+        dialog.setArguments(bundle);
+        dialog.show(getSupportFragmentManager(), "SensorFragment");
     }
 
     // Display basic info of the sensor

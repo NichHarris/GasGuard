@@ -1,6 +1,8 @@
 package com.example.minicapstone390;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -58,8 +60,13 @@ public class SensorAdapter extends RecyclerView.Adapter<SensorAdapter.ViewHolder
 
             editIcon.setOnClickListener((view) -> {
                 //TODO: Add Device Edit Code Here
-//                SensorFragment dialog = new SensorFragment();
-                System.out.println("EDIT " + getAdapterPosition());
+                SensorFragment dialog = new SensorFragment();
+                Intent intent = new Intent(mContext , SensorActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("sensorId", sensors.get(getAdapterPosition()).getId());
+                bundle.putString("editDialog", "editSensor()");
+                intent.putExtras(bundle);
+                mContext.startActivity(intent);
             });
 
             deleteIcon.setOnClickListener((view) -> {

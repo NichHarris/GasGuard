@@ -1,6 +1,7 @@
 package com.example.minicapstone390.Views;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -119,15 +120,17 @@ public class UpdateInfoFragment extends DialogFragment {
                         }
 
                         @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-                            dismiss(); // TODO: Add error catch
+                        public void onCancelled(@NonNull DatabaseError e) {
+                            Log.d(TAG, e.toString());
+                            dismiss();
                         }
                     });
                 }
 
                 @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-                    dismiss(); // TODO: Add error catch
+                public void onCancelled(@NonNull DatabaseError e) {
+                    Log.d(TAG, e.toString());
+                    dismiss();
                 }
             });
         });

@@ -1,6 +1,8 @@
 package com.example.minicapstone390;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,10 +10,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.minicapstone390.Models.Device;
+import com.example.minicapstone390.Views.DeviceActivity;
 import com.example.minicapstone390.Views.HomeActivity;
+import com.example.minicapstone390.Views.ProfileActivity;
+import com.example.minicapstone390.Views.SensorActivity;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 
 import java.util.ArrayList;
 
@@ -40,6 +48,10 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
 
             editIcon.setOnClickListener((view) -> {
                 //TODO: Add Device Edit Code Here
+//                Intent intent = new Intent(mContext , SensorActivity.class);
+//                intent.putExtra("sensorId", getAdapterPosition());
+//                intent.putExtra("editDialog", "editSensor()");
+//                mContext.startActivity(intent);
                 System.out.println("EDIT " + getAdapterPosition());
             });
 
@@ -84,9 +96,5 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
     public int getItemCount() {
         // Return Num Devices
         return devices.size();
-    }
-
-    public String getDeviceName(int position) {
-        return devices.get(position).getDeviceName();
     }
 }

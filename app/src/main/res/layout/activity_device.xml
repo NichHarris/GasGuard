@@ -62,7 +62,7 @@
         android:textSize="25sp"
         android:textStyle="bold"
         android:textColor="@color/g_guard_font"
-        android:background="#bce2d8"
+        android:background="@color/g_guard_theme"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="@id/sensorsRecyclerView" />
@@ -73,7 +73,7 @@
         android:layout_width="match_parent"
         android:layout_height="380dp"
         android:layout_marginBottom="130dp"
-        android:background="#bce2d8"
+        android:background="@color/g_guard_theme"
         android:translationZ="1dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
