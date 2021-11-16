@@ -82,7 +82,6 @@ public class HomeActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         // Initialize Layouts
-        // TODO: Bar Chart Used to Display Health Score for Each Device
         deviceChart = (BarChart) findViewById(R.id.deviceChart);
         welcomeUserMessage = (TextView) findViewById(R.id.welcomeUserMessage);
 
@@ -92,7 +91,7 @@ public class HomeActivity extends AppCompatActivity {
         deviceData = new ArrayList<>();
         // Update page info
         updatePage();
-//        setXAxisLabels();
+
         // Recycler View for Devices
         deviceListView = (RecyclerView) findViewById(R.id.devicesRecyclerView);
         deviceListView.setLayoutManager(new LinearLayoutManager(this));
@@ -197,6 +196,7 @@ public class HomeActivity extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+
                 // Format List from DB for Adapter
                 for (DataSnapshot ds : snapshot.getChildren()) {
                     devIds.add(ds.getValue(String.class));
@@ -225,6 +225,7 @@ public class HomeActivity extends AppCompatActivity {
             //TODO: check if devices are part of the user
             DatabaseReference deviceRef = dB.getDeviceRef().child(id);
             deviceRef.addListenerForSingleValueEvent(new ValueEventListener() {
+
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     try {
@@ -249,29 +250,38 @@ public class HomeActivity extends AppCompatActivity {
                 }
             });
         }
+
     }
 
     // Add Devices to ListView from DB Snapshots
     private void setDeviceList(ArrayList<Device> devData) {
         deviceAdapter = new DeviceAdapter(devData);
         deviceListView.setAdapter(deviceAdapter);
+
         setXAxisLabels(devData);
     }
 
     // Setting BarChart
     private void setXAxisLabels(ArrayList<Device> deviceData) {
-        ArrayList<String> xAxisLabel = new ArrayList<>();
+        ArrayList<String> xAxisLabel = new ArrayList<>(deviceData.size());
         for (int i = 0; i < deviceData.size(); i++) {
-            xAxisLabel.add(deviceData.get(i).getDeviceName());
+            if (!xAxisLabel.contains(deviceData.get(i).getDeviceName())) {
+                xAxisLabel.add(deviceData.get(i).getDeviceName());
+            }
         }
 
         XAxis xAxis = deviceChart.getXAxis();
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setLabelCount(deviceData.size() + 1,true);
         xAxis.setCenterAxisLabels(true);
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setValueFormatter(new IAxisValueFormatter() {
             @Override
             public String getFormattedValue(float value, AxisBase axis) {
-                return xAxisLabel.get((int) value);
+                if (value < xAxisLabel.size()) {
+                    return xAxisLabel.get((int) value);
+                } else {
+                    return "";
+                }
             }
         });
         setYAxis();
@@ -292,20 +302,18 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     protected void setData(ArrayList<Device> devices) {
+        deviceChart.clear();
         List<BarEntry> values = new ArrayList<>();
-
-        for (int x = 0; x < devices.size(); x++) {
+        for (int x = 1; x < devices.size() + 1; x++) {
             long y = 1;
             values.add(new BarEntry(x, y));
         }
         BarDataSet set = new BarDataSet(values, "Test");
         set.setDrawValues(false);
         set.setBarBorderWidth(2f);
-
         BarData data = new BarData(set);
         data.setValueTextColor(Color.BLACK);
         data.setBarWidth(0.25f);
-
         data.setValueTextSize(2f);
         deviceChart.setData(data);
         deviceChart.invalidate();

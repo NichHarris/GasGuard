@@ -22,6 +22,8 @@ import com.example.minicapstone390.Controllers.Database;
 import com.example.minicapstone390.Models.Device;
 import com.example.minicapstone390.Models.Sensor;
 import com.example.minicapstone390.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -36,57 +38,65 @@ public class SensorFragment extends DialogFragment {
 
     // Declare variables
     private final Database dB = new Database();
-    private IOnDataPass callBack;
     protected Button cancelButton, saveButton;
     protected RadioGroup sensorTypeOptions;
     protected EditText sensorNameInput;
-
+    protected String sensorId;
 
     // TODO: Replace with check for device ID in database and add it to user
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.dialog_add_device, container, false);
+        View view = inflater.inflate(R.layout.dialog_update_sensor, container, false);
 
-        // Input Fields for Student Profile Data
-        sensorNameInput = (EditText) view.findViewById(R.id.sensorName);
-        sensorTypeOptions = (RadioGroup) view.findViewById(R.id.sensorOptions);
+        sensorId = getArguments().getString("id");
 
-        //Create Object and Listener for Cancel and Save Buttons
-        cancelButton = (Button) view.findViewById(R.id.cancel_add_device_button);
-        saveButton = (Button) view.findViewById(R.id.save_add_device_button);
+        if (sensorId != null) {
+            // Input Fields for Student Profile Data
+            sensorNameInput = (EditText) view.findViewById(R.id.sensorName);
+            sensorTypeOptions = (RadioGroup) view.findViewById(R.id.sensorOptions);
 
-        cancelButton.setOnClickListener(v -> dismiss());
+            //Create Object and Listener for Cancel and Save Buttons
+            cancelButton = (Button) view.findViewById(R.id.cancel_add_device_button);
+            saveButton = (Button) view.findViewById(R.id.save_add_device_button);
 
-        saveButton.setOnClickListener(view1 -> {
-            // Get Input Responses
-            String sensorName = sensorNameInput.getText().toString();
+            cancelButton.setOnClickListener(v -> dismiss());
 
-            // Validate Inputs
-            // 1) All Inputs Must Be Filled
-            if (sensorName.isEmpty()) {
-                Toast.makeText(getActivity().getApplicationContext(), "Must Fill All Input Fields!", Toast.LENGTH_LONG).show();
-            } else {
-                                // Close Fragment
-                dismiss();
-            }
-        });
+            saveButton.setOnClickListener(view1 -> {
+                // Get Input Responses
+                String sensorName = sensorNameInput.getText().toString();
+                if (sensorName.isEmpty()) {
+                    Toast.makeText(getActivity().getApplicationContext(), "Must Fill All Input Fields!", Toast.LENGTH_LONG).show();
+                } else {
+                    updateSensor(sensorName);
+                }
+            });
+        }
         return view;
     }
 
-    public interface IOnDataPass {
-        public void onDataPass(String name, String type);
-    }
+    private void updateSensor(String name) {
+        dB.getSensorChild(sensorId).child("SensorName").setValue(name).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (!task.isSuccessful()) {
+                    Log.d(TAG, "Sensor name was not able to be updated");
+                }
+            }
+        });
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        try {
-            callBack = (IOnDataPass) activity;
-        } catch (ClassCastException e) {
-            Log.d(TAG, e.toString());
+        boolean type = true;
+        if (sensorTypeOptions.getCheckedRadioButtonId() == R.id.gasOutput) {
+            type = false;
         }
+        // TODO
+        if (type) {
+            Log.d(TAG, "Set sensor type as normal");
+        } else {
+            Log.d(TAG, "Set sensor type as gas type");
+        }
+        dismiss();
     }
 
 }

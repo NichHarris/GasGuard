@@ -30,10 +30,6 @@
         <item name="windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
     </style>
-
-    <style name="Button" parent="Widget.AppCompat.Button" >
-        
-    </style>
     
     <style name="RadioButton" parent="Widget.AppCompat.CompoundButton.RadioButton">
         <item name="android:background">@drawable/button</item>
