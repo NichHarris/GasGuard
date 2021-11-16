@@ -25,6 +25,7 @@ import com.example.minicapstone390.Models.SensorData;
 import com.example.minicapstone390.R;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.AxisBase;
+import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
@@ -90,6 +91,9 @@ public class SensorActivity extends AppCompatActivity {
 
         chartTitle = (TextView) findViewById(R.id.chart_title);
         sensorChart = (LineChart) findViewById(R.id.sensorChart);
+        // Disable legend and description
+        sensorChart.getLegend().setEnabled(false);
+        sensorChart.getDescription().setEnabled(false);
 
         Bundle carryOver = getIntent().getExtras();
         if (carryOver != null) {
@@ -246,7 +250,7 @@ public class SensorActivity extends AppCompatActivity {
 
         XAxis xAxis = sensorChart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setLabelCount(8,true);
+        xAxis.setLabelCount(history.size() + 1,true);
         xAxis.setCenterAxisLabels(true);
         xAxis.setValueFormatter(new IAxisValueFormatter() {
             @Override

@@ -82,8 +82,11 @@ public class HomeActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         // Initialize Layouts
-        deviceChart = (BarChart) findViewById(R.id.deviceChart);
         welcomeUserMessage = (TextView) findViewById(R.id.welcomeUserMessage);
+        deviceChart = (BarChart) findViewById(R.id.deviceChart);
+        // Disable legend and description
+        deviceChart.getLegend().setEnabled(false);
+        deviceChart.getDescription().setEnabled(false);
 
         // Initialize Dev List and Ids
         devList = new ArrayList<>();
