@@ -82,7 +82,6 @@ public class HomeActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         // Initialize Layouts
-        // TODO: Bar Chart Used to Display Health Score for Each Device
         deviceChart = (BarChart) findViewById(R.id.deviceChart);
         welcomeUserMessage = (TextView) findViewById(R.id.welcomeUserMessage);
 
@@ -226,7 +225,6 @@ public class HomeActivity extends AppCompatActivity {
             //TODO: check if devices are part of the user
             DatabaseReference deviceRef = dB.getDeviceRef().child(id);
             deviceRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                public String test = "Test";
 
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -273,7 +271,7 @@ public class HomeActivity extends AppCompatActivity {
         }
 
         XAxis xAxis = deviceChart.getXAxis();
-        xAxis.setLabelCount(3,true);
+        xAxis.setLabelCount(deviceData.size() + 1,true);
         xAxis.setCenterAxisLabels(true);
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setValueFormatter(new IAxisValueFormatter() {
