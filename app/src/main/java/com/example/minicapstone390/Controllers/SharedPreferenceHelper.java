@@ -20,14 +20,4 @@ public class SharedPreferenceHelper {
     }
 
     public Boolean getTheme() { return sharedPreferences.getBoolean("themeMode", false); }
-
-    // Set graph length
-    public void setGraphLength(int length) {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        assert editor != null;
-        editor.putInt("graphLength", length);
-        editor.apply();
-    }
-
-    public Integer getGraphLength() { return sharedPreferences.getInt("graphLength", 0); }
 }

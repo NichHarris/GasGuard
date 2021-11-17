@@ -7,8 +7,11 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <permission android:name="com.name.name.permission.C2D_MESSAGE"
+
+    <permission
+        android:name="com.name.name.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
+
     <uses-permission android:name="com.name.name.permission.C2D_MESSAGE" />
 
     <application
@@ -19,21 +22,27 @@
         android:supportsRtl="true"
         android:theme="@style/LightMode">
         <activity
-            android:name=".Views.SensorActivity"
-            android:label="Sensor"
+            android:name=".Views.LineChartTime"
             android:exported="false" />
+        <activity
+            android:name=".Views.MainActivity2"
+            android:exported="false" />
+        <activity
+            android:name=".Views.SensorActivity"
+            android:exported="false"
+            android:label="Sensor" />
         <activity
             android:name=".Views.DeviceActivity"
-            android:label="Device"
-            android:exported="false" />
+            android:exported="false"
+            android:label="Device" />
         <activity
             android:name=".Views.ProfileActivity"
-            android:label="Profile"
-            android:exported="false" />
+            android:exported="false"
+            android:label="Profile" />
         <activity
             android:name=".Views.MainActivity"
-            android:label="Loading..."
-            android:exported="true">
+            android:exported="true"
+            android:label="GasGuard">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

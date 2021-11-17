@@ -7,6 +7,7 @@ import androidx.annotation.Nullable;
 
 import androidx.fragment.app.DialogFragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,12 +18,9 @@ import android.widget.Toast;
 import com.example.minicapstone390.Controllers.Database;
 import com.example.minicapstone390.Models.Device;
 import com.example.minicapstone390.R;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
@@ -30,6 +28,7 @@ import java.util.Map;
 
 // Device Fragment
 public class DeviceFragment extends DialogFragment {
+    private static final String TAG = "AddDeviceFragment";
 
     // Declare variables
     private final Database dB = new Database();
@@ -66,7 +65,7 @@ public class DeviceFragment extends DialogFragment {
             if (deviceName.isEmpty()) {
                 Toast.makeText(getActivity().getApplicationContext(), "Must Fill All Input Fields!", Toast.LENGTH_LONG).show();
             } else {
-                Device device = new Device(deviceName, true);
+                Device device = new Device(deviceName, "Montreal", true);
 
                 // add the device, then add its deviceId to the user
                 DatabaseReference devicesRef = dB.getDeviceRef().push();
@@ -90,10 +89,12 @@ public class DeviceFragment extends DialogFragment {
                     }
 
                     @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                        dismiss(); // TODO: Add error catch
+                    public void onCancelled(@NonNull DatabaseError e) {
+                        Log.d(TAG, e.toString());
+                        dismiss();
                     }
                 });
+
                 // Close Fragment
                 dismiss();
             }

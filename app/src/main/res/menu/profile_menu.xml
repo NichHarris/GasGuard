@@ -19,7 +19,7 @@
 
     <item
         android:id="@+id/logout_user"
-        android:title="@string/logout"
+        android:title="@string/logOut"
         app:showAsAction="never" />
 
     <item
