@@ -14,12 +14,13 @@ FirebaseData fbdo;
 int GMT = -5;
 RTCZero rtc;
 
+// TODO: put this shit in a list, and loop through it to set the firebase stuff, this is too hard coded... pls
 float Sensor1Value;
 float Sensor2Value;
 float Sensor3Value;
 float Sensor4Value;
 float Sensor5Value;
-float Sensor6Value; 
+float Sensor6Value;
 
 void setup() {
   Serial.begin(115200);
@@ -41,6 +42,7 @@ void setup() {
   Serial.println();
   
   
+  // TODO: put this shit in a list, and loop through it to set the firebase stuff, this is too hard coded... pls
   //Provide the authentication data
   Firebase.begin(DATABASE_URL, DATABASE_SECRET, WIFI_SSID, WIFI_PASSWORD);
   Firebase.reconnectWiFi(true);
@@ -60,6 +62,7 @@ void setup() {
     Serial.println("location");
    }
   
+  // TODO: put this shit in a list, and loop through it to set the firebase stuff, this is too hard coded... pls
   Firebase.setString(fbdo, "Sensors/"+String(DeviceID)+"-1/SensorName", Sensor1Name);
   Firebase.setString(fbdo, "Sensors/"+String(DeviceID)+"-2/SensorName", Sensor2Name);
   Firebase.setString(fbdo, "Sensors/"+String(DeviceID)+"-3/SensorName", Sensor3Name);
@@ -78,7 +81,7 @@ void loop() {
   if (Serial.available()) {
     processSyncMessage();
   }
-
+      // TODO: put this shit in a list, and loop through it to set the firebase stuff, this is too hard coded... pls
       Sensor1Value = analogRead(A0)/1023.0;
       Sensor2Value = analogRead(A1)/1023.0;
       Sensor3Value = analogRead(A2)/1023.0;
@@ -110,7 +113,7 @@ void loop() {
   Firebase.setFloat(fbdo, "Sensors/"+String(DeviceID)+"-6/SensorValue", Sensor6Value);
   Firebase.setFloat(fbdo, "Sensors/"+String(DeviceID)+"-6/SensorPastValues/"+Timestamp()+"/Value",Sensor6Value);
   
-  delay(500);
+  delay(90000);
 }
 
 void processSyncMessage() {

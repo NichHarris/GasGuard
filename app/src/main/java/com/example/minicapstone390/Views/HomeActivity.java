@@ -167,7 +167,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     // Update Page information
-    private void updatePage() {
+    public void updatePage() {
         dB.getUserChild(dB.getUserId()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {

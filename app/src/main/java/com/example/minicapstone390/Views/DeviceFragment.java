@@ -84,7 +84,7 @@ public class DeviceFragment extends DialogFragment {
                     }
                 });
 
-                // TODO: add device to the sensors that are part of the device
+                // TODO: Add check if device is already part of user
                 DatabaseReference userRef = dB.getUserChild(dB.getUserId());
 
                 userRef.child("devices").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -95,7 +95,7 @@ public class DeviceFragment extends DialogFragment {
                         Log.d(TAG, String.format("%d", deviceCount));
                         // for updating users with a device
                         Map<String, Object> keys = new HashMap<>();
-                        keys.put(Integer.toString(deviceCount), deviceId);
+                        keys.put(Integer.toString(deviceCount + 1), deviceId);
                         userRef.child("devices").updateChildren(keys);
                     }
 
@@ -105,7 +105,7 @@ public class DeviceFragment extends DialogFragment {
                         dismiss();
                     }
                 });
-
+                ((HomeActivity)getActivity()).updatePage();
                 // Close Fragment
                 dismiss();
             }
