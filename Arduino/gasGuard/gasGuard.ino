@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 #include <WiFiNINA.h>
 #include <SPI.h>
 #include <WiFiUdp.h>
@@ -52,6 +51,14 @@ void setup() {
   Firebase.setString(fbdo, "Devices/"+String(DeviceID)+"/sensors/4", String(DeviceID)+"-5");
   Firebase.setString(fbdo, "Devices/"+String(DeviceID)+"/sensors/5", String(DeviceID)+"-6");
   Firebase.setBool(fbdo, "Devices/"+String(DeviceID)+"/status", true);
+  if(!Firebase.getString(fbdo, "Devices/"+String(DeviceID)+"/deviceName")){
+    Firebase.setString(fbdo, "Devices/"+String(DeviceID)+"/deviceName", "");
+      Serial.println("device name created");
+    }
+  if(!Firebase.getString(fbdo, "Devices/"+String(DeviceID)+"/location")){
+    Firebase.setString(fbdo, "Devices/"+String(DeviceID)+"/location", "");
+    Serial.println("location");
+   }
   
   Firebase.setString(fbdo, "Sensors/"+String(DeviceID)+"-1/SensorName", Sensor1Name);
   Firebase.setString(fbdo, "Sensors/"+String(DeviceID)+"-2/SensorName", Sensor2Name);
@@ -64,7 +71,6 @@ void setup() {
   adjustTime(GMT*60*60);
   setSyncProvider(requestSync);  //set function to call when sync required
   Serial.println("Waiting for sync message");
-
 }
 
 void loop() {
