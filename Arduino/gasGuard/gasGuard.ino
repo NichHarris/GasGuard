@@ -41,16 +41,24 @@ void setup() {
   Serial.println();
   
   
-  //Provide the autntication data
+  //Provide the authentication data
   Firebase.begin(DATABASE_URL, DATABASE_SECRET, WIFI_SSID, WIFI_PASSWORD);
   Firebase.reconnectWiFi(true);
-  Firebase.setString(fbdo, "Arduinos/"+String(DeviceID)+"/Sensor1ID", String(DeviceID)+"-1");
-  Firebase.setString(fbdo, "Arduinos/"+String(DeviceID)+"/Sensor2ID", String(DeviceID)+"-2");
-  Firebase.setString(fbdo, "Arduinos/"+String(DeviceID)+"/Sensor3ID", String(DeviceID)+"-3");
-  Firebase.setString(fbdo, "Arduinos/"+String(DeviceID)+"/Sensor4ID", String(DeviceID)+"-4");
-  Firebase.setString(fbdo, "Arduinos/"+String(DeviceID)+"/Sensor5ID", String(DeviceID)+"-5");
-  Firebase.setString(fbdo, "Arduinos/"+String(DeviceID)+"/Sensor6ID", String(DeviceID)+"-6");
-  Firebase.setBool(fbdo, "Arduinos/"+String(DeviceID)+"/status", true);
+  Firebase.setString(fbdo, "Devices/"+String(DeviceID)+"/sensors/0", String(DeviceID)+"-1");
+  Firebase.setString(fbdo, "Devices/"+String(DeviceID)+"/sensors/1", String(DeviceID)+"-2");
+  Firebase.setString(fbdo, "Devices/"+String(DeviceID)+"/sensors/2", String(DeviceID)+"-3");
+  Firebase.setString(fbdo, "Devices/"+String(DeviceID)+"/sensors/3", String(DeviceID)+"-4");
+  Firebase.setString(fbdo, "Devices/"+String(DeviceID)+"/sensors/4", String(DeviceID)+"-5");
+  Firebase.setString(fbdo, "Devices/"+String(DeviceID)+"/sensors/5", String(DeviceID)+"-6");
+  Firebase.setBool(fbdo, "Devices/"+String(DeviceID)+"/status", true);
+  if(!Firebase.getString(fbdo, "Devices/"+String(DeviceID)+"/deviceName")){
+    Firebase.setString(fbdo, "Devices/"+String(DeviceID)+"/deviceName", "");
+      Serial.println("device name created");
+    }
+  if(!Firebase.getString(fbdo, "Devices/"+String(DeviceID)+"/location")){
+    Firebase.setString(fbdo, "Devices/"+String(DeviceID)+"/location", "");
+    Serial.println("location");
+   }
   
   Firebase.setString(fbdo, "Sensors/"+String(DeviceID)+"-1/SensorName", Sensor1Name);
   Firebase.setString(fbdo, "Sensors/"+String(DeviceID)+"-2/SensorName", Sensor2Name);
@@ -63,7 +71,6 @@ void setup() {
   adjustTime(GMT*60*60);
   setSyncProvider(requestSync);  //set function to call when sync required
   Serial.println("Waiting for sync message");
-
 }
 
 void loop() {
@@ -97,7 +104,7 @@ void loop() {
   Firebase.setFloat(fbdo, "Sensors/"+String(DeviceID)+"-6/SensorValue", Sensor6Value);
   Firebase.setFloat(fbdo, "Sensors/"+String(DeviceID)+"-6/SensorPastValues/"+Timestamp()+"/Value",Sensor6Value);
   
-  delay(4000);
+  delay(90000);
 }
 
 void processSyncMessage() {
