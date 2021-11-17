@@ -183,15 +183,16 @@ public class SensorActivity extends AppCompatActivity {
         long decrement = graphTimeScale / 7;
         if (decrement == 0) {
             for (long i = 23; i >= 0; i -= 4) {
-                history.add(LocalDateTime.of(LocalDate.now(), LocalTime.of(23, 0)).minusHours(i));
+//                history.add(LocalDateTime.of(LocalDate.now(), LocalTime.of(23, 0)).minusHours(i));
+                history.add(LocalDateTime.now().minusHours(i));
             }
-            history.add(LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(0, 0)));
+            history.add(LocalDateTime.now());
         } else {
             for (long i = graphTimeScale; i >= 0; i -= decrement) {
                 history.add(LocalDateTime.now().minusDays(i));
             }
         }
-//        System.out.println(history);
+        System.out.println(history);
         return new ArrayList<>(history);
     }
 
@@ -240,6 +241,7 @@ public class SensorActivity extends AppCompatActivity {
             for (int i = 0; i < cuts; i++) {
                 results.add(start.plusSeconds(i * delta));
             }
+            System.out.println(results);
             setXAxisLabels(history, data, results);
         }
     }
