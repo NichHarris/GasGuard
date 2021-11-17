@@ -269,12 +269,9 @@ public:
      * @param fbdo Firebase Data Object.
      * @param path Target database path which string will be appended.
      * @param StringValue The appended value.
-
      * @return Boolean type status indicates the success of operation.
-
         The new appended node's key stored in Firebase Data object,
         which can be accessed via function <firebase data object>.pushName().
-
     */
     bool pushString(FirebaseData &fbdo, const String &path, const String &stringValue);
 
