@@ -16,7 +16,7 @@ import android.widget.TextView;
 
 import com.example.minicapstone390.Controllers.Database;
 import com.example.minicapstone390.Controllers.SharedPreferenceHelper;
-import com.example.minicapstone390.DeviceAdapter;
+import com.example.minicapstone390.Controllers.DeviceAdapter;
 import com.example.minicapstone390.Models.Device;
 import com.example.minicapstone390.R;
 import com.github.mikephil.charting.charts.BarChart;
@@ -122,6 +122,7 @@ public class HomeActivity extends AppCompatActivity {
 
         if(itemId == R.id.add_device) {
             connectDevice();
+            updatePage();
         } else if(itemId == R.id.profile) {
             goToProfileActivity();
         } else if(itemId == R.id.device_names) {
@@ -136,9 +137,11 @@ public class HomeActivity extends AppCompatActivity {
 
     // TODO: IMPLEMENT DEVICE CONNECTION
     public void connectDevice() {
-        getIpAndPort();
-        Socket_AsyncTask connect_device = new Socket_AsyncTask();
-        connect_device.execute();
+        DeviceFragment dialog = new DeviceFragment();
+        dialog.show(getSupportFragmentManager(), "AddDeviceFragment");
+//        getIpAndPort();
+//        Socket_AsyncTask connect_device = new Socket_AsyncTask();
+//        connect_device.execute();
     }
 
     // TODO
@@ -238,7 +241,7 @@ public class HomeActivity extends AppCompatActivity {
                         boolean devStatus = snapshot.child("status").getValue(Boolean.class);
 
                         //Add Device to Device List
-                        devData.add(new Device(devName, devLocation, devStatus));
+                        devData.add(new Device(id, devName, devLocation, devStatus));
                     } catch (Exception e) {
                         Log.d(TAG, e.toString());
                         return;
@@ -311,7 +314,7 @@ public class HomeActivity extends AppCompatActivity {
             long y = 1;
             values.add(new BarEntry(x, y));
         }
-        BarDataSet set = new BarDataSet(values, "Test");
+        BarDataSet set = new BarDataSet(values, "DeviceGraph");
         set.setDrawValues(false);
         set.setBarBorderWidth(2f);
         BarData data = new BarData(set);

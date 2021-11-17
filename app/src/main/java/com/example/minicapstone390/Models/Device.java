@@ -5,17 +5,23 @@ import com.example.minicapstone390.Models.Sensor;
 import java.util.Map;
 
 public class Device {
+    private String id;
     private String deviceName, location;
     private boolean status;
     private Map<String, Sensor> sensorKeys;
 
     public Device() {}
 
-    public Device(String deviceName, String location, boolean status) {
+    public Device(String id, String deviceName, String location, boolean status) {
+        this.id = id;
         this.deviceName = deviceName;
         this.location = location;
         this.status = status;
     }
+
+    public String getId() { return id; }
+
+    public void setId(String id) { this.id = id; }
 
     public Map<String, Sensor> getSensorKeys() { return sensorKeys; }
 
@@ -29,7 +35,7 @@ public class Device {
         this.deviceName = deviceName;
     }
 
-    public boolean isStatus() {
+    public boolean getStatus() {
         return status;
     }
 

@@ -18,6 +18,9 @@ import android.widget.Toast;
 import com.example.minicapstone390.Controllers.Database;
 import com.example.minicapstone390.Models.Device;
 import com.example.minicapstone390.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -34,10 +37,9 @@ public class DeviceFragment extends DialogFragment {
     private final Database dB = new Database();
 
     protected Button cancelButton, saveButton;
-    protected EditText deviceIdInput, deviceNameInput;
+    protected EditText deviceIdInput;
 
     public int deviceCount;
-    public String deviceKey;
 
     // TODO: Replace with check for device ID in database and add it to user
     @Nullable
@@ -48,7 +50,6 @@ public class DeviceFragment extends DialogFragment {
 
         // Input Fields for Student Profile Data
         deviceIdInput = (EditText) view.findViewById(R.id.device_id);
-        deviceNameInput = (EditText) view.findViewById(R.id.device_name);
 
         //Create Object and Listener for Cancel and Save Buttons
         cancelButton = (Button) view.findViewById(R.id.cancel_add_device_button);
@@ -58,33 +59,43 @@ public class DeviceFragment extends DialogFragment {
 
         saveButton.setOnClickListener(view1 -> {
             // Get Input Responses
-            String deviceName = deviceNameInput.getText().toString();
+            String deviceId = deviceIdInput.getText().toString();
 
             // Validate Inputs
             // 1) All Inputs Must Be Filled
-            if (deviceName.isEmpty()) {
+            if (deviceId.isEmpty()) {
                 Toast.makeText(getActivity().getApplicationContext(), "Must Fill All Input Fields!", Toast.LENGTH_LONG).show();
             } else {
-                Device device = new Device(deviceName, "Montreal", true);
-
-                // add the device, then add its deviceId to the user
-                DatabaseReference devicesRef = dB.getDeviceRef().push();
-                devicesRef.setValue(device);
-
-                // TODO: add some try to catch error cases
-                deviceKey = devicesRef.getKey();
+                Device device = new Device(deviceId, deviceId, "Montreal", true);
+                Map<String, Object> deviceAttributes = new HashMap<>();
+                deviceAttributes.put("deviceName", device.getDeviceName());
+                deviceAttributes.put("location", device.getDeviceLocation());
+                deviceAttributes.put("status", device.getStatus());
+                dB.getDeviceChild(deviceId).updateChildren(deviceAttributes).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Log.i(TAG, String.format("Added device %s", deviceId));
+                        } else {
+                            Log.e(TAG, String.format("Error adding device %s", deviceId));
+                            Toast.makeText(getActivity() , String.format("Unable to locate device: %s", deviceId), Toast.LENGTH_SHORT).show();
+                            dismiss();
+                        }
+                    }
+                });
 
                 // TODO: add device to the sensors that are part of the device
                 DatabaseReference userRef = dB.getUserChild(dB.getUserId());
-                userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+
+                userRef.child("devices").addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        
-                        deviceCount = (int) snapshot.getChildrenCount();
-                        // for updating users with a device
 
+                        deviceCount = (int) snapshot.getChildrenCount();
+                        Log.d(TAG, String.format("%d", deviceCount));
+                        // for updating users with a device
                         Map<String, Object> keys = new HashMap<>();
-                        keys.put(Integer.toString(deviceCount), deviceKey);
+                        keys.put(Integer.toString(deviceCount), deviceId);
                         userRef.child("devices").updateChildren(keys);
                     }
 
