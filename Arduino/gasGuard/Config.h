@@ -4,10 +4,10 @@
 
 // UPDATE WIFI SSID AND PASSWORD BEFORE RUNNING 
 
-#define WIFI_SSID "VIRGIN188"
-#define WIFI_PASSWORD "KhaledWIFI"
-// #define WIFI_SSID "Khaled's hotspot"
-// #define WIFI_PASSWORD "hellohello"
+//#define WIFI_SSID "VIRGIN188"
+//#define WIFI_PASSWORD "KhaledWIFI"
+#define WIFI_SSID "Khaled's hotspot"
+#define WIFI_PASSWORD "hellohello"
 
 #define DeviceID "101"
 
