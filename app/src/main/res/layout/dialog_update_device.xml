@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/g_guard_theme">
+    android:background="@color/g_guard_theme" >
 
     <RelativeLayout
         android:layout_centerHorizontal="true"
@@ -12,16 +12,15 @@
 
 
         <EditText
-            android:id="@+id/device_id"
+            android:id="@+id/update_device_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
             android:ems="16"
             android:maxLength="20"
-            android:hint="@string/device_id"
-            android:autofillHints="name"
-            android:inputType="numberDecimal" />
+            android:hint="@string/device_name"
+            android:autofillHints="name" />
 
         <Button
             android:layout_width="wrap_content"

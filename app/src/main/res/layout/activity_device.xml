@@ -75,7 +75,7 @@
         android:layout_marginBottom="244dp"
         android:background="@color/g_guard_theme"
         android:translationZ="1dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/sensorsTitle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent" />

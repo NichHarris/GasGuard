@@ -1,12 +1,14 @@
 package com.example.minicapstone390.Views;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -36,7 +38,8 @@ public class UpdateDeviceFragment extends DialogFragment {
     // Declare variables
     private final Database dB = new Database();
     protected Button cancelButton, saveButton;
-    protected EditText userNameInput, userEmailInput, userPhoneInput, userFirstNameInput, userLastNameInput;
+    protected EditText deviceNameInput;
+    protected String deviceId;
 
 
         // TODO: Change this to device info and not user info //
@@ -45,95 +48,42 @@ public class UpdateDeviceFragment extends DialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.dialog_update_info, container, false);
+        View view = inflater.inflate(R.layout.dialog_update_device, container, false);
 
-        // Input Fields for Student Profile Data
-        userNameInput = (EditText) view.findViewById(R.id.updateUsername);
-        userEmailInput = (EditText) view.findViewById(R.id.updateEmail);
-        userPhoneInput = (EditText) view.findViewById(R.id.updatePhone);
-        userFirstNameInput = (EditText) view.findViewById(R.id.updateFirstName);
-        userLastNameInput = (EditText) view.findViewById(R.id.updateLastName);
+        deviceId = getArguments().getString("id");
 
-        //Create Object and Listener for Cancel and Save Buttons
-        cancelButton = (Button) view.findViewById(R.id.cancel_add_device_button);
-        saveButton = (Button) view.findViewById(R.id.save_add_device_button);
+        if (deviceId != null) {
+            // Input Fields for Student Profile Data
+            deviceNameInput = (EditText) view.findViewById(R.id.update_device_name);
 
-        cancelButton.setOnClickListener(v -> dismiss());
+            //Create Object and Listener for Cancel and Save Buttons
+            cancelButton = (Button) view.findViewById(R.id.cancel_add_device_button);
+            saveButton = (Button) view.findViewById(R.id.save_add_device_button);
 
-        saveButton.setOnClickListener(view1 -> {
+            cancelButton.setOnClickListener(v -> dismiss());
 
-            DatabaseReference userRef = dB.getUserChild(dB.getUserId());
-
-            userRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    String userName, userEmail, userPhone, userFirstName, userLastName;
-                    userName = userNameInput.getText().toString().equals("") ? snapshot.child("userName").getValue(String.class) : userNameInput.getText().toString();
-
-                    if (!userEmailInput.getText().toString().equals("")) {
-                        // Email Must Be a Valid Email and Unique
-                        if (!Patterns.EMAIL_ADDRESS.matcher(userEmailInput.getText().toString()).matches()) {
-                            userEmailInput.setError("Email Must Be Valid!");
-                            userEmailInput.requestFocus();
-                            return;
-                        } else {
-                            userEmail = userEmailInput.getText().toString();
-                        }
-                    } else {
-                        userEmail = snapshot.child("userEmail").getValue(String.class);
-                    }
-                    assert userEmail != null;
-                    dB.getUser().verifyBeforeUpdateEmail(userEmail).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (!task.isSuccessful()) {
-                                userEmailInput.setError("Email already in use");
-                                userEmailInput.requestFocus();
-                            }
-                        }
-                    });
-
-                    userPhone = userPhoneInput.getText().toString().equals("") ? snapshot.child("userPhone").getValue(String.class) : userPhoneInput.getText().toString();
-                    userFirstName = userFirstNameInput.getText().toString().equals("") ? snapshot.child("userFirstName").getValue(String.class) : userFirstNameInput.getText().toString();
-                    userLastName = userLastNameInput.getText().toString().equals("") ? snapshot.child("userLastName").getValue(String.class) : userLastNameInput.getText().toString();
-
-                    DatabaseReference devicesRef = userRef.child("devices");
-
-                    devicesRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            Map<String, Object> devices = new HashMap<>();
-                            for (DataSnapshot ds : snapshot.getChildren()) {
-                                devices.put(ds.getKey(), ds.getValue(String.class));
-                            }
-
-                            // Can add validation after
-                            Map<String, Object> userInfo = new HashMap<>();
-                            userInfo.put("userName", userName);
-                            userInfo.put("userEmail", userEmail);
-                            userInfo.put("userPhone", userPhone);
-                            userInfo.put("userFirstName", userFirstName);
-                            userInfo.put("userLastName", userLastName);
-                            userInfo.put("devices", devices);
-                            userRef.updateChildren(userInfo);
-
-                            ((ProfileActivity)getActivity()).updateAllInfo();
-                            dismiss();
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-                            dismiss(); // TODO: Add error catch
-                        }
-                    });
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-                    dismiss(); // TODO: Add error catch
-                }
+            saveButton.setOnClickListener(view1 -> {
+               String deviceName = deviceNameInput.getText().toString();
+               if (deviceName.isEmpty()) {
+                   Toast.makeText(getActivity().getApplicationContext(), "Must Fill All Input Fields!", Toast.LENGTH_LONG).show();
+               } else {
+                   updateDevice(deviceName);
+               }
             });
-        });
+        }
         return view;
+    }
+
+
+    private void updateDevice(String deviceName) {
+        dB.getDeviceChild(deviceId).child("deviceName").setValue(deviceName).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (!task.isSuccessful()) {
+                    Log.d(TAG, "Sensor name was not able to be updated");
+                }
+            }
+        });
+        dismiss();
     }
 }

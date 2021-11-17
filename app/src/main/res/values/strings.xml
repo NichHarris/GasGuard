@@ -27,7 +27,6 @@
 
     <!-- Add Device Fragment -->
     <string name="add_device">Add Device</string>
-    <string name="device_name">Device Name</string>
     <string name="device_id">Device Id</string>
     <string name="save">SAVE</string>
 
@@ -79,4 +78,5 @@
     <string name="type">Type</string>
     <string name="gas">Gas</string>
     <string name="sensorname">SensorName</string>
+    <string name="device_name">Device Name</string>
 </resources>

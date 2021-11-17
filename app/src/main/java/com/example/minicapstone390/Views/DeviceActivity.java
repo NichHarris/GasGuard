@@ -43,6 +43,7 @@ public class DeviceActivity extends AppCompatActivity {
 
     protected SharedPreferenceHelper sharePreferenceHelper;
     protected String deviceId;
+    protected String function;
     protected Toolbar toolbar;
     protected TextView deviceName, deviceStatus;
 
@@ -90,12 +91,29 @@ public class DeviceActivity extends AppCompatActivity {
         Bundle carryOver = getIntent().getExtras();
         if (carryOver != null) {
             deviceId = carryOver.getString("deviceId");
-            displayDeviceInfo(deviceId);
+            function = carryOver.getString("editDevice", "");
+            if (function.equals("editDevice()")) {
+                editDevice(deviceId);
+            }
+            if (deviceId != null) {
+                displayDeviceInfo(deviceId);
+            } else {
+                Log.e(TAG, "Id is null");
+                openHomeActivity();
+            }
         } else {
             Toast.makeText(this, "Error fetching device", Toast.LENGTH_LONG).show();
             Log.d(TAG, "No deviceId carry over, returning to HomeActivity");
             openHomeActivity();
         }
+    }
+
+    private void editDevice(String deviceId) {
+        Bundle bundle = new Bundle();
+        bundle.putString("id", deviceId);
+        UpdateDeviceFragment dialog = new UpdateDeviceFragment();
+        dialog.setArguments(bundle);
+        dialog.show(getSupportFragmentManager(), "UpdateDeviceFragment");
     }
 
     // Display options menu in task-bar
@@ -111,8 +129,7 @@ public class DeviceActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if(id == R.id.update_device) {
-            UpdateDeviceFragment dialog = new UpdateDeviceFragment();
-            dialog.show(getSupportFragmentManager(), "UpdateDeviceFragment");
+            editDevice(deviceId);
         } else if(id == R.id.disable_device) {
             disableDevice();
         } else if(id == R.id.remove_device) {
@@ -251,7 +268,7 @@ public class DeviceActivity extends AppCompatActivity {
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     try {
                         String sensorName = snapshot.child("SensorName").getValue(String.class);
-                        int sensorType = snapshot.child("SensorType").getValue(Integer.class);
+                        int sensorType =  snapshot.child("SensorType").getValue(Integer.class) != null ? snapshot.child("SensorType").getValue(Integer.class): 0;
                         double sensorValue = snapshot.child("SensorValue").getValue(Double.class);
                         if (!sensorMap.containsKey(id)) {
                             Sensor sensor = new Sensor(id, sensorType, sensorName, sensorValue);

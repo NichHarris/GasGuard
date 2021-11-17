@@ -1,6 +1,9 @@
 package com.example.minicapstone390.Controllers;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,11 +15,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.minicapstone390.Models.Device;
 import com.example.minicapstone390.R;
+import com.example.minicapstone390.Views.DeviceActivity;
 import com.example.minicapstone390.Views.HomeActivity;
+import com.example.minicapstone390.Views.SensorFragment;
 
 import java.util.ArrayList;
 
 public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder> {
+    private static final String TAG = "DeviceAdapter";
     // Define Context and ArrayList of Devices
     private Context mContext;
     private final ArrayList<Device> devices;
@@ -40,22 +46,23 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
             deleteIcon = (ImageView) v.findViewById(R.id.deviceDeleteIcon);
 
             editIcon.setOnClickListener((view) -> {
-                //TODO: Add Device Edit Code Here
-//                Intent intent = new Intent(mContext , SensorActivity.class);
-//                intent.putExtra("sensorId", getAdapterPosition());
-//                intent.putExtra("editDialog", "editSensor()");
-//                mContext.startActivity(intent);
-                System.out.println("EDIT " + getAdapterPosition());
+                Intent intent = new Intent(mContext, DeviceActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("deviceId", devices.get(getAdapterPosition()).getId());
+                bundle.putString("editDevice", "editDevice()");
+                intent.putExtras(bundle);
+                Log.d(TAG, "EDIT " + getAdapterPosition());
+                mContext.startActivity(intent);
             });
 
             deleteIcon.setOnClickListener((view) -> {
                 //TODO: Add Device Delete Code Here
-                System.out.println("DELETE " + getAdapterPosition());
+                Log.d(TAG,"DELETE " + getAdapterPosition());
             });
 
             v.setOnClickListener((view) -> {
                 int deviceIndex = getAdapterPosition();
-                System.out.println("ACCESS " + deviceIndex);
+                Log.d(TAG,"ACCESS " + deviceIndex);
                 ((HomeActivity)mContext).goToDeviceActivity(deviceIndex);
             });
         }
@@ -81,7 +88,7 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
         Device d = devices.get(position);
 
         holder.deviceName.setText(d.getDeviceName());
-        holder.deviceStatus.setText(d.isStatus() ? R.string.activeDeviceStatus : R.string.inactiveDeviceStatus);
+        holder.deviceStatus.setText(d.getStatus() ? R.string.activeDeviceStatus : R.string.inactiveDeviceStatus);
         holder.deviceLocation.setText(d.getDeviceLocation());
     }
 
