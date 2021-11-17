@@ -4,16 +4,16 @@
 
 // UPDATE WIFI SSID AND PASSWORD BEFORE RUNNING 
 
-//#define WIFI_SSID "VIRGIN188"
-//#define WIFI_PASSWORD "KhaledWIFI"
-#define WIFI_SSID "Khaled's hotspot"
-#define WIFI_PASSWORD "hellohello"
+#define WIFI_SSID "Isengard-Network"
+#define WIFI_PASSWORD "Play4Keep$"
 
-#define DeviceID "101"
+#define DeviceID "BigDingus"
 
 #define Sensor1Name "MQ2"
-#define Sensor2Name "MQ4"
-#define Sensor3Name "MQ6"
-#define Sensor4Name "MQ7"
-#define Sensor5Name "MQ8"
-#define Sensor6Name "MQ135"
+#define Sensor2Name "MQ3"
+#define Sensor3Name "MQ4"
+#define Sensor4Name "MQ6"
+#define Sensor5Name "MQ135"
+#define Sensor6Name "MQ9"
+#define Sensor7Name "MQ8"
+#define Sensor8Name "MQ7"
