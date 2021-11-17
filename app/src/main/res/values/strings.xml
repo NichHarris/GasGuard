@@ -79,4 +79,5 @@
     <string name="type">Type</string>
     <string name="gas">Gas</string>
     <string name="sensorname">SensorName</string>
+    <string name="cancel">CANCEL</string>
 </resources>
