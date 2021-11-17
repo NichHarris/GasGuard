@@ -4,6 +4,7 @@
     <item
         android:state_focused="false">
         <shape>
+            <solid android:color="#FFF"/>
             <corners
                 android:radius="18dp"/>
             <stroke

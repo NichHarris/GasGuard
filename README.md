@@ -1,5 +1,10 @@
-# coen-elec390-project (work in progress name)
-__Project idea and description to be decided on__
+# GasGuard 
+
+Android app and arduino device used to measure and track air quality.
+
+### Application Wireframe
+![image](https://user-images.githubusercontent.com/48420387/141717250-6f8b5a6b-42bf-48fd-bac4-5cb7475d6b64.png)
+
 
 ## Team Members
 
@@ -7,10 +12,8 @@ __Project idea and description to be decided on__
 
 [Nicholas Kawwas](https://github.com/nickawwas)
 
-[Mathieu Lebrun]()
+[Mathieu Lebrun](https://github.com/CodenameBrown)
 
-[Khaled Matloub]()
+[Khaled Matloub](https://github.com/KhaledMat)
 
 [Julian Dubeau]()
-
-[Sehail Arifi]()

@@ -1,44 +1,82 @@
 <resources>
     <string name="app_name">miniCapstone390</string>
-    <string name="loading"> LOADING ... </string>
-
     <string name="app_title"> GasGuard </string>
+
+    <string name="loading"> LOADING … </string>
+    <string name="gasGuardBannerDescription">Gas Guard Banner</string>
+
+    <!-- Login and Sign Up Pages   -->
     <string name="login">Login</string>
     <string name="signup">Sign Up</string>
     <string name="username">Username</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="confirm_password">Confirm Password</string>
+    <string name="forgot_password"><u>Forgot Password?</u></string>
+    <string name="passwordCreationRequirements"><b>Password Complexity:</b> Password Must Be Min 8 Characters Long With At Least 1 Uppercase, Lowercase, Digit and Special Character</string>
 
+    <!-- Home Page -->
     <string name="welcome_message"> Welcome to gasGuard </string>
-    <string name="welcome_user"> Welcome {0}! </string>
-    <string name="status"> Status: {0} </string>
+    <string name="welcome_user"> Welcome, {0}! </string>
     <string name="devices"> Devices </string>
-    <string name="logOut">Log Out</string>
     <string name="addDeviceButton">Add Device</string>
+
+    <!-- Device Page -->
+    <string name="status"> Status: </string>
+    <string name="sensors">Sensors</string>
+
+    <!-- Add Device Fragment -->
+    <string name="add_device">Add Device</string>
     <string name="device_name">Device Name</string>
-    <string name="device_id">Device ID</string>
+    <string name="device_id">Device Id</string>
     <string name="save">SAVE</string>
-    <string name="cancel">CANCEL</string>
-    <string name="update_info">UPDATE INFO</string>
+
+    <!-- Profile Page   -->
     <string name="profile">Profile</string>
     <string name="phone">Phone</string>
     <string name="first_name">First Name</string>
     <string name="last_name">Last Name</string>
-    <string name="sensors">Sensors</string>
-    <string name="sensor_graph">{0} Readings History</string>
-    <string name="forgot_password"><u>Forgot Password</u></string>
+    <string name="logOut">Log Out</string>
+    <string name="update_info">UPDATE INFO</string>
     <string name="delete_user">Delete User</string>
+    <string name="update_user_info">Update User Info</string>
+    <string name="notifications">Notifications</string>
+
+    <!-- Sensor Graph Page  -->
+    <string name="sensor_graph">{0} Readings History</string>
+    <string name="day">Day</string>
+    <string name="week">Week</string>
+    <string name="_2_weeks">2 Weeks</string>
+    <string name="month">Month</string>
+
+    <!-- Device and Sensor Menu Dropdown -->
     <string name="disable_sensor">Disable Sensor</string>
     <string name="remove_device">Remove Device</string>
     <string name="disable_device">Disable Device</string>
     <string name="update_device_info">Update Device Info</string>
-    <string name="notifications">Notifications</string>
-    <string name="update_user_info">Update User Info</string>
     <string name="device_names">Device Names</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="logout">Logout</string>
+
+    <!-- Notification and Dark Mode Features -->
     <string name="dark_mode_on_off">Dark Mode On/Off</string>
-    <string name="add_device">Add Device</string>
+    <string name="notification_fragment_text">This is a notification!</string>
+
+    <!-- Device and Sensor Recycler View -->
+    <string name="activeDeviceStatus">🟢 Active</string>
+    <string name="inactiveDeviceStatus">🔴 Inactive</string>
+    <string name="safeSensorValue">🟢 Safe</string>
+    <string name="unsafeSensorValue">🔴 Unsafe</string>
+
+    <!-- Device and Sensor Placeholders -->
+    <string name="gasDeviceName"> Gas Device Name </string>
+    <string name="sensorListName">Sensor Name</string>
+    <string name="sampleDeviceLocation"> Centre ville, QC </string>
+    <string name="sampleSensorType">Sensor: MC-5</string>
+    <string name="liveValueData">Live: 1.8 ppm</string>
+    <string name="pastValueData">Past: 2.0 ppm</string>
+    <string name="sensorImageDescription"> MC Sensor Image </string>
+    <string name="deleteIconDescription"> Delete Icon </string>
+    <string name="editIconDescription"> Edit Icon </string>
+    <string name="type">Type</string>
+    <string name="gas">Gas</string>
+    <string name="sensorname">SensorName</string>
 </resources>

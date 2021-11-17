@@ -24,18 +24,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- TODO: Logo Top   -->
-
     <!-- Loading...   -->
     <TextView
         android:id="@+id/textView"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="180dp"
+        android:layout_marginTop="300dp"
         android:gravity="center"
         android:paddingHorizontal="15dp"
         android:paddingTop="200dp"
+        android:translationZ="1dp"
         android:text="@string/loading"
         android:textColor="@color/g_guard_font"
         android:textSize="25sp"
@@ -43,25 +42,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <!-- TODO: Loading Bar   -->
-
-    <!-- TODO: Logo Bottom   -->
-    <!-- added line android:contentDescription="@null" to fix warning -->
-    <ImageView
-        android:id="@+id/GG_Shield_Cloud"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="250dp"
-        android:layout_marginEnd="100dp"
-        android:layout_marginBottom="10dp"
-        android:contentDescription="@null"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView"
-        app:srcCompat="@drawable/gg_corner" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline3"
@@ -77,6 +57,8 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_begin="549dp" />
     <!-- added line android:contentDescription="@null" to fix warning -->
+
+    <!-- Gas Guard Logo  -->
     <ImageView
         android:contentDescription="@null"
         android:id="@+id/GasGuard_logo"
@@ -91,4 +73,16 @@
         app:layout_constraintTop_toBottomOf="@+id/textView2"
         app:layout_constraintVertical_bias="0.44"
         app:srcCompat="@drawable/gg_logo" />
+
+    <!--  Gas Guard Banner -->
+    <ImageView
+        android:id="@+id/gg_cloud_home"
+        android:layout_width="361dp"
+        android:layout_height="146dp"
+        android:contentDescription="@string/gasGuardBannerDescription"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/gg_corner" />
 </androidx.constraintlayout.widget.ConstraintLayout>

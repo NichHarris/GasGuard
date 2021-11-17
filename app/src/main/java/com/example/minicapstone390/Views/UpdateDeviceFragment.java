@@ -1,6 +1,5 @@
 package com.example.minicapstone390.Views;
 
-import android.app.FragmentManager;
 import android.os.Bundle;
 import android.util.Patterns;
 import android.view.LayoutInflater;
@@ -14,7 +13,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.minicapstone390.Controllers.Database;
-import com.example.minicapstone390.Views.ProfileActivity;
 import com.example.minicapstone390.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -28,7 +26,7 @@ import java.util.Map;
 
 // Device Fragment
 public class UpdateDeviceFragment extends DialogFragment {
-    private static final String TAG = "Update Device";
+    private static final String TAG = "UpdateDeviceFragment";
 
     public interface OnInputListener{
         void sendInput(String input);
@@ -91,7 +89,6 @@ public class UpdateDeviceFragment extends DialogFragment {
                             if (!task.isSuccessful()) {
                                 userEmailInput.setError("Email already in use");
                                 userEmailInput.requestFocus();
-                                return;
                             }
                         }
                     });

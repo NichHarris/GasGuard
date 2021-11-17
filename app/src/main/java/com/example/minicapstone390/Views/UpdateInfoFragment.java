@@ -1,7 +1,7 @@
 package com.example.minicapstone390.Views;
 
-import android.app.FragmentManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +14,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.minicapstone390.Controllers.Database;
-import com.example.minicapstone390.Views.ProfileActivity;
 import com.example.minicapstone390.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -28,7 +27,7 @@ import java.util.Map;
 
 // Device Fragment
 public class UpdateInfoFragment extends DialogFragment {
-    private static final String TAG = "Update Info";
+    private static final String TAG = "UpdateInfoFragment";
 
     public interface OnInputListener{
         void sendInput(String input);
@@ -88,7 +87,6 @@ public class UpdateInfoFragment extends DialogFragment {
                             if (!task.isSuccessful()) {
                                 userEmailInput.setError("Email already in use");
                                 userEmailInput.requestFocus();
-                                return;
                             }
                         }
                     });
@@ -122,15 +120,17 @@ public class UpdateInfoFragment extends DialogFragment {
                         }
 
                         @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-                            dismiss(); // TODO: Add error catch
+                        public void onCancelled(@NonNull DatabaseError e) {
+                            Log.d(TAG, e.toString());
+                            dismiss();
                         }
                     });
                 }
 
                 @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-                    dismiss(); // TODO: Add error catch
+                public void onCancelled(@NonNull DatabaseError e) {
+                    Log.d(TAG, e.toString());
+                    dismiss();
                 }
             });
         });

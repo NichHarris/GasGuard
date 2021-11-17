@@ -22,28 +22,6 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/sensor_name"
-        android:layout_marginTop="60dp"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.12"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-<!--    <TextView-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:id="@+id/live_data"-->
-<!--        android:text="@string/live_data_0"-->
-<!--        android:layout_centerHorizontal="true"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintHorizontal_bias="0.0"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent" />-->
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:id="@+id/chart_title"
         android:layout_marginTop="220dp"
         android:textSize="20sp"
@@ -54,12 +32,62 @@
 
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/sensorChart"
-        android:layout_width="300dp"
+        android:layout_width="350dp"
         android:layout_height="200dp"
         android:layout_marginTop="250dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.6"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <RadioGroup
+        android:id="@+id/graphTimeOptions"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/sensorChart"
+        tools:layout_editor_absoluteX="16dp">
+
+        <RadioButton
+            android:id="@+id/dayButton"
+            style="@style/RadioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:button="@drawable/button_selected"
+            android:text="@string/day" />
+
+        <RadioButton
+            android:id="@+id/weekButton"
+            style="@style/RadioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/week" />
+
+        <RadioButton
+            android:id="@+id/weeksButton"
+            style="@style/RadioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/_2_weeks" />
+
+        <RadioButton
+            android:id="@+id/monthButton"
+            style="@style/RadioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/month" />
+    </RadioGroup>
+
+    <ImageView
+        android:id="@+id/gg_cloud_home"
+        android:layout_width="361dp"
+        android:layout_height="146dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/gg_corner"
+        android:contentDescription="GG Banner" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -19,7 +19,9 @@
             android:layout_marginTop="15dp"
             android:ems="16"
             android:maxLength="20"
-            android:hint="@string/device_name" />
+            android:hint="@string/device_name"
+            android:autofillHints="name"
+            android:inputType="textShortMessage" />
 
         <EditText
             android:id="@+id/device_id"
@@ -30,7 +32,9 @@
             android:layout_marginTop="75dp"
             android:ems="16"
             android:maxLength="20"
-            android:hint="@string/device_id" />
+            android:hint="@string/device_id"
+            android:autofillHints="name"
+            android:inputType="numberDecimal" />
 
         <android.widget.Button
             android:layout_width="wrap_content"
@@ -48,13 +52,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/cancel_add_device_button"
-            android:text="@string/cancel"
+            android:text="@android:string/cancel"
             android:textSize="14sp"
             android:textColor="@color/white"
             android:background="@color/g_guard_font"
             android:layout_alignParentBottom="true"
             android:layout_alignParentStart="true"
-            android:layout_marginStart="20dp" />
+            android:layout_marginStart="20dp"/>
 
     </RelativeLayout>
 
