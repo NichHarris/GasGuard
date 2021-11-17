@@ -85,26 +85,32 @@ void loop() {
       Sensor4Value = analogRead(A3)/1023.0;
       Sensor5Value = analogRead(A4)/1023.0;
       Sensor6Value = analogRead(A5)/1023.0;
-   
+
+  Firebase.setFloat(fbdo, "Sensors/"+String(DeviceID)+"-1/SensorType", 2);
   Firebase.setFloat(fbdo, "Sensors/"+String(DeviceID)+"-1/SensorValue", Sensor1Value);
   Firebase.setFloat(fbdo, "Sensors/"+String(DeviceID)+"-1/SensorPastValues/"+Timestamp()+"/Value",Sensor1Value);
 
+  Firebase.setFloat(fbdo, "Sensors/"+String(DeviceID)+"-2/SensorType", 3);
   Firebase.setFloat(fbdo, "Sensors/"+String(DeviceID)+"-2/SensorValue", Sensor2Value);
   Firebase.setFloat(fbdo, "Sensors/"+String(DeviceID)+"-2/SensorPastValues/"+Timestamp()+"/Value",Sensor2Value);  
-     
+
+  Firebase.setFloat(fbdo, "Sensors/"+String(DeviceID)+"-3/SensorType", 4);
   Firebase.setFloat(fbdo, "Sensors/"+String(DeviceID)+"-3/SensorValue", Sensor3Value);  
   Firebase.setFloat(fbdo, "Sensors/"+String(DeviceID)+"-3/SensorPastValues/"+Timestamp()+"/Value",Sensor3Value);
-  
+
+  Firebase.setFloat(fbdo, "Sensors/"+String(DeviceID)+"-4/SensorType", 6);
   Firebase.setFloat(fbdo, "Sensors/"+String(DeviceID)+"-4/SensorValue", Sensor4Value);
   Firebase.setFloat(fbdo, "Sensors/"+String(DeviceID)+"-4/SensorPastValues/"+Timestamp()+"/Value",Sensor4Value);
-  
+
+  Firebase.setFloat(fbdo, "Sensors/"+String(DeviceID)+"-5/SensorType", 7);
   Firebase.setFloat(fbdo, "Sensors/"+String(DeviceID)+"-5/SensorValue", Sensor5Value);
   Firebase.setFloat(fbdo, "Sensors/"+String(DeviceID)+"-5/SensorPastValues/"+Timestamp()+"/Value",Sensor5Value);
 
+  Firebase.setFloat(fbdo, "Sensors/"+String(DeviceID)+"-6/SensorType", 8);
   Firebase.setFloat(fbdo, "Sensors/"+String(DeviceID)+"-6/SensorValue", Sensor6Value);
   Firebase.setFloat(fbdo, "Sensors/"+String(DeviceID)+"-6/SensorPastValues/"+Timestamp()+"/Value",Sensor6Value);
   
-  delay(90000);
+  delay(500);
 }
 
 void processSyncMessage() {
