@@ -18,6 +18,7 @@ import com.example.minicapstone390.Controllers.Database;
 import com.example.minicapstone390.Controllers.SharedPreferenceHelper;
 import com.example.minicapstone390.Controllers.DeviceAdapter;
 import com.example.minicapstone390.Models.Device;
+import com.example.minicapstone390.Models.Sensor;
 import com.example.minicapstone390.R;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.AxisBase;
@@ -40,7 +41,9 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class HomeActivity extends AppCompatActivity {
     private static final String TAG = "HomeActivity";
@@ -198,7 +201,7 @@ public class HomeActivity extends AppCompatActivity {
         //Get List of Devices from DB
         DatabaseReference usersRef = dB.getUserChild(dB.getUserId()).child("devices");
 
-        usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        usersRef.addValueEventListener(new ValueEventListener() {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -225,7 +228,8 @@ public class HomeActivity extends AppCompatActivity {
 
     // Get List of device names associated with the user
     private void getDeviceNames(List<String> devices) {
-        ArrayList<Device> devData = new ArrayList<>();
+        ArrayList<Device> devData = new ArrayList<>();;
+        Map<String, Device> deviceMap = new HashMap<String, Device>();
 
         for (String id: devices) {
             //TODO: check if devices are part of the user
@@ -239,14 +243,22 @@ public class HomeActivity extends AppCompatActivity {
                         String devName = snapshot.child("deviceName").getValue(String.class);
                         String devLocation = snapshot.child("location").getValue(String.class);
                         boolean devStatus = snapshot.child("status").getValue(Boolean.class);
-
-                        //Add Device to Device List
-                        devData.add(new Device(id, devName, devLocation, devStatus));
+                        if (!deviceMap.containsKey(id)) {
+                            Device device = new Device(id, devName, devLocation, devStatus);
+                            devData.add(device);
+                            deviceMap.put(id, device);
+                        } else {
+                            Device device = deviceMap.get(id);
+                            assert device != null;
+                            device.setDeviceName(devName);
+                            device.setLocation(devLocation);
+                            device.setStatus(devStatus);
+                        }
+                        setDeviceList(devData);
                     } catch (Exception e) {
                         Log.d(TAG, e.toString());
                         return;
                     }
-                    setDeviceList(devData);
                 }
 
                 @Override
