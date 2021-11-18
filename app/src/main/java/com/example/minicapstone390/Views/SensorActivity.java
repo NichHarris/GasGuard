@@ -2,10 +2,12 @@ package com.example.minicapstone390.Views;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.NotificationCompat;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
@@ -32,6 +34,8 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -101,7 +105,7 @@ public class SensorActivity extends AppCompatActivity {
             if(function.equals("editSensor()")) {
                 editSensor(sensorId);
             } else if (function.equals("deleteSensor()")) {
-                deleteSensor(sensorId);
+                deleteSensorData(sensorId);
             }
             if (sensorId != null) {
                 displaySensorInfo(sensorId);
@@ -125,8 +129,50 @@ public class SensorActivity extends AppCompatActivity {
         setGraphScale();
     }
 
-    private void deleteSensor(String sensorId) {
-        Log.d(TAG, "Delete sensor called");
+    private void deleteSensorData(String sensorId) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(true);
+        builder.setTitle("Delete Sensor Data Confirmation");
+        builder.setMessage("Deleting will completely remove the Sensors stored data");
+        builder.setPositiveButton("Confirm",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        if (dB.getSensorChild(sensorId) != null) {
+                            dB.getSensorChild(sensorId).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    snapshot.child("SensorPastValues").getRef().removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (!task.isSuccessful()) {
+                                                Log.d(TAG, String.format("Unable to delete sensor data: %s", sensorId));
+                                            } else {
+                                                Log.i(TAG, String.format("Removed sensor data: %s", sensorId));
+                                                onSupportNavigateUp();
+                                            }
+                                        }
+                                    });
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
+                        }
+                    }
+                });
+        builder.setNegativeButton("Cancel",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Log.i(TAG, "Sensor data delete cancelled");
+                    }
+                });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     private void editSensor(String sensorId) {
@@ -339,12 +385,17 @@ public class SensorActivity extends AppCompatActivity {
     public  boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if(id == R.id.disable_sensor) {
+            Log.d(TAG, "Disable sensor called but not implemented");
 //            disableSensor();
+        } else if (id == R.id.delete_sensor_data) {
+            deleteSensorData(sensorId);
+        } else {
+            return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
+
+        return true;
     }
-
-
+    
     // TODO: Add status to DB
     private void disableSensor() {
         dB.getSensorChild(sensorId).child("status").addListenerForSingleValueEvent(new ValueEventListener() {

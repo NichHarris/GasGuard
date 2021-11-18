@@ -51,6 +51,7 @@
 
     <!-- Device and Sensor Menu Dropdown -->
     <string name="disable_sensor">Disable Sensor</string>
+    <string name="delete_sensor_data">Delete Sensor Data</string>
     <string name="remove_device">Remove Device</string>
     <string name="disable_device">Disable Device</string>
     <string name="update_device_info">Update Device Info</string>

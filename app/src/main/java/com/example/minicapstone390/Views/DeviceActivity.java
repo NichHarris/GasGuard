@@ -199,11 +199,17 @@ public class DeviceActivity extends AppCompatActivity {
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                                     for (DataSnapshot ds : snapshot.getChildren()) {
                                         if (ds.getValue(String.class).equals(deviceId)) {
-                                            ds.getRef().removeValue();
-                                            Log.i(TAG, String.format("Removed device: %s", deviceId));
-                                            openHomeActivity();
-                                        } else {
-                                            Log.d(TAG, String.format("Unable to remove device: %s", deviceId));
+                                            ds.getRef().removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    if (!task.isSuccessful()) {
+                                                        Log.d(TAG, String.format("Unable to remove device: %s", deviceId));
+                                                    } else {
+                                                        Log.i(TAG, String.format("Removed device: %s", deviceId));
+                                                        openHomeActivity();
+                                                    }
+                                                }
+                                            });
                                         }
                                     }
                                 }
