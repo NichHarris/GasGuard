@@ -2,10 +2,12 @@ package com.example.minicapstone390.Views;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.NotificationCompat;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
@@ -18,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.minicapstone390.Controllers.Database;
+import com.example.minicapstone390.Controllers.ENV;
 import com.example.minicapstone390.Controllers.SharedPreferenceHelper;
 import com.example.minicapstone390.Models.Device;
 import com.example.minicapstone390.Models.Sensor;
@@ -32,6 +35,8 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -52,6 +57,10 @@ import java.util.Objects;
 
 public class SensorActivity extends AppCompatActivity {
     private static final String TAG = "SensorActivity";
+    private static final String SENSORPAST = ENV.SENSORPAST.getEnv();
+    private static final String SENSORNAME = ENV.SENSORNAME.getEnv();
+    private static final String VALUE = ENV.VALUE.getEnv();
+    private static final String SENSORSTATUS = ENV.SENSORSTATUS.getEnv();
 
     // Declare variables
     private final Database dB = new Database();
@@ -96,10 +105,12 @@ public class SensorActivity extends AppCompatActivity {
         Bundle carryOver = getIntent().getExtras();
         if (carryOver != null) {
             sensorId = carryOver.getString("sensorId");
-            function = carryOver.getString("editDialog", "");
+            function = carryOver.getString("callFunction", "");
 
             if(function.equals("editSensor()")) {
                 editSensor(sensorId);
+            } else if (function.equals("deleteSensor()")) {
+                deleteSensorData(sensorId);
             }
             if (sensorId != null) {
                 displaySensorInfo(sensorId);
@@ -123,6 +134,57 @@ public class SensorActivity extends AppCompatActivity {
         setGraphScale();
     }
 
+    private void deleteSensorData(String sensorId) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(true);
+        builder.setTitle("Delete Sensor Data Confirmation");
+        builder.setMessage("Deleting will completely remove the Sensors stored data");
+        builder.setPositiveButton("Confirm",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        if (dB.getSensorChild(sensorId) != null) {
+                            dB.getSensorChild(sensorId).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    if (snapshot.child(SENSORPAST).exists()) {
+                                        snapshot.child(SENSORPAST).getRef().removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                if (!task.isSuccessful()) {
+                                                    Log.d(TAG, String.format("Unable to delete sensor data: %s", sensorId));
+                                                } else {
+                                                    Log.i(TAG, String.format("Removed sensor data: %s", sensorId));
+                                                    onSupportNavigateUp();
+                                                }
+                                            }
+                                        });
+                                    } else {
+                                        Log.e(TAG, "Error retrieving SensorPastValues from DB");
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError e) {
+                                    Log.d(TAG, e.toString());
+                                    throw e.toException();
+                                }
+                            });
+                        }
+                    }
+                });
+        builder.setNegativeButton("Cancel",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Log.i(TAG, "Sensor data delete cancelled");
+                    }
+                });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
     private void editSensor(String sensorId) {
         Bundle bundle = new Bundle();
         bundle.putString("id", sensorId);
@@ -138,7 +200,7 @@ public class SensorActivity extends AppCompatActivity {
         sensorRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                chartTitle.setText(getResources().getString(R.string.sensor_graph).replace("{0}", Objects.requireNonNull(snapshot.child("SensorName").getValue(String.class))));
+                chartTitle.setText(getResources().getString(R.string.sensor_graph).replace("{0}", Objects.requireNonNull(snapshot.child(SENSORNAME).getValue(String.class))));
             }
 
             @Override
@@ -183,7 +245,6 @@ public class SensorActivity extends AppCompatActivity {
         long decrement = graphTimeScale / 7;
         if (decrement == 0) {
             for (long i = 23; i >= 0; i -= 4) {
-//                history.add(LocalDateTime.of(LocalDate.now(), LocalTime.of(23, 0)).minusHours(i));
                 history.add(LocalDateTime.now().minusHours(i));
             }
             history.add(LocalDateTime.now());
@@ -192,13 +253,12 @@ public class SensorActivity extends AppCompatActivity {
                 history.add(LocalDateTime.now().minusDays(i));
             }
         }
-        System.out.println(history);
         return new ArrayList<>(history);
     }
 
     public void getAllSensorData() {
         ArrayList<SensorData> validData = new ArrayList<>();
-        dB.getSensorChild(sensorId).child("SensorPastValues").addValueEventListener(new ValueEventListener() {
+        dB.getSensorChild(sensorId).child(SENSORPAST).addValueEventListener(new ValueEventListener() {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -210,10 +270,18 @@ public class SensorActivity extends AppCompatActivity {
                 LocalDateTime end = history.get(history.size() - 1);
 
                 for (DataSnapshot ds : snapshot.getChildren()) {
-                    LocalDateTime time = LocalDateTime.parse(ds.getKey(), DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-                    if (start.isBefore(time) && end.isAfter(time)) {
-                        values.add(ds.child("Value").getValue(Double.class));
-                        times.add(LocalDateTime.parse(ds.getKey(), DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+                    if (ds.exists()) {
+                        LocalDateTime time = LocalDateTime.parse(ds.getKey(), DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+                        if (start.isBefore(time) && end.isAfter(time)) {
+                            if (ds.child(VALUE).exists()) {
+                                values.add(ds.child(VALUE).getValue(Double.class));
+                                times.add(LocalDateTime.parse(ds.getKey(), DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+                            } else {
+                                Log.e(TAG, "Error retrieving PastValues Value from DB");
+                            }
+                        }
+                    } else {
+                        Log.e(TAG, "Error retrieving SensorPastValues from DB");
                     }
                 }
                 validData.add(new SensorData(values, times));
@@ -242,7 +310,6 @@ public class SensorActivity extends AppCompatActivity {
             for (int i = 0; i < cuts; i++) {
                 results.add(start.plusSeconds(i * delta));
             }
-            System.out.println(results);
             setXAxisLabels(history, data, results);
         }
     }
@@ -336,22 +403,31 @@ public class SensorActivity extends AppCompatActivity {
     public  boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if(id == R.id.disable_sensor) {
-//            disableSensor();
+            Log.d(TAG, "Disable sensor called but not implemented");
+            disableSensor();
+        } else if (id == R.id.delete_sensor_data) {
+            deleteSensorData(sensorId);
+        } else {
+            return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
-    }
 
+        return true;
+    }
 
     // TODO: Add status to DB
     private void disableSensor() {
-        dB.getSensorChild(sensorId).child("status").addListenerForSingleValueEvent(new ValueEventListener() {
+        dB.getSensorChild(sensorId).child(SENSORSTATUS).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 try {
-                    if (snapshot.getValue(Boolean.class)) {
-                        dB.getSensorChild(sensorId).child("status").setValue(false);
+                    if (snapshot.exists()) {
+                        if (snapshot.getValue(Boolean.class)) {
+                            snapshot.getRef().setValue(false);
+                        } else {
+                            snapshot.getRef().setValue(true);
+                        }
                     } else {
-                        dB.getSensorChild(sensorId).child("status").setValue(true);
+                        Log.e(TAG, "Error retrieving sensor status from DB");
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

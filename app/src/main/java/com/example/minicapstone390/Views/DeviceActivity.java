@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.minicapstone390.Controllers.Database;
+import com.example.minicapstone390.Controllers.ENV;
 import com.example.minicapstone390.Controllers.SharedPreferenceHelper;
 
 import com.example.minicapstone390.Models.Sensor;
@@ -37,6 +38,13 @@ import java.util.Objects;
 
 public class DeviceActivity extends AppCompatActivity {
     private static final String TAG = "DeviceActivity";
+    private static final String DEVICES = ENV.USERDEVICES.getEnv();
+    private static final String DEVICENAME = ENV.DEVICENAME.getEnv();
+    private static final String DEVICESTATUS = ENV.DEVICESTATUS.getEnv();
+    private static final String DEVICESENSORS = ENV.DEVICESENSORS.getEnv();
+    private static final String SENSORNAME = ENV.SENSORNAME.getEnv();
+    private static final String SENSORTYPE = ENV.SENSORTYPE.getEnv();
+    private static final String SENSORVALUE = ENV.SENSORVALUE.getEnv();
 
     // Declare variables
     private final Database dB = new Database();
@@ -73,7 +81,6 @@ public class DeviceActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
-        // TODO: Add  BarGraph of each sensor
         sensorListView = (RecyclerView) findViewById(R.id.sensorsRecyclerView);
         sensorListView.setLayoutManager(new LinearLayoutManager(this));
         sensorAdapter = new SensorAdapter(sensorList);
@@ -91,9 +98,11 @@ public class DeviceActivity extends AppCompatActivity {
         Bundle carryOver = getIntent().getExtras();
         if (carryOver != null) {
             deviceId = carryOver.getString("deviceId");
-            function = carryOver.getString("editDevice", "");
+            function = carryOver.getString("callFunction", "");
             if (function.equals("editDevice()")) {
                 editDevice(deviceId);
+            } else if (function.equals("deleteDevice()")) {
+                deleteDevice(deviceId);
             }
             if (deviceId != null) {
                 displayDeviceInfo(deviceId);
@@ -131,9 +140,9 @@ public class DeviceActivity extends AppCompatActivity {
         if(id == R.id.update_device) {
             editDevice(deviceId);
         } else if(id == R.id.disable_device) {
-            disableDevice();
+            disableDevice(item);
         } else if(id == R.id.remove_device) {
-            deleteDevice();
+            deleteDevice(deviceId);
         } else {
             return super.onOptionsItemSelected(item);
         }
@@ -141,18 +150,33 @@ public class DeviceActivity extends AppCompatActivity {
         return true;
     }
 
+    // Set text change on option selected
+    private void setDropDownText(MenuItem item, boolean status) {
+        if(!status) {
+            item.setTitle("Enable Device");
+        } else {
+            item.setTitle("Disable Device");
+        }
+    }
+
     // Change the active status of a device
-    private void disableDevice() {
-        dB.getDeviceChild(deviceId).child("status").addListenerForSingleValueEvent(new ValueEventListener() {
+    private void disableDevice(MenuItem item) {
+        dB.getDeviceChild(deviceId).child(DEVICESTATUS).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 boolean status = true;
 
                 try {
-                    if (snapshot.getValue(Boolean.class)) {
-                        status = false;
+                    if (snapshot.exists()) {
+                        if (snapshot.getValue(Boolean.class)) {
+                            status = false;
+                        }
+
+                        dB.getDeviceChild(deviceId).child(DEVICESTATUS).setValue(status);
+                        setDropDownText(item, status);
+                    } else {
+                        Log.e(TAG, "Unable to get status");
                     }
-                    dB.getDeviceChild(deviceId).child("status").setValue(status);
                 } catch (Exception e) {
                     e.printStackTrace();
                     Log.d(TAG, e.toString());
@@ -169,7 +193,7 @@ public class DeviceActivity extends AppCompatActivity {
     }
 
     // Remove device from the user
-    private void deleteDevice() {
+    private void deleteDevice(String deviceId) {
         // TODO: Copied from android jdk just modify it
         // TODO: Create a builder class...
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -180,23 +204,41 @@ public class DeviceActivity extends AppCompatActivity {
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        dB.getUser().delete().addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if (task.isSuccessful()) {
-                                    openHomeActivity();
-                                } else {
-                                    // TODO: Send toast for failed delete
+                        if(dB.getUserChild().child(DEVICES) != null){
+                            dB.getUserChild().child(DEVICES).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    for (DataSnapshot ds : snapshot.getChildren()) {
+                                        if (ds.getValue(String.class).equals(deviceId)) {
+                                            ds.getRef().removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    if (!task.isSuccessful()) {
+                                                        Log.d(TAG, String.format("Unable to remove device: %s", deviceId));
+                                                    } else {
+                                                        Log.i(TAG, String.format("Removed device: %s", deviceId));
+                                                        openHomeActivity();
+                                                    }
+                                                }
+                                            });
+                                        }
+                                    }
                                 }
-                            }
-                        });
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError e) {
+                                    Log.d(TAG, e.toString());
+                                    throw e.toException();
+                                }
+                            });
+                        }
                     }
                 });
         builder.setNegativeButton("Cancel",
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        // TODO LOG THAT IT IS A CANCEL
+                        Log.i(TAG, "Device delete cancelled");
                     }
                 });
 
@@ -215,13 +257,17 @@ public class DeviceActivity extends AppCompatActivity {
         dB.getDeviceChild(deviceId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                String devNameText = "Device: " + snapshot.child("deviceName").getValue(String.class);
-                deviceName.setText(devNameText);
+                String devNameText = snapshot.child(DEVICENAME).exists() ? snapshot.child(DEVICENAME).getValue(String.class) : "0";
+                deviceName.setText("Device: " + devNameText);
 
                 String status = getResources().getString(R.string.inactiveDeviceStatus);
                 try {
-                    if (snapshot.child("status").getValue(Boolean.class)) {
-                        status = getResources().getString(R.string.activeDeviceStatus);
+                    if (snapshot.child(DEVICESTATUS).exists()) {
+                        if (snapshot.child(DEVICESTATUS).getValue(Boolean.class)) {
+                            status = getResources().getString(R.string.activeDeviceStatus);
+                        }
+                    } else {
+                        Log.e(TAG, "Unable to locate device status");
                     }
                 } catch (NullPointerException e) {
                     e.printStackTrace();
@@ -239,13 +285,16 @@ public class DeviceActivity extends AppCompatActivity {
             }
         });
 
-        dB.getDeviceChild(deviceId).child("sensors").addValueEventListener(new ValueEventListener() {
+        dB.getDeviceChild(deviceId).child(DEVICESENSORS).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot ds : snapshot.getChildren()) {
-                    sensorIds.add(ds.getValue(String.class));
+                    if (ds.exists()) {
+                        sensorIds.add(ds.getValue(String.class));
+                    } else {
+                        Log.e(TAG, "Unable to locate sensor");
+                    }
                 }
-
                 getSensorNames();
             }
 
@@ -267,9 +316,9 @@ public class DeviceActivity extends AppCompatActivity {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     try {
-                        String sensorName = snapshot.child("SensorName").getValue(String.class);
-                        int sensorType =  snapshot.child("SensorType").getValue(Integer.class) != null ? snapshot.child("SensorType").getValue(Integer.class): 0;
-                        double sensorValue = snapshot.child("SensorValue").getValue(Double.class);
+                        String sensorName = snapshot.child(SENSORNAME).exists() ? snapshot.child(SENSORNAME).getValue(String.class) : id;
+                        int sensorType =  snapshot.child(SENSORTYPE).exists() ? snapshot.child(SENSORTYPE).getValue(Integer.class): 0;
+                        double sensorValue = snapshot.child(SENSORVALUE).exists() ? snapshot.child(SENSORVALUE).getValue(Double.class): 0.0;
                         if (!sensorMap.containsKey(id)) {
                             Sensor sensor = new Sensor(id, sensorType, sensorName, sensorValue);
                             sensData.add(sensor);
@@ -296,8 +345,6 @@ public class DeviceActivity extends AppCompatActivity {
                 }
             });
         }
-
-
     }
 
     // Set ListView of sensors
@@ -311,16 +358,21 @@ public class DeviceActivity extends AppCompatActivity {
     // Open sensor activity for selected sensor
     public void goToSensorActivity(int sensorIndex) {
         String sensorId = sensorIds.get(sensorIndex);
-
         Intent intent = new Intent(this, SensorActivity.class);
         intent.putExtra("sensorId", sensorId);
+        startActivity(intent);
+    }
+
+    // Open sensor activity for selected sensor
+    private void goToHomeActivity() {
+        Intent intent = new Intent(this, HomeActivity.class);
         startActivity(intent);
     }
 
     // Navigate back to homepage on task-bar return
     @Override
     public boolean onSupportNavigateUp() {
-        finish();
+        goToHomeActivity();
         return true;
     }
 }

@@ -15,6 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.minicapstone390.Controllers.Database;
+import com.example.minicapstone390.Controllers.ENV;
 import com.example.minicapstone390.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -29,11 +30,7 @@ import java.util.Map;
 // Device Fragment
 public class UpdateDeviceFragment extends DialogFragment {
     private static final String TAG = "UpdateDeviceFragment";
-
-    public interface OnInputListener{
-        void sendInput(String input);
-    }
-    public OnInputListener onInputListener;
+    private static final String DEVICENAME = ENV.DEVICENAME.getEnv();
 
     // Declare variables
     private final Database dB = new Database();
@@ -41,8 +38,6 @@ public class UpdateDeviceFragment extends DialogFragment {
     protected EditText deviceNameInput;
     protected String deviceId;
 
-
-        // TODO: Change this to device info and not user info //
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -76,7 +71,7 @@ public class UpdateDeviceFragment extends DialogFragment {
 
 
     private void updateDevice(String deviceName) {
-        dB.getDeviceChild(deviceId).child("deviceName").setValue(deviceName).addOnCompleteListener(new OnCompleteListener<Void>() {
+        dB.getDeviceChild(deviceId).child(DEVICENAME).setValue(deviceName).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (!task.isSuccessful()) {

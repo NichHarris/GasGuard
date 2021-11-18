@@ -15,6 +15,9 @@ int GMT = -5;
 RTCZero rtc;
 
 // TODO: put this shit in a list, and loop through it to set the firebase stuff, this is too hard coded... pls
+
+// Array containing all declartions of sensors;
+float sensorArray[7];
 float Sensor1Value;
 float Sensor2Value;
 float Sensor3Value;

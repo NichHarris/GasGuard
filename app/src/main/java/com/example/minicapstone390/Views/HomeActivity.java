@@ -15,10 +15,10 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.example.minicapstone390.Controllers.Database;
+import com.example.minicapstone390.Controllers.ENV;
 import com.example.minicapstone390.Controllers.SharedPreferenceHelper;
 import com.example.minicapstone390.Controllers.DeviceAdapter;
 import com.example.minicapstone390.Models.Device;
-import com.example.minicapstone390.Models.Sensor;
 import com.example.minicapstone390.R;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.AxisBase;
@@ -47,6 +47,11 @@ import java.util.Map;
 
 public class HomeActivity extends AppCompatActivity {
     private static final String TAG = "HomeActivity";
+    private static final String USERNAME = ENV.USERNAME.getEnv();
+    private static final String DEVICES = ENV.USERDEVICES.getEnv();
+    private static final String DEVICENAME = ENV.DEVICENAME.getEnv();
+    private static final String DEVICELOC = ENV.DEVICELOCATION.getEnv();
+    private static final String DEVICESTATUS = ENV.DEVICESTATUS.getEnv();
 
     // Declare variables
     private final Database dB = new Database();
@@ -60,6 +65,7 @@ public class HomeActivity extends AppCompatActivity {
     protected ArrayList<Device> deviceData;
     protected RecyclerView deviceListView;
     protected DeviceAdapter deviceAdapter;
+    protected boolean nameState = false; // False = use "deviceName", True = use "deviceId"
 
     public static String wifiModuleIp = "";
     public static int wifiModulePort = 0;
@@ -129,13 +135,23 @@ public class HomeActivity extends AppCompatActivity {
         } else if(itemId == R.id.profile) {
             goToProfileActivity();
         } else if(itemId == R.id.device_names) {
-            //TODO: Change List of Device Names to Set Names
-            return true;
+            nameState = !nameState;
+            setDropDownText(item);
+            loadDeviceList();
         } else {
             return super.onOptionsItemSelected(item);
         }
 
         return true;
+    }
+
+    // Set text change on option selected
+    private void setDropDownText(MenuItem item) {
+        if(nameState) {
+            item.setTitle("Device Names");
+        } else {
+            item.setTitle("Device IDs");
+        }
     }
 
     // TODO: IMPLEMENT DEVICE CONNECTION
@@ -175,7 +191,7 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 try {
-                    String userName = snapshot.child("userName").getValue(String.class);
+                    String userName = snapshot.child(USERNAME).exists() ? snapshot.child(USERNAME).getValue(String.class) : "";
 
                     String defaultMessage = getResources().getString(R.string.welcome_user).replace("{0}", userName != null ? userName : "");
                     welcomeUserMessage.setText(defaultMessage);
@@ -199,7 +215,7 @@ public class HomeActivity extends AppCompatActivity {
         ArrayList<String> devIds = new ArrayList<>();
 
         //Get List of Devices from DB
-        DatabaseReference usersRef = dB.getUserChild(dB.getUserId()).child("devices");
+        DatabaseReference usersRef = dB.getUserChild(dB.getUserId()).child(DEVICES);
 
         usersRef.addValueEventListener(new ValueEventListener() {
             @RequiresApi(api = Build.VERSION_CODES.O)
@@ -208,7 +224,11 @@ public class HomeActivity extends AppCompatActivity {
 
                 // Format List from DB for Adapter
                 for (DataSnapshot ds : snapshot.getChildren()) {
-                    devIds.add(ds.getValue(String.class));
+                    if (ds.exists()) {
+                        devIds.add(ds.getValue(String.class));
+                    } else {
+                        Log.e(TAG, "Child does not exist");
+                    }
                 }
 
                 // Add Ids to Device Ids List
@@ -233,40 +253,46 @@ public class HomeActivity extends AppCompatActivity {
 
         for (String id: devices) {
             //TODO: check if devices are part of the user
-            DatabaseReference deviceRef = dB.getDeviceRef().child(id);
-            deviceRef.addListenerForSingleValueEvent(new ValueEventListener() {
-
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    try {
-                        // Get Device Data from DB
-                        String devName = snapshot.child("deviceName").getValue(String.class);
-                        String devLocation = snapshot.child("location").getValue(String.class);
-                        boolean devStatus = snapshot.child("status").getValue(Boolean.class);
-                        if (!deviceMap.containsKey(id)) {
-                            Device device = new Device(id, devName, devLocation, devStatus);
-                            devData.add(device);
-                            deviceMap.put(id, device);
-                        } else {
-                            Device device = deviceMap.get(id);
-                            assert device != null;
-                            device.setDeviceName(devName);
-                            device.setLocation(devLocation);
-                            device.setStatus(devStatus);
+            if (id != null) {
+                DatabaseReference deviceRef = dB.getDeviceRef().child(id);
+                deviceRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        try {
+                            // Get Device Data from DB
+                            String devName = id;
+                            if (!nameState) {
+                                devName = snapshot.child(DEVICENAME).exists() ? snapshot.child(DEVICENAME).getValue(String.class) : id;
+                            }
+                            String devLocation = snapshot.child(DEVICELOC).exists() ? snapshot.child(DEVICELOC).getValue(String.class) : "No location set";
+                            boolean devStatus = snapshot.child(DEVICESTATUS).exists() ? snapshot.child(DEVICESTATUS).getValue(Boolean.class) : true;
+                            if (!deviceMap.containsKey(id)) {
+                                Device device = new Device(id, devName, devLocation, devStatus);
+                                devData.add(device);
+                                deviceMap.put(id, device);
+                            } else {
+                                Device device = deviceMap.get(id);
+                                assert device != null;
+                                device.setDeviceName(devName);
+                                device.setLocation(devLocation);
+                                device.setStatus(devStatus);
+                            }
+                            setDeviceList(devData);
+                        } catch (Exception e) {
+                            Log.d(TAG, e.toString());
+                            return;
                         }
-                        setDeviceList(devData);
-                    } catch (Exception e) {
-                        Log.d(TAG, e.toString());
-                        return;
                     }
-                }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError e) {
-                    Log.d(TAG, e.toString());
-                    throw e.toException();
-                }
-            });
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError e) {
+                        Log.d(TAG, e.toString());
+                        throw e.toException();
+                    }
+                });
+            } else {
+                Log.d(TAG, "Id is null");
+            }
         }
 
     }
@@ -275,7 +301,6 @@ public class HomeActivity extends AppCompatActivity {
     private void setDeviceList(ArrayList<Device> devData) {
         deviceAdapter = new DeviceAdapter(devData);
         deviceListView.setAdapter(deviceAdapter);
-
         setXAxisLabels(devData);
     }
 
@@ -352,5 +377,19 @@ public class HomeActivity extends AppCompatActivity {
         Intent intent = new Intent(this, DeviceActivity.class);
         intent.putExtra("deviceId", deviceId);
         startActivity(intent);
+    }
+
+    // Close app on back pressed
+    private void closeApp() {
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_HOME);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
+
+    // Close app on home menu
+    @Override
+    public void onBackPressed() {
+        closeApp();
     }
 }

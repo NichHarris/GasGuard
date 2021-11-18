@@ -3,11 +3,9 @@ package com.example.minicapstone390.Models;
 import java.util.Map;
 
 public class Sensor {
-    //TODO:
     private String id;
     private int SensorType;
     private String SensorName;
-    private Map<String, Object> SensorPastValues;
     private double SensorValue;
     private boolean status;
 
@@ -20,27 +18,23 @@ public class Sensor {
         this.SensorValue = sensorValue;
     }
 
-    public String getId() { return id; }
+    public String getId() { return this.id; }
 
     public void setId(String id) { this.id = id; }
 
-    public int getSensorType() { return SensorType; }
+    public int getSensorType() { return this.SensorType; }
 
     public void setSensorType(int sensorType) { this.SensorType = sensorType; }
 
-    public String getSensorName() { return SensorName; }
+    public String getSensorName() { return this.SensorName; }
 
     public void setSensorName(String sensorName) { this.SensorName = sensorName; }
 
-    public Map<String, Object> getSensorData() { return SensorPastValues; }
+    public double getSensorValue() { return this.SensorValue; }
 
-    public void setSensorData(Map<String, Object> sensorData) { this.SensorPastValues = sensorData; }
+    public void setSensorValue(double sensorValue) { this.SensorValue = sensorValue; }
 
-    public double getSensorValue() { return SensorValue; }
-
-    public void setSensorValue(double sensorValue) { SensorValue = sensorValue; }
-
-    public boolean getStatus() { return status; }
+    public boolean getStatus() { return this.status; }
 
     public void setStatus(Boolean status) { this.status = status; }
 }

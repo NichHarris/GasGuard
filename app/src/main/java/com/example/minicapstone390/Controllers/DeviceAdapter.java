@@ -23,6 +23,15 @@ import java.util.ArrayList;
 
 public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder> {
     private static final String TAG = "DeviceAdapter";
+    private static final String deviceIdCall = "deviceId";
+    private static final String callFunction = "callFunction";
+    private static final String DELETE = "DELETE ";
+    private static final String EDIT = "EDIT ";
+    private static final String ACCESS = "ACCESS ";
+
+    private final String deleteDeviceFunction = "deleteDevice()";
+    private final String editDeviceFunction = "editDevice()";
+
     // Define Context and ArrayList of Devices
     private Context mContext;
     private final ArrayList<Device> devices;
@@ -46,26 +55,29 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
             deleteIcon = (ImageView) v.findViewById(R.id.deviceDeleteIcon);
 
             editIcon.setOnClickListener((view) -> {
-                Intent intent = new Intent(mContext, DeviceActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putString("deviceId", devices.get(getAdapterPosition()).getId());
-                bundle.putString("editDevice", "editDevice()");
-                intent.putExtras(bundle);
-                Log.d(TAG, "EDIT " + getAdapterPosition());
-                mContext.startActivity(intent);
+                callActivity(editDeviceFunction, EDIT, getAdapterPosition());
             });
 
             deleteIcon.setOnClickListener((view) -> {
-                //TODO: Add Device Delete Code Here
-                Log.d(TAG,"DELETE " + getAdapterPosition());
+                callActivity(deleteDeviceFunction, DELETE, getAdapterPosition());
             });
 
             v.setOnClickListener((view) -> {
                 int deviceIndex = getAdapterPosition();
-                Log.d(TAG,"ACCESS " + deviceIndex);
+                Log.d(TAG,ACCESS + deviceIndex);
                 ((HomeActivity)mContext).goToDeviceActivity(deviceIndex);
             });
         }
+    }
+
+    private void callActivity(String function, String type, int position) {
+        Intent intent = new Intent(mContext, DeviceActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(deviceIdCall, devices.get(position).getId());
+        bundle.putString(callFunction, function);
+        intent.putExtras(bundle);
+        Log.i(TAG,type + position);
+        mContext.startActivity(intent);
     }
 
     // Define Adapter for Device List

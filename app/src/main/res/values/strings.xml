@@ -29,6 +29,7 @@
     <string name="add_device">Add Device</string>
     <string name="device_id">Device Id</string>
     <string name="save">SAVE</string>
+    <string name="cancel">CANCEL</string>
 
     <!-- Profile Page   -->
     <string name="profile">Profile</string>
@@ -50,13 +51,14 @@
 
     <!-- Device and Sensor Menu Dropdown -->
     <string name="disable_sensor">Disable Sensor</string>
+    <string name="delete_sensor_data">Delete Sensor Data</string>
     <string name="remove_device">Remove Device</string>
     <string name="disable_device">Disable Device</string>
     <string name="update_device_info">Update Device Info</string>
     <string name="device_names">Device Names</string>
 
     <!-- Notification and Dark Mode Features -->
-    <string name="dark_mode_on_off">Dark Mode On/Off</string>
+    <string name="dark_mode_on_off">Enable Dark Mode</string>
     <string name="notification_fragment_text">This is a notification!</string>
 
     <!-- Device and Sensor Recycler View -->
@@ -79,4 +81,5 @@
     <string name="gas">Gas</string>
     <string name="sensorname">SensorName</string>
     <string name="device_name">Device Name</string>
+    <string name="device_ids">Device IDs</string>
 </resources>
