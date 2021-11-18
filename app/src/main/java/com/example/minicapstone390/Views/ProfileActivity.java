@@ -97,6 +97,7 @@ public class ProfileActivity extends AppCompatActivity {
                 } else {
                     sharePreferenceHelper.setTheme(true);
                 }
+                setDropDownText(item);
                 reload();
                 //TODO Add transitions
                 break;
@@ -113,6 +114,14 @@ public class ProfileActivity extends AppCompatActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void setDropDownText(MenuItem item) {
+        if(sharePreferenceHelper.getTheme()) {
+            item.setTitle("Disable Dark Mode");
+        } else {
+            item.setTitle("Enable Dark Mode");
+        }
     }
 
     // Delete user

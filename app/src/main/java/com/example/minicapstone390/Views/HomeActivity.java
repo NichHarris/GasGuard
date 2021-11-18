@@ -140,6 +140,7 @@ public class HomeActivity extends AppCompatActivity {
         return true;
     }
 
+    // Set text change on option selected
     private void setDropDownText(MenuItem item) {
         if(nameState) {
             item.setTitle("Device Names");

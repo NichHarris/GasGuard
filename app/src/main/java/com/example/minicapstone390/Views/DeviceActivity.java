@@ -140,6 +140,7 @@ public class DeviceActivity extends AppCompatActivity {
         return true;
     }
 
+    // Set text change on option selected
     private void setDropDownText(MenuItem item, boolean status) {
         if(!status) {
             item.setTitle("Enable Device");
