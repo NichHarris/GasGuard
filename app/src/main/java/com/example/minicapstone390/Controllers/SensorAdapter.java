@@ -3,6 +3,7 @@ package com.example.minicapstone390.Controllers;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,14 @@ import java.util.ArrayList;
 
 public class SensorAdapter extends RecyclerView.Adapter<SensorAdapter.ViewHolder> {
     private static final String TAG = "SensorAdapter";
+    private static final String sensorIdCall = "sensorId";
+    private static final String callFunction = "callFunction";
+    private static final String DELETE = "DELETE ";
+    private static final String EDIT = "EDIT ";
+    private static final String ACCESS = "ACCESS ";
+
+    private final String deleteFunction = "deleteSensor()";
+    private final String editFunction = "editSensor()";
 
     // Define Context and ArrayList of Sensors
     private final Database dB = new Database();
@@ -52,27 +61,30 @@ public class SensorAdapter extends RecyclerView.Adapter<SensorAdapter.ViewHolder
             deleteIcon = (ImageView) v.findViewById(R.id.sensorDeleteIcon);
 
             editIcon.setOnClickListener((view) -> {
-                SensorFragment dialog = new SensorFragment();
-                Intent intent = new Intent(mContext , SensorActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putString("sensorId", sensors.get(getAdapterPosition()).getId());
-                bundle.putString("editDialog", "editSensor()");
-                intent.putExtras(bundle);
-                mContext.startActivity(intent);
+                callActivity(editFunction, EDIT, getAdapterPosition());
             });
 
             deleteIcon.setOnClickListener((view) -> {
-                //TODO: Add Device Delete Code Here
-                System.out.println("DELETE " + getAdapterPosition());
+                callActivity(deleteFunction, DELETE, getAdapterPosition());
             });
 
             v.setOnClickListener((view) -> {
                 int sensorIndex = getAdapterPosition();
-                System.out.println("ACCESS " + sensorIndex);
+                System.out.println(ACCESS + sensorIndex);
                 ((DeviceActivity)mContext).goToSensorActivity(sensorIndex);
             });
         }
 
+    }
+
+    private void callActivity(String function, String type, int position) {
+        Intent intent = new Intent(mContext, SensorActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(sensorIdCall, sensors.get(position).getId());
+        bundle.putString(callFunction, function);
+        intent.putExtras(bundle);
+        Log.i(TAG,type + position);
+        mContext.startActivity(intent);
     }
 
     // Define Adapter for Device List

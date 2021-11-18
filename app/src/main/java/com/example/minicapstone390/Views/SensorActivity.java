@@ -96,10 +96,12 @@ public class SensorActivity extends AppCompatActivity {
         Bundle carryOver = getIntent().getExtras();
         if (carryOver != null) {
             sensorId = carryOver.getString("sensorId");
-            function = carryOver.getString("editDialog", "");
+            function = carryOver.getString("callFunction", "");
 
             if(function.equals("editSensor()")) {
                 editSensor(sensorId);
+            } else if (function.equals("deleteSensor()")) {
+                deleteSensor(sensorId);
             }
             if (sensorId != null) {
                 displaySensorInfo(sensorId);
@@ -121,6 +123,10 @@ public class SensorActivity extends AppCompatActivity {
         super.onResume();
         displaySensorInfo(sensorId);
         setGraphScale();
+    }
+
+    private void deleteSensor(String sensorId) {
+        Log.d(TAG, "Delete sensor called");
     }
 
     private void editSensor(String sensorId) {

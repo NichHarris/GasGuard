@@ -221,7 +221,7 @@ public class DeviceActivity extends AppCompatActivity {
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        // TODO LOG THAT IT IS A CANCEL
+                        Log.i(TAG, "Device delete cancelled");
                     }
                 });
 
