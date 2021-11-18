@@ -19,6 +19,7 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.example.minicapstone390.Controllers.Database;
+import com.example.minicapstone390.Controllers.ENV;
 import com.example.minicapstone390.Models.Device;
 import com.example.minicapstone390.Models.Sensor;
 import com.example.minicapstone390.R;
@@ -35,6 +36,7 @@ import java.util.Map;
 // Device Fragment
 public class SensorFragment extends DialogFragment {
     private static final String TAG = "SensorFragment";
+    private static final String SENSORNAME = ENV.SENSORNAME.getEnv();
 
     // Declare variables
     private final Database dB = new Database();
@@ -77,7 +79,7 @@ public class SensorFragment extends DialogFragment {
     }
 
     private void updateSensor(String name) {
-        dB.getSensorChild(sensorId).child("SensorName").setValue(name).addOnCompleteListener(new OnCompleteListener<Void>() {
+        dB.getSensorChild(sensorId).child(SENSORNAME).setValue(name).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (!task.isSuccessful()) {

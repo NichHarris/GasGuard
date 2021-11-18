@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.minicapstone390.Controllers.Database;
+import com.example.minicapstone390.Controllers.ENV;
 import com.example.minicapstone390.Controllers.SharedPreferenceHelper;
 
 import com.example.minicapstone390.Models.Sensor;
@@ -37,6 +38,13 @@ import java.util.Objects;
 
 public class DeviceActivity extends AppCompatActivity {
     private static final String TAG = "DeviceActivity";
+    private static final String DEVICES = ENV.USERDEVICES.getEnv();
+    private static final String DEVICENAME = ENV.DEVICENAME.getEnv();
+    private static final String DEVICESTATUS = ENV.DEVICESTATUS.getEnv();
+    private static final String DEVICESENSORS = ENV.DEVICESENSORS.getEnv();
+    private static final String SENSORNAME = ENV.SENSORNAME.getEnv();
+    private static final String SENSORTYPE = ENV.SENSORTYPE.getEnv();
+    private static final String SENSORVALUE = ENV.SENSORVALUE.getEnv();
 
     // Declare variables
     private final Database dB = new Database();
@@ -153,32 +161,35 @@ public class DeviceActivity extends AppCompatActivity {
 
     // Change the active status of a device
     private void disableDevice(MenuItem item) {
-        if (dB.getDeviceChild(deviceId).child("status") != null) {
-            dB.getDeviceChild(deviceId).child("status").addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    boolean status = true;
+        dB.getDeviceChild(deviceId).child(DEVICESTATUS).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                boolean status = true;
 
-                    try {
+                try {
+                    if (snapshot.exists()) {
                         if (snapshot.getValue(Boolean.class)) {
                             status = false;
                         }
-                        dB.getDeviceChild(deviceId).child("status").setValue(status);
-                        setDropDownText(item, status);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        Log.d(TAG, e.toString());
-                        throw e;
-                    }
-                }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError e) {
+                        dB.getDeviceChild(deviceId).child(DEVICESTATUS).setValue(status);
+                        setDropDownText(item, status);
+                    } else {
+                        Log.e(TAG, "Unable to get status");
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                     Log.d(TAG, e.toString());
-                    throw e.toException();
+                    throw e;
                 }
-            });
-        }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError e) {
+                Log.d(TAG, e.toString());
+                throw e.toException();
+            }
+        });
     }
 
     // Remove device from the user
@@ -193,8 +204,8 @@ public class DeviceActivity extends AppCompatActivity {
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        if(dB.getUserChild().child("devices") != null){
-                            dB.getUserChild().child("devices").addListenerForSingleValueEvent(new ValueEventListener() {
+                        if(dB.getUserChild().child(DEVICES) != null){
+                            dB.getUserChild().child(DEVICES).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                                     for (DataSnapshot ds : snapshot.getChildren()) {
@@ -246,13 +257,13 @@ public class DeviceActivity extends AppCompatActivity {
         dB.getDeviceChild(deviceId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                String devNameText = snapshot.child("deviceName").exists() ? snapshot.child("deviceName").getValue(String.class) : "0";
+                String devNameText = snapshot.child(DEVICENAME).exists() ? snapshot.child(DEVICENAME).getValue(String.class) : "0";
                 deviceName.setText("Device: " + devNameText);
 
                 String status = getResources().getString(R.string.inactiveDeviceStatus);
                 try {
-                    if (snapshot.child("status").exists()) {
-                        if (snapshot.child("status").getValue(Boolean.class)) {
+                    if (snapshot.child(DEVICESTATUS).exists()) {
+                        if (snapshot.child(DEVICESTATUS).getValue(Boolean.class)) {
                             status = getResources().getString(R.string.activeDeviceStatus);
                         }
                     } else {
@@ -274,7 +285,7 @@ public class DeviceActivity extends AppCompatActivity {
             }
         });
 
-        dB.getDeviceChild(deviceId).child("sensors").addValueEventListener(new ValueEventListener() {
+        dB.getDeviceChild(deviceId).child(DEVICESENSORS).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot ds : snapshot.getChildren()) {
@@ -305,9 +316,9 @@ public class DeviceActivity extends AppCompatActivity {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     try {
-                        String sensorName = snapshot.child("SensorName").exists() ? snapshot.child("SensorName").getValue(String.class) : id;
-                        int sensorType =  snapshot.child("SensorType").exists() ? snapshot.child("SensorType").getValue(Integer.class): 0;
-                        double sensorValue = snapshot.child("SensorValue").exists() ? snapshot.child("SensorValue").getValue(Double.class): 0.0;
+                        String sensorName = snapshot.child(SENSORNAME).exists() ? snapshot.child(SENSORNAME).getValue(String.class) : id;
+                        int sensorType =  snapshot.child(SENSORTYPE).exists() ? snapshot.child(SENSORTYPE).getValue(Integer.class): 0;
+                        double sensorValue = snapshot.child(SENSORVALUE).exists() ? snapshot.child(SENSORVALUE).getValue(Double.class): 0.0;
                         if (!sensorMap.containsKey(id)) {
                             Sensor sensor = new Sensor(id, sensorType, sensorName, sensorValue);
                             sensData.add(sensor);

@@ -7,11 +7,6 @@ public class SensorData {
     private ArrayList<Double> values;
     private ArrayList<LocalDateTime> times;
 
-    public SensorData() {
-        this.values = null;
-        this.times = null;
-    }
-
     public SensorData(ArrayList<Double> values, ArrayList<LocalDateTime> times) {
         this.values = values;
         this.times = times;

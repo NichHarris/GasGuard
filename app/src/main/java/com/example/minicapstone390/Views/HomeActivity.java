@@ -15,10 +15,10 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.example.minicapstone390.Controllers.Database;
+import com.example.minicapstone390.Controllers.ENV;
 import com.example.minicapstone390.Controllers.SharedPreferenceHelper;
 import com.example.minicapstone390.Controllers.DeviceAdapter;
 import com.example.minicapstone390.Models.Device;
-import com.example.minicapstone390.Models.Sensor;
 import com.example.minicapstone390.R;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.AxisBase;
@@ -47,6 +47,11 @@ import java.util.Map;
 
 public class HomeActivity extends AppCompatActivity {
     private static final String TAG = "HomeActivity";
+    private static final String USERNAME = ENV.USERNAME.getEnv();
+    private static final String DEVICES = ENV.USERDEVICES.getEnv();
+    private static final String DEVICENAME = ENV.DEVICENAME.getEnv();
+    private static final String DEVICELOC = ENV.DEVICELOCATION.getEnv();
+    private static final String DEVICESTATUS = ENV.DEVICESTATUS.getEnv();
 
     // Declare variables
     private final Database dB = new Database();
@@ -186,7 +191,7 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 try {
-                    String userName = snapshot.child("userName").exists() ? snapshot.child("userName").getValue(String.class) : "";
+                    String userName = snapshot.child(USERNAME).exists() ? snapshot.child(USERNAME).getValue(String.class) : "";
 
                     String defaultMessage = getResources().getString(R.string.welcome_user).replace("{0}", userName != null ? userName : "");
                     welcomeUserMessage.setText(defaultMessage);
@@ -210,7 +215,7 @@ public class HomeActivity extends AppCompatActivity {
         ArrayList<String> devIds = new ArrayList<>();
 
         //Get List of Devices from DB
-        DatabaseReference usersRef = dB.getUserChild(dB.getUserId()).child("devices");
+        DatabaseReference usersRef = dB.getUserChild(dB.getUserId()).child(DEVICES);
 
         usersRef.addValueEventListener(new ValueEventListener() {
             @RequiresApi(api = Build.VERSION_CODES.O)
@@ -257,10 +262,10 @@ public class HomeActivity extends AppCompatActivity {
                             // Get Device Data from DB
                             String devName = id;
                             if (!nameState) {
-                                devName = snapshot.child("deviceName").exists() ? snapshot.child("deviceName").getValue(String.class) : id;
+                                devName = snapshot.child(DEVICENAME).exists() ? snapshot.child(DEVICENAME).getValue(String.class) : id;
                             }
-                            String devLocation = snapshot.child("location").exists() ? snapshot.child("location").getValue(String.class) : "No location set";
-                            boolean devStatus = snapshot.child("status").exists() ? snapshot.child("status").getValue(Boolean.class) : true;
+                            String devLocation = snapshot.child(DEVICELOC).exists() ? snapshot.child(DEVICELOC).getValue(String.class) : "No location set";
+                            boolean devStatus = snapshot.child(DEVICESTATUS).exists() ? snapshot.child(DEVICESTATUS).getValue(Boolean.class) : true;
                             if (!deviceMap.containsKey(id)) {
                                 Device device = new Device(id, devName, devLocation, devStatus);
                                 devData.add(device);

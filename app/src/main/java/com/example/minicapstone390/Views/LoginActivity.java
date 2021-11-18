@@ -80,6 +80,7 @@ public class LoginActivity extends AppCompatActivity {
                 } else {
                     Log.e(TAG, "Failed to send password reset email");
                     Toast.makeText(getApplicationContext(), "Error sending password reset, email is not associated with an account!", Toast.LENGTH_SHORT).show();
+                    userEmailET.requestFocus();
                 }
             }
         });
@@ -118,6 +119,9 @@ public class LoginActivity extends AppCompatActivity {
     private void reload() {
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
+
+        //Remove transition
+        overridePendingTransition(0, 0);
     }
 
     private void openSignupActivity() {

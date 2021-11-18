@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.minicapstone390.Controllers.Database;
+import com.example.minicapstone390.Controllers.ENV;
 import com.example.minicapstone390.Controllers.SharedPreferenceHelper;
 import com.example.minicapstone390.Models.Device;
 import com.example.minicapstone390.Models.Sensor;
@@ -56,6 +57,10 @@ import java.util.Objects;
 
 public class SensorActivity extends AppCompatActivity {
     private static final String TAG = "SensorActivity";
+    private static final String SENSORPAST = ENV.SENSORPAST.getEnv();
+    private static final String SENSORNAME = ENV.SENSORNAME.getEnv();
+    private static final String VALUE = ENV.VALUE.getEnv();
+    private static final String SENSORSTATUS = ENV.SENSORSTATUS.getEnv();
 
     // Declare variables
     private final Database dB = new Database();
@@ -142,8 +147,8 @@ public class SensorActivity extends AppCompatActivity {
                             dB.getSensorChild(sensorId).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    if (snapshot.child("SensorPastValues").exists()) {
-                                        snapshot.child("SensorPastValues").getRef().removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    if (snapshot.child(SENSORPAST).exists()) {
+                                        snapshot.child(SENSORPAST).getRef().removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
                                             @Override
                                             public void onComplete(@NonNull Task<Void> task) {
                                                 if (!task.isSuccessful()) {
@@ -195,7 +200,7 @@ public class SensorActivity extends AppCompatActivity {
         sensorRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                chartTitle.setText(getResources().getString(R.string.sensor_graph).replace("{0}", Objects.requireNonNull(snapshot.child("SensorName").getValue(String.class))));
+                chartTitle.setText(getResources().getString(R.string.sensor_graph).replace("{0}", Objects.requireNonNull(snapshot.child(SENSORNAME).getValue(String.class))));
             }
 
             @Override
@@ -253,7 +258,7 @@ public class SensorActivity extends AppCompatActivity {
 
     public void getAllSensorData() {
         ArrayList<SensorData> validData = new ArrayList<>();
-        dB.getSensorChild(sensorId).child("SensorPastValues").addValueEventListener(new ValueEventListener() {
+        dB.getSensorChild(sensorId).child(SENSORPAST).addValueEventListener(new ValueEventListener() {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -268,8 +273,8 @@ public class SensorActivity extends AppCompatActivity {
                     if (ds.exists()) {
                         LocalDateTime time = LocalDateTime.parse(ds.getKey(), DateTimeFormatter.ISO_LOCAL_DATE_TIME);
                         if (start.isBefore(time) && end.isAfter(time)) {
-                            if (ds.child("Value").exists()) {
-                                values.add(ds.child("Value").getValue(Double.class));
+                            if (ds.child(VALUE).exists()) {
+                                values.add(ds.child(VALUE).getValue(Double.class));
                                 times.add(LocalDateTime.parse(ds.getKey(), DateTimeFormatter.ISO_LOCAL_DATE_TIME));
                             } else {
                                 Log.e(TAG, "Error retrieving PastValues Value from DB");
@@ -411,7 +416,7 @@ public class SensorActivity extends AppCompatActivity {
 
     // TODO: Add status to DB
     private void disableSensor() {
-        dB.getSensorChild(sensorId).child("status").addListenerForSingleValueEvent(new ValueEventListener() {
+        dB.getSensorChild(sensorId).child(SENSORSTATUS).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 try {

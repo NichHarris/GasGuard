@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.minicapstone390.Controllers.Database;
+import com.example.minicapstone390.Controllers.ENV;
 import com.example.minicapstone390.Models.Device;
 import com.example.minicapstone390.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -32,7 +33,10 @@ import java.util.Map;
 // Device Fragment
 public class DeviceFragment extends DialogFragment {
     private static final String TAG = "AddDeviceFragment";
-
+    private static final String DEVICES = ENV.USERDEVICES.getEnv();
+    private static final String DEVICENAME = ENV.DEVICENAME.getEnv();
+    private static final String DEVICELOC = ENV.DEVICELOCATION.getEnv();
+    private static final String DEVICESTATUS = ENV.DEVICESTATUS.getEnv();
     // Declare variables
     private final Database dB = new Database();
 
@@ -68,9 +72,9 @@ public class DeviceFragment extends DialogFragment {
                 // We can then check if a device with the ID exists and add, if it doesn't we send an error
                 Device device = new Device(deviceId, deviceId, "Montreal, QC", true);
                 Map<String, Object> deviceAttributes = new HashMap<>();
-                deviceAttributes.put("deviceName", device.getDeviceName());
-                deviceAttributes.put("location", device.getDeviceLocation());
-                deviceAttributes.put("status", device.getStatus());
+                deviceAttributes.put(DEVICENAME, device.getDeviceName());
+                deviceAttributes.put(DEVICELOC, device.getDeviceLocation());
+                deviceAttributes.put(DEVICESTATUS, device.getStatus());
                 dB.getDeviceChild(deviceId).updateChildren(deviceAttributes).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
@@ -87,7 +91,7 @@ public class DeviceFragment extends DialogFragment {
                 // TODO: Add check if device is already part of user
                 DatabaseReference userRef = dB.getUserChild(dB.getUserId());
 
-                userRef.child("devices").addListenerForSingleValueEvent(new ValueEventListener() {
+                userRef.child(DEVICES).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         for (DataSnapshot ds: snapshot.getChildren()) {
@@ -104,7 +108,7 @@ public class DeviceFragment extends DialogFragment {
                         // for updating users with a device
                         Map<String, Object> keys = new HashMap<>();
                         keys.put(deviceId, deviceId);
-                        userRef.child("devices").updateChildren(keys);
+                        userRef.child(DEVICES).updateChildren(keys);
                     }
 
                     @Override

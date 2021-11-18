@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.minicapstone390.Controllers.Database;
+import com.example.minicapstone390.Controllers.ENV;
 import com.example.minicapstone390.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -28,6 +29,12 @@ import java.util.Map;
 // Device Fragment
 public class UpdateInfoFragment extends DialogFragment {
     private static final String TAG = "UpdateInfoFragment";
+    private static final String USERNAME = ENV.USERNAME.getEnv();
+    private static final String USEREMAIL = ENV.USEREMAIL.getEnv();
+    private static final String USERPHONE = ENV.USERPHONE.getEnv();
+    private static final String USERLAST = ENV.USERLAST.getEnv();
+    private static final String USERFIRST = ENV.USERFIRST.getEnv();
+    private static final String USERDEVICES = ENV.USERDEVICES.getEnv();
 
     // Declare variables
     private final Database dB = new Database();
@@ -62,7 +69,7 @@ public class UpdateInfoFragment extends DialogFragment {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     String userName, userEmail, userPhone, userFirstName, userLastName;
-                    userName = userNameInput.getText().toString().equals("") ? (snapshot.child("userName").exists() ? snapshot.child("userName").getValue(String.class) : "") : userNameInput.getText().toString();
+                    userName = userNameInput.getText().toString().equals("") ? (snapshot.child(USERNAME).exists() ? snapshot.child(USERNAME).getValue(String.class) : "") : userNameInput.getText().toString();
 
                     if (!userEmailInput.getText().toString().equals("")) {
                         // Email Must Be a Valid Email and Unique
@@ -74,7 +81,7 @@ public class UpdateInfoFragment extends DialogFragment {
                             userEmail = userEmailInput.getText().toString();
                         }
                     } else {
-                        userEmail = snapshot.child("userEmail").exists() ? snapshot.child("userEmail").getValue(String.class) : "";
+                        userEmail = snapshot.child(USEREMAIL).exists() ? snapshot.child(USEREMAIL).getValue(String.class) : "";
                     }
                     assert userEmail != null;
                     dB.getUser().verifyBeforeUpdateEmail(userEmail).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -87,11 +94,11 @@ public class UpdateInfoFragment extends DialogFragment {
                         }
                     });
 
-                    userPhone = userPhoneInput.getText().toString().equals("") ? (snapshot.child("userPhone").exists() ? snapshot.child("userPhone").getValue(String.class) : "") : userPhoneInput.getText().toString();
-                    userFirstName = userFirstNameInput.getText().toString().equals("") ? (snapshot.child("userFirstName").exists() ? snapshot.child("userFirstName").getValue(String.class) : "") : userFirstNameInput.getText().toString();
-                    userLastName = userLastNameInput.getText().toString().equals("") ? (snapshot.child("userLastName").exists() ? snapshot.child("userLastName").getValue(String.class) : "") : userLastNameInput.getText().toString();
+                    userPhone = userPhoneInput.getText().toString().equals("") ? (snapshot.child(USERPHONE).exists() ? snapshot.child(USERPHONE).getValue(String.class) : "") : userPhoneInput.getText().toString();
+                    userFirstName = userFirstNameInput.getText().toString().equals("") ? (snapshot.child(USERFIRST).exists() ? snapshot.child(USERFIRST).getValue(String.class) : "") : userFirstNameInput.getText().toString();
+                    userLastName = userLastNameInput.getText().toString().equals("") ? (snapshot.child(USERLAST).exists() ? snapshot.child(USERLAST).getValue(String.class) : "") : userLastNameInput.getText().toString();
 
-                    userRef.child("devices").addListenerForSingleValueEvent(new ValueEventListener() {
+                    userRef.child(USERDEVICES).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             Map<String, Object> devices = new HashMap<>();
@@ -105,12 +112,12 @@ public class UpdateInfoFragment extends DialogFragment {
 
                             // Can add validation after
                             Map<String, Object> userInfo = new HashMap<>();
-                            userInfo.put("userName", userName);
-                            userInfo.put("userEmail", userEmail);
-                            userInfo.put("userPhone", userPhone);
-                            userInfo.put("userFirstName", userFirstName);
-                            userInfo.put("userLastName", userLastName);
-                            userInfo.put("devices", devices);
+                            userInfo.put(USERNAME, userName);
+                            userInfo.put(USEREMAIL, userEmail);
+                            userInfo.put(USERPHONE, userPhone);
+                            userInfo.put(USERFIRST, userFirstName);
+                            userInfo.put(USERLAST, userLastName);
+                            userInfo.put(USERDEVICES, devices);
                             userRef.updateChildren(userInfo);
 
                             ((ProfileActivity)getActivity()).updateAllInfo();

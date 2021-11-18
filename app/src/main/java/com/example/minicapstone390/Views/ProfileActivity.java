@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.example.minicapstone390.Controllers.Database;
+import com.example.minicapstone390.Controllers.ENV;
 import com.example.minicapstone390.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.example.minicapstone390.Views.UpdateInfoFragment;
@@ -33,6 +34,11 @@ import java.util.Objects;
 
 public class ProfileActivity extends AppCompatActivity {
     private static final String TAG = "ProfileActivity";
+    private static final String USERNAME = ENV.USERNAME.getEnv();
+    private static final String USEREMAIL = ENV.USEREMAIL.getEnv();
+    private static final String USERFIRST = ENV.USERFIRST.getEnv();
+    private static final String USERLAST = ENV.USERLAST.getEnv();
+    private static final String USERPHONE = ENV.USERPHONE.getEnv();
 
     // Declare variables
     private final Database dB = new Database();
@@ -193,12 +199,11 @@ public class ProfileActivity extends AppCompatActivity {
         dB.getUserChild(dB.getUserId()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                userName = snapshot.child("userName").exists() ? snapshot.child("userName").getValue(String.class) : "";
-                userEmail = snapshot.child("userEmail").exists() ? snapshot.child("userEmail").getValue(String.class) : "";
-                userPhone = snapshot.child("userPhone").exists() ? snapshot.child("userPhone").getValue(String.class) : "";
-                userFirstName = snapshot.child("userFirstName").exists() ? snapshot.child("userFirstName").getValue(String.class) : "";
-                userLastName = snapshot.child("userLastName").exists() ? snapshot.child("userLastName").getValue(String.class) : "";
+                userName = snapshot.child(USERNAME).exists() ? snapshot.child(USERNAME).getValue(String.class) : "";
+                userEmail = snapshot.child(USEREMAIL).exists() ? snapshot.child(USEREMAIL).getValue(String.class) : "";
+                userPhone = snapshot.child(USERPHONE).exists() ? snapshot.child(USERPHONE).getValue(String.class) : "";
+                userFirstName = snapshot.child(USERFIRST).exists() ? snapshot.child(USERFIRST).getValue(String.class) : "";
+                userLastName = snapshot.child(USERLAST).exists() ? snapshot.child(USERLAST).getValue(String.class) : "";
                 updateProfile();
             }
 
