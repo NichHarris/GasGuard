@@ -155,7 +155,7 @@ public class ProfileActivity extends AppCompatActivity {
                 new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                // TODO LOG THAT IT IS A CANCEL
+                Log.i(TAG, "Cancelled Delete Account");
             }
         });
 
@@ -193,11 +193,12 @@ public class ProfileActivity extends AppCompatActivity {
         dB.getUserChild(dB.getUserId()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                userName = snapshot.child("userName").getValue(String.class);
-                userEmail = snapshot.child("userEmail").getValue(String.class);
-                userPhone = snapshot.child("userPhone").getValue(String.class);
-                userFirstName = snapshot.child("userFirstName").getValue(String.class);
-                userLastName = snapshot.child("userLastName").getValue(String.class);
+
+                userName = snapshot.child("userName").exists() ? snapshot.child("userName").getValue(String.class) : "";
+                userEmail = snapshot.child("userEmail").exists() ? snapshot.child("userEmail").getValue(String.class) : "";
+                userPhone = snapshot.child("userPhone").exists() ? snapshot.child("userPhone").getValue(String.class) : "";
+                userFirstName = snapshot.child("userFirstName").exists() ? snapshot.child("userFirstName").getValue(String.class) : "";
+                userLastName = snapshot.child("userLastName").exists() ? snapshot.child("userLastName").getValue(String.class) : "";
                 updateProfile();
             }
 

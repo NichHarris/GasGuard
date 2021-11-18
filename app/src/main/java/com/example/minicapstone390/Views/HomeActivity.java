@@ -186,7 +186,7 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 try {
-                    String userName = snapshot.child("userName").getValue(String.class);
+                    String userName = snapshot.child("userName").exists() ? snapshot.child("userName").getValue(String.class) : "";
 
                     String defaultMessage = getResources().getString(R.string.welcome_user).replace("{0}", userName != null ? userName : "");
                     welcomeUserMessage.setText(defaultMessage);
@@ -219,7 +219,11 @@ public class HomeActivity extends AppCompatActivity {
 
                 // Format List from DB for Adapter
                 for (DataSnapshot ds : snapshot.getChildren()) {
-                    devIds.add(ds.getValue(String.class));
+                    if (ds.exists()) {
+                        devIds.add(ds.getValue(String.class));
+                    } else {
+                        Log.e(TAG, "Child does not exist");
+                    }
                 }
 
                 // Add Ids to Device Ids List
@@ -247,17 +251,16 @@ public class HomeActivity extends AppCompatActivity {
             if (id != null) {
                 DatabaseReference deviceRef = dB.getDeviceRef().child(id);
                 deviceRef.addListenerForSingleValueEvent(new ValueEventListener() {
-
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         try {
                             // Get Device Data from DB
                             String devName = id;
                             if (!nameState) {
-                                devName = snapshot.child("deviceName").getValue(String.class) != null ? snapshot.child("deviceName").getValue(String.class) : id;
+                                devName = snapshot.child("deviceName").exists() ? snapshot.child("deviceName").getValue(String.class) : id;
                             }
-                            String devLocation = snapshot.child("location").getValue(String.class) != null ? snapshot.child("location").getValue(String.class) : "No location set";
-                            boolean devStatus = snapshot.child("status").getValue(Boolean.class) != null ? snapshot.child("status").getValue(Boolean.class) : true;
+                            String devLocation = snapshot.child("location").exists() ? snapshot.child("location").getValue(String.class) : "No location set";
+                            boolean devStatus = snapshot.child("status").exists() ? snapshot.child("status").getValue(Boolean.class) : true;
                             if (!deviceMap.containsKey(id)) {
                                 Device device = new Device(id, devName, devLocation, devStatus);
                                 devData.add(device);
@@ -293,7 +296,6 @@ public class HomeActivity extends AppCompatActivity {
     private void setDeviceList(ArrayList<Device> devData) {
         deviceAdapter = new DeviceAdapter(devData);
         deviceListView.setAdapter(deviceAdapter);
-
         setXAxisLabels(devData);
     }
 

@@ -246,13 +246,17 @@ public class DeviceActivity extends AppCompatActivity {
         dB.getDeviceChild(deviceId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                String devNameText = snapshot.child("deviceName").getValue(String.class) != null ? snapshot.child("deviceName").getValue(String.class) : "0";
+                String devNameText = snapshot.child("deviceName").exists() ? snapshot.child("deviceName").getValue(String.class) : "0";
                 deviceName.setText("Device: " + devNameText);
 
                 String status = getResources().getString(R.string.inactiveDeviceStatus);
                 try {
-                    if (snapshot.child("status").getValue(Boolean.class)) {
-                        status = getResources().getString(R.string.activeDeviceStatus);
+                    if (snapshot.child("status").exists()) {
+                        if (snapshot.child("status").getValue(Boolean.class)) {
+                            status = getResources().getString(R.string.activeDeviceStatus);
+                        }
+                    } else {
+                        Log.e(TAG, "Unable to locate device status");
                     }
                 } catch (NullPointerException e) {
                     e.printStackTrace();
@@ -274,9 +278,12 @@ public class DeviceActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot ds : snapshot.getChildren()) {
-                    sensorIds.add(ds.getValue(String.class));
+                    if (ds.exists()) {
+                        sensorIds.add(ds.getValue(String.class));
+                    } else {
+                        Log.e(TAG, "Unable to locate sensor");
+                    }
                 }
-
                 getSensorNames();
             }
 
@@ -298,9 +305,9 @@ public class DeviceActivity extends AppCompatActivity {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     try {
-                        String sensorName = snapshot.child("SensorName").getValue(String.class) != null ? snapshot.child("SensorName").getValue(String.class) : id;
-                        int sensorType =  snapshot.child("SensorType").getValue(Integer.class) != null ? snapshot.child("SensorType").getValue(Integer.class): 0;
-                        double sensorValue = snapshot.child("SensorValue").getValue(Double.class) != null ? snapshot.child("SensorValue").getValue(Double.class): 0.0;
+                        String sensorName = snapshot.child("SensorName").exists() ? snapshot.child("SensorName").getValue(String.class) : id;
+                        int sensorType =  snapshot.child("SensorType").exists() ? snapshot.child("SensorType").getValue(Integer.class): 0;
+                        double sensorValue = snapshot.child("SensorValue").exists() ? snapshot.child("SensorValue").getValue(Double.class): 0.0;
                         if (!sensorMap.containsKey(id)) {
                             Sensor sensor = new Sensor(id, sensorType, sensorName, sensorValue);
                             sensData.add(sensor);
@@ -342,16 +349,21 @@ public class DeviceActivity extends AppCompatActivity {
     // Open sensor activity for selected sensor
     public void goToSensorActivity(int sensorIndex) {
         String sensorId = sensorIds.get(sensorIndex);
-
         Intent intent = new Intent(this, SensorActivity.class);
         intent.putExtra("sensorId", sensorId);
+        startActivity(intent);
+    }
+
+    // Open sensor activity for selected sensor
+    private void goToHomeActivity() {
+        Intent intent = new Intent(this, HomeActivity.class);
         startActivity(intent);
     }
 
     // Navigate back to homepage on task-bar return
     @Override
     public boolean onSupportNavigateUp() {
-        finish();
+        goToHomeActivity();
         return true;
     }
 }

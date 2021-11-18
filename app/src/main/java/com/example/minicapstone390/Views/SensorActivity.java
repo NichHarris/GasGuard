@@ -142,22 +142,27 @@ public class SensorActivity extends AppCompatActivity {
                             dB.getSensorChild(sensorId).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    snapshot.child("SensorPastValues").getRef().removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            if (!task.isSuccessful()) {
-                                                Log.d(TAG, String.format("Unable to delete sensor data: %s", sensorId));
-                                            } else {
-                                                Log.i(TAG, String.format("Removed sensor data: %s", sensorId));
-                                                onSupportNavigateUp();
+                                    if (snapshot.child("SensorPastValues").exists()) {
+                                        snapshot.child("SensorPastValues").getRef().removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                if (!task.isSuccessful()) {
+                                                    Log.d(TAG, String.format("Unable to delete sensor data: %s", sensorId));
+                                                } else {
+                                                    Log.i(TAG, String.format("Removed sensor data: %s", sensorId));
+                                                    onSupportNavigateUp();
+                                                }
                                             }
-                                        }
-                                    });
+                                        });
+                                    } else {
+                                        Log.e(TAG, "Error retrieving SensorPastValues from DB");
+                                    }
                                 }
 
                                 @Override
-                                public void onCancelled(@NonNull DatabaseError error) {
-
+                                public void onCancelled(@NonNull DatabaseError e) {
+                                    Log.d(TAG, e.toString());
+                                    throw e.toException();
                                 }
                             });
                         }
@@ -260,10 +265,18 @@ public class SensorActivity extends AppCompatActivity {
                 LocalDateTime end = history.get(history.size() - 1);
 
                 for (DataSnapshot ds : snapshot.getChildren()) {
-                    LocalDateTime time = LocalDateTime.parse(ds.getKey(), DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-                    if (start.isBefore(time) && end.isAfter(time)) {
-                        values.add(ds.child("Value").getValue(Double.class));
-                        times.add(LocalDateTime.parse(ds.getKey(), DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+                    if (ds.exists()) {
+                        LocalDateTime time = LocalDateTime.parse(ds.getKey(), DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+                        if (start.isBefore(time) && end.isAfter(time)) {
+                            if (ds.child("Value").exists()) {
+                                values.add(ds.child("Value").getValue(Double.class));
+                                times.add(LocalDateTime.parse(ds.getKey(), DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+                            } else {
+                                Log.e(TAG, "Error retrieving PastValues Value from DB");
+                            }
+                        }
+                    } else {
+                        Log.e(TAG, "Error retrieving SensorPastValues from DB");
                     }
                 }
                 validData.add(new SensorData(values, times));
@@ -386,7 +399,7 @@ public class SensorActivity extends AppCompatActivity {
         int id = item.getItemId();
         if(id == R.id.disable_sensor) {
             Log.d(TAG, "Disable sensor called but not implemented");
-//            disableSensor();
+            disableSensor();
         } else if (id == R.id.delete_sensor_data) {
             deleteSensorData(sensorId);
         } else {
@@ -395,17 +408,21 @@ public class SensorActivity extends AppCompatActivity {
 
         return true;
     }
-    
+
     // TODO: Add status to DB
     private void disableSensor() {
         dB.getSensorChild(sensorId).child("status").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 try {
-                    if (snapshot.getValue(Boolean.class)) {
-                        dB.getSensorChild(sensorId).child("status").setValue(false);
+                    if (snapshot.exists()) {
+                        if (snapshot.getValue(Boolean.class)) {
+                            snapshot.getRef().setValue(false);
+                        } else {
+                            snapshot.getRef().setValue(true);
+                        }
                     } else {
-                        dB.getSensorChild(sensorId).child("status").setValue(true);
+                        Log.e(TAG, "Error retrieving sensor status from DB");
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

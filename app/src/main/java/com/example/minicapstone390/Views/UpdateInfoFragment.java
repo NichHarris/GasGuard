@@ -67,7 +67,7 @@ public class UpdateInfoFragment extends DialogFragment {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     String userName, userEmail, userPhone, userFirstName, userLastName;
-                    userName = userNameInput.getText().toString().equals("") ? snapshot.child("userName").getValue(String.class) : userNameInput.getText().toString();
+                    userName = userNameInput.getText().toString().equals("") ? (snapshot.child("userName").exists() ? snapshot.child("userName").getValue(String.class) : "") : userNameInput.getText().toString();
 
                     if (!userEmailInput.getText().toString().equals("")) {
                         // Email Must Be a Valid Email and Unique
@@ -79,8 +79,9 @@ public class UpdateInfoFragment extends DialogFragment {
                             userEmail = userEmailInput.getText().toString();
                         }
                     } else {
-                        userEmail = snapshot.child("userEmail").getValue(String.class);
+                        userEmail = snapshot.child("userEmail").exists() ? snapshot.child("userEmail").getValue(String.class) : "";
                     }
+                    assert userEmail != null;
                     dB.getUser().verifyBeforeUpdateEmail(userEmail).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
@@ -91,18 +92,20 @@ public class UpdateInfoFragment extends DialogFragment {
                         }
                     });
 
-                    userPhone = userPhoneInput.getText().toString().equals("") ? snapshot.child("userPhone").getValue(String.class) : userPhoneInput.getText().toString();
-                    userFirstName = userFirstNameInput.getText().toString().equals("") ? snapshot.child("userFirstName").getValue(String.class) : userFirstNameInput.getText().toString();
-                    userLastName = userLastNameInput.getText().toString().equals("") ? snapshot.child("userLastName").getValue(String.class) : userLastNameInput.getText().toString();
+                    userPhone = userPhoneInput.getText().toString().equals("") ? (snapshot.child("userPhone").exists() ? snapshot.child("userPhone").getValue(String.class) : "") : userPhoneInput.getText().toString();
+                    userFirstName = userFirstNameInput.getText().toString().equals("") ? (snapshot.child("userFirstName").exists() ? snapshot.child("userFirstName").getValue(String.class) : "") : userFirstNameInput.getText().toString();
+                    userLastName = userLastNameInput.getText().toString().equals("") ? (snapshot.child("userLastName").exists() ? snapshot.child("userLastName").getValue(String.class) : "") : userLastNameInput.getText().toString();
 
-                    DatabaseReference devicesRef = userRef.child("devices");
-
-                    devicesRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    userRef.child("devices").addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             Map<String, Object> devices = new HashMap<>();
                             for (DataSnapshot ds : snapshot.getChildren()) {
-                                devices.put(ds.getKey(), ds.getValue(String.class));
+                                if (ds.exists()) {
+                                    devices.put(ds.getKey(), ds.getValue(String.class));
+                                } else {
+                                    Log.e(TAG, "Could not locate devices in user");
+                                }
                             }
 
                             // Can add validation after

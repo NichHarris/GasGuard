@@ -39,8 +39,6 @@ public class DeviceFragment extends DialogFragment {
     protected Button cancelButton, saveButton;
     protected EditText deviceIdInput;
 
-    public int deviceCount;
-
     // TODO: Replace with check for device ID in database and add it to user
     @Nullable
     @Override
@@ -68,7 +66,7 @@ public class DeviceFragment extends DialogFragment {
             } else {
                 //TODO: Not sure if this should be done here, probs should only be done on arduino side
                 // We can then check if a device with the ID exists and add, if it doesn't we send an error
-                Device device = new Device(deviceId, deviceId, "Montreal", true);
+                Device device = new Device(deviceId, deviceId, "Montreal, QC", true);
                 Map<String, Object> deviceAttributes = new HashMap<>();
                 deviceAttributes.put("deviceName", device.getDeviceName());
                 deviceAttributes.put("location", device.getDeviceLocation());
@@ -92,7 +90,17 @@ public class DeviceFragment extends DialogFragment {
                 userRef.child("devices").addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-
+                        for (DataSnapshot ds: snapshot.getChildren()) {
+                            if (ds.exists()) {
+                                if (ds.getKey().equals(deviceId)) {
+                                    Log.i(TAG, "User already owns that device");
+                                    Toast.makeText(getActivity() , String.format("User already has device: %s", deviceId), Toast.LENGTH_SHORT).show();
+                                    dismiss();
+                                }
+                            } else {
+                                Log.e(TAG, "Unable to locate device");
+                            }
+                        }
                         // for updating users with a device
                         Map<String, Object> keys = new HashMap<>();
                         keys.put(deviceId, deviceId);
