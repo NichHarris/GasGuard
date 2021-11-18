@@ -30,11 +30,6 @@ import java.util.Map;
 public class UpdateDeviceFragment extends DialogFragment {
     private static final String TAG = "UpdateDeviceFragment";
 
-    public interface OnInputListener{
-        void sendInput(String input);
-    }
-    public OnInputListener onInputListener;
-
     // Declare variables
     private final Database dB = new Database();
     protected Button cancelButton, saveButton;

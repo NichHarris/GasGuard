@@ -29,11 +29,6 @@ import java.util.Map;
 public class UpdateInfoFragment extends DialogFragment {
     private static final String TAG = "UpdateInfoFragment";
 
-    public interface OnInputListener{
-        void sendInput(String input);
-    }
-    public OnInputListener onInputListener;
-
     // Declare variables
     private final Database dB = new Database();
     protected Button cancelButton, saveButton;

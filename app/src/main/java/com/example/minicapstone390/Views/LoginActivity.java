@@ -76,6 +76,7 @@ public class LoginActivity extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     Log.i(TAG, String.format("Password reset sent to: %s", userEmail));
                     Toast.makeText(getApplicationContext(), "Password reset sent successfully!", Toast.LENGTH_SHORT).show();
+                    reload();
                 } else {
                     Log.e(TAG, "Failed to send password reset email");
                     Toast.makeText(getApplicationContext(), "Error sending password reset, email is not associated with an account!", Toast.LENGTH_SHORT).show();
@@ -111,6 +112,11 @@ public class LoginActivity extends AppCompatActivity {
 
     private void openHomeActivity() {
         Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+    }
+
+    private void reload() {
+        Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
     }
 
