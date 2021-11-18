@@ -29,6 +29,7 @@
     <string name="add_device">Add Device</string>
     <string name="device_id">Device Id</string>
     <string name="save">SAVE</string>
+    <string name="cancel">CANCEL</string>
 
     <!-- Profile Page   -->
     <string name="profile">Profile</string>
