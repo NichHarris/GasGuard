@@ -130,7 +130,7 @@ public class DeviceActivity extends AppCompatActivity {
         if(id == R.id.update_device) {
             editDevice(deviceId);
         } else if(id == R.id.disable_device) {
-            disableDevice();
+            disableDevice(item);
         } else if(id == R.id.remove_device) {
             deleteDevice();
         } else {
@@ -140,8 +140,16 @@ public class DeviceActivity extends AppCompatActivity {
         return true;
     }
 
+    private void setDropDownText(MenuItem item, boolean status) {
+        if(!status) {
+            item.setTitle("Enable Device");
+        } else {
+            item.setTitle("Disable Device");
+        }
+    }
+
     // Change the active status of a device
-    private void disableDevice() {
+    private void disableDevice(MenuItem item) {
         dB.getDeviceChild(deviceId).child("status").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -152,6 +160,7 @@ public class DeviceActivity extends AppCompatActivity {
                         status = false;
                     }
                     dB.getDeviceChild(deviceId).child("status").setValue(status);
+                    setDropDownText(item, status);
                 } catch (Exception e) {
                     e.printStackTrace();
                     Log.d(TAG, e.toString());

@@ -131,12 +131,21 @@ public class HomeActivity extends AppCompatActivity {
             goToProfileActivity();
         } else if(itemId == R.id.device_names) {
             nameState = !nameState;
+            setDropDownText(item);
             loadDeviceList();
         } else {
             return super.onOptionsItemSelected(item);
         }
 
         return true;
+    }
+
+    private void setDropDownText(MenuItem item) {
+        if(nameState) {
+            item.setTitle("Device Names");
+        } else {
+            item.setTitle("Device IDs");
+        }
     }
 
     // TODO: IMPLEMENT DEVICE CONNECTION

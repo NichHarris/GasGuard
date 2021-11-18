@@ -14,6 +14,6 @@
 
     <item
         android:id="@+id/device_names"
-        android:title="@string/device_names"
+        android:title="@string/device_ids"
         app:showAsAction="never" />
 </menu>
