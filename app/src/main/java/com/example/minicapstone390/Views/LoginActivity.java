@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -63,6 +64,8 @@ public class LoginActivity extends AppCompatActivity {
 
         if (userEmail.equals("")) {
             userEmailET.setError("Please enter email to send reset to");
+            passwordET.setEnabled(false);
+            passwordET.setBackgroundColor(Color.DKGRAY);
             userEmailET.requestFocus();
             return;
         }

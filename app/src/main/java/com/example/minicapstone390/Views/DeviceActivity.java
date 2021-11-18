@@ -334,8 +334,6 @@ public class DeviceActivity extends AppCompatActivity {
                 }
             });
         }
-
-
     }
 
     // Set ListView of sensors
