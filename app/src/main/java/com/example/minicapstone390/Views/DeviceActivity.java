@@ -73,7 +73,6 @@ public class DeviceActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
-        // TODO: Add  BarGraph of each sensor
         sensorListView = (RecyclerView) findViewById(R.id.sensorsRecyclerView);
         sensorListView.setLayoutManager(new LinearLayoutManager(this));
         sensorAdapter = new SensorAdapter(sensorList);

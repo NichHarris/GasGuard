@@ -60,6 +60,7 @@ public class HomeActivity extends AppCompatActivity {
     protected ArrayList<Device> deviceData;
     protected RecyclerView deviceListView;
     protected DeviceAdapter deviceAdapter;
+    protected boolean nameState = false; // False = use "deviceName", True = use "deviceId"
 
     public static String wifiModuleIp = "";
     public static int wifiModulePort = 0;
@@ -129,8 +130,8 @@ public class HomeActivity extends AppCompatActivity {
         } else if(itemId == R.id.profile) {
             goToProfileActivity();
         } else if(itemId == R.id.device_names) {
-            //TODO: Change List of Device Names to Set Names
-            return true;
+            nameState = !nameState;
+            loadDeviceList();
         } else {
             return super.onOptionsItemSelected(item);
         }
@@ -233,40 +234,47 @@ public class HomeActivity extends AppCompatActivity {
 
         for (String id: devices) {
             //TODO: check if devices are part of the user
-            DatabaseReference deviceRef = dB.getDeviceRef().child(id);
-            deviceRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            if (id != null) {
+                DatabaseReference deviceRef = dB.getDeviceRef().child(id);
+                deviceRef.addListenerForSingleValueEvent(new ValueEventListener() {
 
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    try {
-                        // Get Device Data from DB
-                        String devName = snapshot.child("deviceName").getValue(String.class);
-                        String devLocation = snapshot.child("location").getValue(String.class);
-                        boolean devStatus = snapshot.child("status").getValue(Boolean.class);
-                        if (!deviceMap.containsKey(id)) {
-                            Device device = new Device(id, devName, devLocation, devStatus);
-                            devData.add(device);
-                            deviceMap.put(id, device);
-                        } else {
-                            Device device = deviceMap.get(id);
-                            assert device != null;
-                            device.setDeviceName(devName);
-                            device.setLocation(devLocation);
-                            device.setStatus(devStatus);
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        try {
+                            // Get Device Data from DB
+                            String devName = id;
+                            if (!nameState) {
+                                devName = snapshot.child("deviceName").getValue(String.class) != null ? snapshot.child("deviceName").getValue(String.class) : id;
+                            }
+                            String devLocation = snapshot.child("location").getValue(String.class) != null ? snapshot.child("location").getValue(String.class) : "No location set";
+                            boolean devStatus = snapshot.child("status").getValue(Boolean.class) != null ? snapshot.child("status").getValue(Boolean.class) : true;
+                            if (!deviceMap.containsKey(id)) {
+                                Device device = new Device(id, devName, devLocation, devStatus);
+                                devData.add(device);
+                                deviceMap.put(id, device);
+                            } else {
+                                Device device = deviceMap.get(id);
+                                assert device != null;
+                                device.setDeviceName(devName);
+                                device.setLocation(devLocation);
+                                device.setStatus(devStatus);
+                            }
+                            setDeviceList(devData);
+                        } catch (Exception e) {
+                            Log.d(TAG, e.toString());
+                            return;
                         }
-                        setDeviceList(devData);
-                    } catch (Exception e) {
-                        Log.d(TAG, e.toString());
-                        return;
                     }
-                }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError e) {
-                    Log.d(TAG, e.toString());
-                    throw e.toException();
-                }
-            });
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError e) {
+                        Log.d(TAG, e.toString());
+                        throw e.toException();
+                    }
+                });
+            } else {
+                Log.d(TAG, "Id is null");
+            }
         }
 
     }
