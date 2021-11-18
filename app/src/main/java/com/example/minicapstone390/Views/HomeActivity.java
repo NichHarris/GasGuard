@@ -371,4 +371,18 @@ public class HomeActivity extends AppCompatActivity {
         intent.putExtra("deviceId", deviceId);
         startActivity(intent);
     }
+
+    // Close app on back pressed
+    private void closeApp() {
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_HOME);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
+
+    // Close app on home menu
+    @Override
+    public void onBackPressed() {
+        closeApp();
+    }
 }

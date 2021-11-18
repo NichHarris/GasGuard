@@ -66,6 +66,8 @@ public class DeviceFragment extends DialogFragment {
             if (deviceId.isEmpty()) {
                 Toast.makeText(getActivity().getApplicationContext(), "Must Fill All Input Fields!", Toast.LENGTH_LONG).show();
             } else {
+                //TODO: Not sure if this should be done here, probs should only be done on arduino side
+                // We can then check if a device with the ID exists and add, if it doesn't we send an error
                 Device device = new Device(deviceId, deviceId, "Montreal", true);
                 Map<String, Object> deviceAttributes = new HashMap<>();
                 deviceAttributes.put("deviceName", device.getDeviceName());
@@ -91,11 +93,9 @@ public class DeviceFragment extends DialogFragment {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-                        deviceCount = (int) snapshot.getChildrenCount();
-                        Log.d(TAG, String.format("%d", deviceCount));
                         // for updating users with a device
                         Map<String, Object> keys = new HashMap<>();
-                        keys.put(Integer.toString(deviceCount + 1), deviceId);
+                        keys.put(deviceId, deviceId);
                         userRef.child("devices").updateChildren(keys);
                     }
 

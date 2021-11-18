@@ -77,6 +77,10 @@ public class ProfileActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.profile_menu, menu);
+        MenuItem menuItem = menu.findItem(R.id.theme);
+        if (sharePreferenceHelper.getTheme()) {
+            menuItem.setTitle("Disable Dark Mode");
+        }
         return true;
     }
 
@@ -178,6 +182,12 @@ public class ProfileActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    // Navigate to long activity
+    private void goToHomeActivity() {
+        Intent intent = new Intent(this, HomeActivity.class);
+        startActivity(intent);
+    }
+
     // Update all user info
     public void updateAllInfo() {
         dB.getUserChild(dB.getUserId()).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -210,7 +220,13 @@ public class ProfileActivity extends AppCompatActivity {
     // Navigate back to homepage on task-bar return
     @Override
     public boolean onSupportNavigateUp() {
-        finish();
+        goToHomeActivity();
         return true;
+    }
+
+    // Navigate back to homepage on back pressed
+    @Override
+    public void onBackPressed() {
+        goToHomeActivity();
     }
 }

@@ -49,15 +49,20 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
                 Intent intent = new Intent(mContext, DeviceActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putString("deviceId", devices.get(getAdapterPosition()).getId());
-                bundle.putString("editDevice", "editDevice()");
+                bundle.putString("callFunction", "editDevice()");
                 intent.putExtras(bundle);
                 Log.d(TAG, "EDIT " + getAdapterPosition());
                 mContext.startActivity(intent);
             });
 
             deleteIcon.setOnClickListener((view) -> {
-                //TODO: Add Device Delete Code Here
+                Intent intent = new Intent(mContext, DeviceActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("deviceId", devices.get(getAdapterPosition()).getId());
+                bundle.putString("callFunction", "deleteDevice()");
+                intent.putExtras(bundle);
                 Log.d(TAG,"DELETE " + getAdapterPosition());
+                mContext.startActivity(intent);
             });
 
             v.setOnClickListener((view) -> {

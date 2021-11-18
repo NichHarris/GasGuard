@@ -52,7 +52,6 @@ public class SensorAdapter extends RecyclerView.Adapter<SensorAdapter.ViewHolder
             deleteIcon = (ImageView) v.findViewById(R.id.sensorDeleteIcon);
 
             editIcon.setOnClickListener((view) -> {
-                //TODO: Add Device Edit Code Here
                 SensorFragment dialog = new SensorFragment();
                 Intent intent = new Intent(mContext , SensorActivity.class);
                 Bundle bundle = new Bundle();

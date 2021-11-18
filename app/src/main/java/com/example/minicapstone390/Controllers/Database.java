@@ -32,6 +32,8 @@ public class Database {
         return this.database.getReference("Users");
     }
 
+    public DatabaseReference getUserChild() { return this.database.getReference("Users").child(getUserId()); }
+
     public DatabaseReference getUserChild(String node) {
         return getUserRef().child(node);
     }

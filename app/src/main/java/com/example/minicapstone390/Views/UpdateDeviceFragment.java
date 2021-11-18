@@ -41,8 +41,6 @@ public class UpdateDeviceFragment extends DialogFragment {
     protected EditText deviceNameInput;
     protected String deviceId;
 
-
-        // TODO: Change this to device info and not user info //
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
