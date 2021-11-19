@@ -2,7 +2,6 @@ package com.example.minicapstone390.Views;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,22 +14,15 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.minicapstone390.Controllers.Database;
-import com.example.minicapstone390.Controllers.ENV;
+import com.example.minicapstone390.Controllers.DatabaseEnv;
 import com.example.minicapstone390.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.ValueEventListener;
-
-import java.util.HashMap;
-import java.util.Map;
 
 // Device Fragment
 public class UpdateDeviceFragment extends DialogFragment {
     private static final String TAG = "UpdateDeviceFragment";
-    private static final String DEVICENAME = ENV.DEVICENAME.getEnv();
+    private static final String DEVICENAME = DatabaseEnv.DEVICENAME.getEnv();
 
     // Declare variables
     private final Database dB = new Database();

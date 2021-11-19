@@ -70,7 +70,7 @@ public class SensorAdapter extends RecyclerView.Adapter<SensorAdapter.ViewHolder
 
             v.setOnClickListener((view) -> {
                 int sensorIndex = getAdapterPosition();
-                System.out.println(ACCESS + sensorIndex);
+                Log.i(TAG,ACCESS + sensorIndex);
                 ((DeviceActivity)mContext).goToSensorActivity(sensorIndex);
             });
         }

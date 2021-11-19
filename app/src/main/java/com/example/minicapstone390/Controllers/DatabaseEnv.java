@@ -1,6 +1,6 @@
 package com.example.minicapstone390.Controllers;
 
-public enum ENV {
+public enum DatabaseEnv {
     DEVICES("Devices"),
     DEVICENAME("deviceName"),
     DEVICELOCATION("location"),
@@ -23,7 +23,7 @@ public enum ENV {
 
     private String endpoint;
 
-    ENV(String endpoint) {
+    DatabaseEnv(String endpoint) {
         this.endpoint = endpoint;
     }
 

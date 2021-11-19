@@ -16,11 +16,10 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.minicapstone390.Controllers.Database;
-import com.example.minicapstone390.Controllers.ENV;
+import com.example.minicapstone390.Controllers.DatabaseEnv;
 import com.example.minicapstone390.Models.Device;
 import com.example.minicapstone390.R;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -33,10 +32,10 @@ import java.util.Map;
 // Device Fragment
 public class DeviceFragment extends DialogFragment {
     private static final String TAG = "AddDeviceFragment";
-    private static final String DEVICES = ENV.USERDEVICES.getEnv();
-    private static final String DEVICENAME = ENV.DEVICENAME.getEnv();
-    private static final String DEVICELOC = ENV.DEVICELOCATION.getEnv();
-    private static final String DEVICESTATUS = ENV.DEVICESTATUS.getEnv();
+    private static final String DEVICES = DatabaseEnv.USERDEVICES.getEnv();
+    private static final String DEVICENAME = DatabaseEnv.DEVICENAME.getEnv();
+    private static final String DEVICELOC = DatabaseEnv.DEVICELOCATION.getEnv();
+    private static final String DEVICESTATUS = DatabaseEnv.DEVICESTATUS.getEnv();
     // Declare variables
     private final Database dB = new Database();
 

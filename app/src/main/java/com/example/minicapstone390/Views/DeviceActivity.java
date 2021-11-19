@@ -17,7 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.minicapstone390.Controllers.Database;
-import com.example.minicapstone390.Controllers.ENV;
+import com.example.minicapstone390.Controllers.DatabaseEnv;
 import com.example.minicapstone390.Controllers.SharedPreferenceHelper;
 
 import com.example.minicapstone390.Models.Sensor;
@@ -38,13 +38,13 @@ import java.util.Objects;
 
 public class DeviceActivity extends AppCompatActivity {
     private static final String TAG = "DeviceActivity";
-    private static final String DEVICES = ENV.USERDEVICES.getEnv();
-    private static final String DEVICENAME = ENV.DEVICENAME.getEnv();
-    private static final String DEVICESTATUS = ENV.DEVICESTATUS.getEnv();
-    private static final String DEVICESENSORS = ENV.DEVICESENSORS.getEnv();
-    private static final String SENSORNAME = ENV.SENSORNAME.getEnv();
-    private static final String SENSORTYPE = ENV.SENSORTYPE.getEnv();
-    private static final String SENSORVALUE = ENV.SENSORVALUE.getEnv();
+    private static final String DEVICES = DatabaseEnv.USERDEVICES.getEnv();
+    private static final String DEVICENAME = DatabaseEnv.DEVICENAME.getEnv();
+    private static final String DEVICESTATUS = DatabaseEnv.DEVICESTATUS.getEnv();
+    private static final String DEVICESENSORS = DatabaseEnv.DEVICESENSORS.getEnv();
+    private static final String SENSORNAME = DatabaseEnv.SENSORNAME.getEnv();
+    private static final String SENSORTYPE = DatabaseEnv.SENSORTYPE.getEnv();
+    private static final String SENSORVALUE = DatabaseEnv.SENSORVALUE.getEnv();
 
     // Declare variables
     private final Database dB = new Database();

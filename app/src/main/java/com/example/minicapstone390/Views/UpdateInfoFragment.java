@@ -14,7 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.minicapstone390.Controllers.Database;
-import com.example.minicapstone390.Controllers.ENV;
+import com.example.minicapstone390.Controllers.DatabaseEnv;
 import com.example.minicapstone390.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -29,12 +29,12 @@ import java.util.Map;
 // Device Fragment
 public class UpdateInfoFragment extends DialogFragment {
     private static final String TAG = "UpdateInfoFragment";
-    private static final String USERNAME = ENV.USERNAME.getEnv();
-    private static final String USEREMAIL = ENV.USEREMAIL.getEnv();
-    private static final String USERPHONE = ENV.USERPHONE.getEnv();
-    private static final String USERLAST = ENV.USERLAST.getEnv();
-    private static final String USERFIRST = ENV.USERFIRST.getEnv();
-    private static final String USERDEVICES = ENV.USERDEVICES.getEnv();
+    private static final String USERNAME = DatabaseEnv.USERNAME.getEnv();
+    private static final String USEREMAIL = DatabaseEnv.USEREMAIL.getEnv();
+    private static final String USERPHONE = DatabaseEnv.USERPHONE.getEnv();
+    private static final String USERLAST = DatabaseEnv.USERLAST.getEnv();
+    private static final String USERFIRST = DatabaseEnv.USERFIRST.getEnv();
+    private static final String USERDEVICES = DatabaseEnv.USERDEVICES.getEnv();
 
     // Declare variables
     private final Database dB = new Database();

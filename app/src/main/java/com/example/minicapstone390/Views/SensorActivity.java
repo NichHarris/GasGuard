@@ -20,15 +20,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.minicapstone390.Controllers.Database;
-import com.example.minicapstone390.Controllers.ENV;
+import com.example.minicapstone390.Controllers.DatabaseEnv;
 import com.example.minicapstone390.Controllers.SharedPreferenceHelper;
-import com.example.minicapstone390.Models.Device;
-import com.example.minicapstone390.Models.Sensor;
 import com.example.minicapstone390.Models.SensorData;
 import com.example.minicapstone390.R;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.AxisBase;
-import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
@@ -44,23 +41,19 @@ import com.google.firebase.database.ValueEventListener;
 
 // DateTime
 import java.time.Duration;
-import java.time.Instant;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 
 import java.util.List;
 import java.util.Objects;
 
 public class SensorActivity extends AppCompatActivity {
     private static final String TAG = "SensorActivity";
-    private static final String SENSORPAST = ENV.SENSORPAST.getEnv();
-    private static final String SENSORNAME = ENV.SENSORNAME.getEnv();
-    private static final String VALUE = ENV.VALUE.getEnv();
-    private static final String SENSORSTATUS = ENV.SENSORSTATUS.getEnv();
+    private static final String SENSORPAST = DatabaseEnv.SENSORPAST.getEnv();
+    private static final String SENSORNAME = DatabaseEnv.SENSORNAME.getEnv();
+    private static final String VALUE = DatabaseEnv.VALUE.getEnv();
+    private static final String SENSORSTATUS = DatabaseEnv.SENSORSTATUS.getEnv();
 
     // Declare variables
     private final Database dB = new Database();

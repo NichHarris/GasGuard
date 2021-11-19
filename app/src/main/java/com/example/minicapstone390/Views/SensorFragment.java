@@ -1,6 +1,5 @@
 package com.example.minicapstone390.Views;
 
-import android.app.Activity;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -14,29 +13,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.example.minicapstone390.Controllers.Database;
-import com.example.minicapstone390.Controllers.ENV;
-import com.example.minicapstone390.Models.Device;
-import com.example.minicapstone390.Models.Sensor;
+import com.example.minicapstone390.Controllers.DatabaseEnv;
 import com.example.minicapstone390.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.ValueEventListener;
-
-import java.util.HashMap;
-import java.util.Map;
 
 // Device Fragment
 public class SensorFragment extends DialogFragment {
     private static final String TAG = "SensorFragment";
-    private static final String SENSORNAME = ENV.SENSORNAME.getEnv();
+    private static final String SENSORNAME = DatabaseEnv.SENSORNAME.getEnv();
 
     // Declare variables
     private final Database dB = new Database();
