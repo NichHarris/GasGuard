@@ -23,13 +23,7 @@ public enum DatabaseEnv {
 
     private String endpoint;
 
-    DatabaseEnv(String endpoint) {
-        this.endpoint = endpoint;
-    }
+    DatabaseEnv(String endpoint) { this.endpoint = endpoint; }
 
-    public String getEnv() {
-        return this.endpoint;
-    }
-
-
+    public String getEnv() { return this.endpoint; }
 }

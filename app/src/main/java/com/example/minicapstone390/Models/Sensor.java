@@ -8,14 +8,17 @@ public class Sensor {
     private String SensorName;
     private double SensorValue;
     private boolean status;
+    private double SensorScore;
 
     public Sensor() {}
 
-    public Sensor(String id, int sensorType, String sensorName, double sensorValue) {
+    public Sensor(String id, int sensorType, String sensorName, double sensorValue, boolean status, double sensorScore) {
         this.id = id;
         this.SensorType = sensorType;
         this.SensorName = sensorName;
         this.SensorValue = sensorValue;
+        this.status = status;
+        this.SensorScore = sensorScore;
     }
 
     public String getId() { return this.id; }
@@ -37,5 +40,9 @@ public class Sensor {
     public boolean getStatus() { return this.status; }
 
     public void setStatus(Boolean status) { this.status = status; }
+
+    public double getSensorScore() { return this.SensorScore; }
+
+    public void setSensorScore(double sensorScore) { this.SensorScore = sensorScore; }
 }
 

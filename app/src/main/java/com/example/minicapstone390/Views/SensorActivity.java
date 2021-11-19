@@ -278,6 +278,7 @@ public class SensorActivity extends AppCompatActivity {
                     }
                 }
                 validData.add(new SensorData(values, times));
+
                 producer(history, validData.get(0));
                 validData.clear();
             }
@@ -286,6 +287,31 @@ public class SensorActivity extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError e) {
                 Log.d(TAG, e.toString());
                 throw e.toException();
+            }
+        });
+    }
+
+    private void calculateThreshold(ArrayList<SensorData> data) {
+        int start = 0;
+        int size = data.size();
+        if (data.size() > 50) {
+            start = data.size() - 50;
+            size = 50;
+        }
+
+        double sum = 0;
+        for (int i = start; i < data.size(); i++) {
+            Log.i(TAG, String.format("%f", data.get(i).getValues().get(i)));
+            sum += data.get(i).getValues().get(i);
+        }
+
+        //TODO Convert to PPM value to display on DeviceActivity and home screen
+        dB.getSensorChild(sensorId).child("SensorScore").setValue(sum).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (!task.isSuccessful()) {
+                    Log.e(TAG, "Unable to ass SensorScore");
+                }
             }
         });
     }
