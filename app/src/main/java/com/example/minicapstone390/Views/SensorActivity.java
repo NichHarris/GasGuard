@@ -293,16 +293,16 @@ public class SensorActivity extends AppCompatActivity {
 
     private void calculateThreshold(ArrayList<SensorData> data) {
         int start = 0;
-        int size = data.size();
-        if (data.size() > 50) {
-            start = data.size() - 50;
+        int size = data.get(0).getValues().size();
+        if (size > 50) {
+            start = data.get(0).getValues().size() - 50;
             size = 50;
         }
 
         double sum = 0;
-        for (int i = start; i < data.size(); i++) {
-            Log.i(TAG, String.format("%f", data.get(i).getValues().get(i)));
-            sum += data.get(i).getValues().get(i);
+        for (int i = start; i < data.get(0).getValues().size(); i++) {
+            Log.i(TAG, String.format("%f", data.get(0).getValues().get(i)));
+            sum += data.get(0).getValues().get(i);
         }
         score = sum/size;
         //TODO Convert to PPM value to display on DeviceActivity and home screen
