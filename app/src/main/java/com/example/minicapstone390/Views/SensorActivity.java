@@ -291,7 +291,8 @@ public class SensorActivity extends AppCompatActivity {
         });
     }
 
-    private void calculateThreshold(ArrayList<SensorData> data) {
+    // TODO May need to move logic around so stuff is always calculated...
+    public void calculateThreshold(ArrayList<SensorData> data) {
         int start = 0;
         int size = data.get(0).getValues().size();
         if (size > 50) {
@@ -301,7 +302,6 @@ public class SensorActivity extends AppCompatActivity {
 
         double sum = 0;
         for (int i = start; i < data.get(0).getValues().size(); i++) {
-            Log.i(TAG, String.format("%f", data.get(0).getValues().get(i)));
             sum += data.get(0).getValues().get(i);
         }
         score = sum/size;
