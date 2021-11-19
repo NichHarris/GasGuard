@@ -64,7 +64,7 @@ public class SensorActivity extends AppCompatActivity {
     protected Toolbar toolbar;
     protected String sensorId;
     protected String function;
-
+    protected double score = 0.0;
     public int graphTimeScale = 7;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -278,7 +278,7 @@ public class SensorActivity extends AppCompatActivity {
                     }
                 }
                 validData.add(new SensorData(values, times));
-
+                calculateThreshold(validData);
                 producer(history, validData.get(0));
                 validData.clear();
             }
@@ -304,13 +304,13 @@ public class SensorActivity extends AppCompatActivity {
             Log.i(TAG, String.format("%f", data.get(i).getValues().get(i)));
             sum += data.get(i).getValues().get(i);
         }
-
+        score = sum/size;
         //TODO Convert to PPM value to display on DeviceActivity and home screen
-        dB.getSensorChild(sensorId).child("SensorScore").setValue(sum).addOnCompleteListener(new OnCompleteListener<Void>() {
+        dB.getSensorChild(sensorId).child("SensorScore").setValue(score).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (!task.isSuccessful()) {
-                    Log.e(TAG, "Unable to ass SensorScore");
+                    Log.e(TAG, "Unable to access SensorScore");
                 }
             }
         });
