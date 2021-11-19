@@ -4,8 +4,8 @@
 
 // UPDATE WIFI SSID AND PASSWORD BEFORE RUNNING 
 
-#define WIFI_SSID "Isengard-Network"
-#define WIFI_PASSWORD "Play4Keep$"
+#define WIFI_SSID "TEMP"
+#define WIFI_PASSWORD "TEMP"
 
 #define DeviceID "102"
 
