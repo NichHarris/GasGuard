@@ -15,7 +15,7 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.example.minicapstone390.Controllers.Database;
-import com.example.minicapstone390.Controllers.ENV;
+import com.example.minicapstone390.Controllers.DatabaseEnv;
 import com.example.minicapstone390.Controllers.SharedPreferenceHelper;
 import com.example.minicapstone390.Controllers.DeviceAdapter;
 import com.example.minicapstone390.Models.Device;
@@ -47,11 +47,11 @@ import java.util.Map;
 
 public class HomeActivity extends AppCompatActivity {
     private static final String TAG = "HomeActivity";
-    private static final String USERNAME = ENV.USERNAME.getEnv();
-    private static final String DEVICES = ENV.USERDEVICES.getEnv();
-    private static final String DEVICENAME = ENV.DEVICENAME.getEnv();
-    private static final String DEVICELOC = ENV.DEVICELOCATION.getEnv();
-    private static final String DEVICESTATUS = ENV.DEVICESTATUS.getEnv();
+    private static final String USERNAME = DatabaseEnv.USERNAME.getEnv();
+    private static final String DEVICES = DatabaseEnv.USERDEVICES.getEnv();
+    private static final String DEVICENAME = DatabaseEnv.DEVICENAME.getEnv();
+    private static final String DEVICELOC = DatabaseEnv.DEVICELOCATION.getEnv();
+    private static final String DEVICESTATUS = DatabaseEnv.DEVICESTATUS.getEnv();
 
     // Declare variables
     private final Database dB = new Database();

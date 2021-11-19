@@ -17,9 +17,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.minicapstone390.Controllers.Database;
-import com.example.minicapstone390.Controllers.ENV;
+import com.example.minicapstone390.Controllers.DatabaseEnv;
 import com.example.minicapstone390.Controllers.SharedPreferenceHelper;
 
+import com.example.minicapstone390.Controllers.Threshold;
 import com.example.minicapstone390.Models.Sensor;
 import com.example.minicapstone390.R;
 import com.example.minicapstone390.Controllers.SensorAdapter;
@@ -38,13 +39,13 @@ import java.util.Objects;
 
 public class DeviceActivity extends AppCompatActivity {
     private static final String TAG = "DeviceActivity";
-    private static final String DEVICES = ENV.USERDEVICES.getEnv();
-    private static final String DEVICENAME = ENV.DEVICENAME.getEnv();
-    private static final String DEVICESTATUS = ENV.DEVICESTATUS.getEnv();
-    private static final String DEVICESENSORS = ENV.DEVICESENSORS.getEnv();
-    private static final String SENSORNAME = ENV.SENSORNAME.getEnv();
-    private static final String SENSORTYPE = ENV.SENSORTYPE.getEnv();
-    private static final String SENSORVALUE = ENV.SENSORVALUE.getEnv();
+    private static final String DEVICES = DatabaseEnv.USERDEVICES.getEnv();
+    private static final String DEVICENAME = DatabaseEnv.DEVICENAME.getEnv();
+    private static final String DEVICESTATUS = DatabaseEnv.DEVICESTATUS.getEnv();
+    private static final String DEVICESENSORS = DatabaseEnv.DEVICESENSORS.getEnv();
+    private static final String SENSORNAME = DatabaseEnv.SENSORNAME.getEnv();
+    private static final String SENSORTYPE = DatabaseEnv.SENSORTYPE.getEnv();
+    private static final String SENSORVALUE = DatabaseEnv.SENSORVALUE.getEnv();
 
     // Declare variables
     private final Database dB = new Database();
@@ -319,8 +320,19 @@ public class DeviceActivity extends AppCompatActivity {
                         String sensorName = snapshot.child(SENSORNAME).exists() ? snapshot.child(SENSORNAME).getValue(String.class) : id;
                         int sensorType =  snapshot.child(SENSORTYPE).exists() ? snapshot.child(SENSORTYPE).getValue(Integer.class): 0;
                         double sensorValue = snapshot.child(SENSORVALUE).exists() ? snapshot.child(SENSORVALUE).getValue(Double.class): 0.0;
+//                        boolean status = snapshot.child("status").exists() ? snapshot.child("status").getValue(Boolean.class) : true; // set status to safe as default
+                        boolean status = true;
+                        double sensorScore = snapshot.child("SensorScore").exists() ? snapshot.child("SensorScore").getValue(Double.class) : 0.0;
+
+                        if (sensorScore >= sensorThreshold(sensorType) && sensorThreshold(sensorType) != 0.0) {
+                            status = false;
+                            Log.i(TAG,  String.format("Sensor Threshold reached: %d", sensorType));
+                            // TODO call a notification
+                        }
+
+                        // TODO: Function to determine if the sensor threshold is exceeded;
                         if (!sensorMap.containsKey(id)) {
-                            Sensor sensor = new Sensor(id, sensorType, sensorName, sensorValue);
+                            Sensor sensor = new Sensor(id, sensorType, sensorName, sensorValue, status, sensorScore);
                             sensData.add(sensor);
                             sensorMap.put(id, sensor);
                         } else {
@@ -329,6 +341,8 @@ public class DeviceActivity extends AppCompatActivity {
                             sensor.setSensorName(sensorName);
                             sensor.setSensorValue(sensorValue);
                             sensor.setSensorType(sensorType);
+                            sensor.setSensorScore(sensorScore);
+                            sensor.setStatus(status);
                             sensData.set(sensData.indexOf(sensor), sensor);
                         }
                         setSensorList(sensData);
@@ -345,6 +359,38 @@ public class DeviceActivity extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    private double sensorThreshold(int type) {
+        String strType = "MQ" + type;
+        double threshold = 0.0;
+        switch (strType) {
+            case "MQ2":
+                threshold = Threshold.MQ2.getThreshold();
+                break;
+            case "MQ3":
+                threshold = Threshold.MQ3.getThreshold();
+                break;
+            case "MQ4":
+                threshold = Threshold.MQ4.getThreshold();
+                break;
+            case "MQ6":
+                threshold = Threshold.MQ6.getThreshold();
+                break;
+            case "MQ7":
+                threshold = Threshold.MQ7.getThreshold();
+                break;
+            case "MQ8":
+                threshold = Threshold.MQ8.getThreshold();
+                break;
+            case "MQ9":
+                threshold = Threshold.MQ9.getThreshold();
+                break;
+            case "MQ135":
+                threshold = Threshold.MQ135.getThreshold();
+                break;
+        }
+        return threshold;
     }
 
     // Set ListView of sensors

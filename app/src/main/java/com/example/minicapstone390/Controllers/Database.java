@@ -6,9 +6,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class Database {
-    private static final String DEVICES = ENV.DEVICES.getEnv();
-    private static final String SENSORS = ENV.SENSORS.getEnv();
-    private static final String USERS = ENV.USERS.getEnv();
+    private static final String DEVICES = DatabaseEnv.DEVICES.getEnv();
+    private static final String SENSORS = DatabaseEnv.SENSORS.getEnv();
+    private static final String USERS = DatabaseEnv.USERS.getEnv();
 
     private final FirebaseDatabase database;
     private final FirebaseAuth auth;

@@ -70,7 +70,7 @@ public class SensorAdapter extends RecyclerView.Adapter<SensorAdapter.ViewHolder
 
             v.setOnClickListener((view) -> {
                 int sensorIndex = getAdapterPosition();
-                System.out.println(ACCESS + sensorIndex);
+                Log.i(TAG,ACCESS + sensorIndex);
                 ((DeviceActivity)mContext).goToSensorActivity(sensorIndex);
             });
         }
@@ -108,7 +108,7 @@ public class SensorAdapter extends RecyclerView.Adapter<SensorAdapter.ViewHolder
         int type = s.getSensorType();
         String sensorTypeText = "Sensor: MC" + type;
         String liveDataText = String.format("Live: %.3f", s.getSensorValue());
-        String pastDataText = "Prev: 2.0 ppm";
+        String pastDataText = String.format("Prev: %.3f", s.getSensorScore());
         holder.sensorName.setText(s.getSensorName());
         holder.sensorStatus.setText(s.getStatus() ? R.string.safeSensorValue : R.string.unsafeSensorValue);
         holder.sensorType.setText(sensorTypeText);

@@ -7,8 +7,6 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.location.LocationManager;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -16,10 +14,9 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.example.minicapstone390.Controllers.Database;
-import com.example.minicapstone390.Controllers.ENV;
+import com.example.minicapstone390.Controllers.DatabaseEnv;
 import com.example.minicapstone390.R;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.example.minicapstone390.Views.UpdateInfoFragment;
 import com.example.minicapstone390.Controllers.SharedPreferenceHelper;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -28,17 +25,15 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
 
-import java.net.InetAddress;
-import java.net.Socket;
 import java.util.Objects;
 
 public class ProfileActivity extends AppCompatActivity {
     private static final String TAG = "ProfileActivity";
-    private static final String USERNAME = ENV.USERNAME.getEnv();
-    private static final String USEREMAIL = ENV.USEREMAIL.getEnv();
-    private static final String USERFIRST = ENV.USERFIRST.getEnv();
-    private static final String USERLAST = ENV.USERLAST.getEnv();
-    private static final String USERPHONE = ENV.USERPHONE.getEnv();
+    private static final String USERNAME = DatabaseEnv.USERNAME.getEnv();
+    private static final String USEREMAIL = DatabaseEnv.USEREMAIL.getEnv();
+    private static final String USERFIRST = DatabaseEnv.USERFIRST.getEnv();
+    private static final String USERLAST = DatabaseEnv.USERLAST.getEnv();
+    private static final String USERPHONE = DatabaseEnv.USERPHONE.getEnv();
 
     // Declare variables
     private final Database dB = new Database();

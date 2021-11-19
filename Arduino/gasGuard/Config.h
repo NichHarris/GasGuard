@@ -4,10 +4,10 @@
 
 // UPDATE WIFI SSID AND PASSWORD BEFORE RUNNING 
 
-#define WIFI_SSID "Wings"
-#define WIFI_PASSWORD "qfx9oy6u"
+#define WIFI_SSID "Isengard-Network"
+#define WIFI_PASSWORD "Play4Keep$"
 
-#define DeviceID "237"
+#define DeviceID "102"
 
 #define Sensor1Name "MQ2"
 #define Sensor2Name "MQ3"

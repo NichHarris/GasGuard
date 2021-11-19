@@ -20,15 +20,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.minicapstone390.Controllers.Database;
-import com.example.minicapstone390.Controllers.ENV;
+import com.example.minicapstone390.Controllers.DatabaseEnv;
 import com.example.minicapstone390.Controllers.SharedPreferenceHelper;
-import com.example.minicapstone390.Models.Device;
-import com.example.minicapstone390.Models.Sensor;
 import com.example.minicapstone390.Models.SensorData;
 import com.example.minicapstone390.R;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.AxisBase;
-import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
@@ -44,23 +41,19 @@ import com.google.firebase.database.ValueEventListener;
 
 // DateTime
 import java.time.Duration;
-import java.time.Instant;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 
 import java.util.List;
 import java.util.Objects;
 
 public class SensorActivity extends AppCompatActivity {
     private static final String TAG = "SensorActivity";
-    private static final String SENSORPAST = ENV.SENSORPAST.getEnv();
-    private static final String SENSORNAME = ENV.SENSORNAME.getEnv();
-    private static final String VALUE = ENV.VALUE.getEnv();
-    private static final String SENSORSTATUS = ENV.SENSORSTATUS.getEnv();
+    private static final String SENSORPAST = DatabaseEnv.SENSORPAST.getEnv();
+    private static final String SENSORNAME = DatabaseEnv.SENSORNAME.getEnv();
+    private static final String VALUE = DatabaseEnv.VALUE.getEnv();
+    private static final String SENSORSTATUS = DatabaseEnv.SENSORSTATUS.getEnv();
 
     // Declare variables
     private final Database dB = new Database();
@@ -71,7 +64,7 @@ public class SensorActivity extends AppCompatActivity {
     protected Toolbar toolbar;
     protected String sensorId;
     protected String function;
-
+    protected double score = 0.0;
     public int graphTimeScale = 7;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -285,6 +278,7 @@ public class SensorActivity extends AppCompatActivity {
                     }
                 }
                 validData.add(new SensorData(values, times));
+                calculateThreshold(validData);
                 producer(history, validData.get(0));
                 validData.clear();
             }
@@ -293,6 +287,31 @@ public class SensorActivity extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError e) {
                 Log.d(TAG, e.toString());
                 throw e.toException();
+            }
+        });
+    }
+
+    private void calculateThreshold(ArrayList<SensorData> data) {
+        int start = 0;
+        int size = data.get(0).getValues().size();
+        if (size > 50) {
+            start = data.get(0).getValues().size() - 50;
+            size = 50;
+        }
+
+        double sum = 0;
+        for (int i = start; i < data.get(0).getValues().size(); i++) {
+            Log.i(TAG, String.format("%f", data.get(0).getValues().get(i)));
+            sum += data.get(0).getValues().get(i);
+        }
+        score = sum/size;
+        //TODO Convert to PPM value to display on DeviceActivity and home screen
+        dB.getSensorChild(sensorId).child("SensorScore").setValue(score).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (!task.isSuccessful()) {
+                    Log.e(TAG, "Unable to access SensorScore");
+                }
             }
         });
     }
