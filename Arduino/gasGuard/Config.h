@@ -1,19 +1,16 @@
 // UPDATE FIREBASE URL AND PASSWORD BEFORE RUNNING
+
 #define DATABASE_URL "gasguard-ae330-default-rtdb.firebaseio.com"
 #define DATABASE_SECRET "sef3dUyAPbvVrI6ANAIz3ikrSyg0mLXS7FPbXhHe"
 
 // UPDATE WIFI SSID AND PASSWORD BEFORE RUNNING 
 
-#define WIFI_SSID "Isengard-Network"
-#define WIFI_PASSWORD "Play4Keep$"
+#define WIFI_SSID "Khaled's hotspot"
+#define WIFI_PASSWORD "hellohello"
 
-#define DeviceID "102"
+// UPDATE YOUR DEVICE INFORMATION BEFORE RUNNING
 
-#define Sensor1Name "MQ2"
-#define Sensor2Name "MQ3"
-#define Sensor3Name "MQ4"
-#define Sensor4Name "MQ6"
-#define Sensor5Name "MQ135"
-#define Sensor6Name "MQ9"
-#define Sensor7Name "MQ8"
-#define Sensor8Name "MQ7"
+#define DeviceID "201"
+#define DeviceName "GasGuard201"
+#define NumOfSensors 6
+#define NameOfSensors {"MQ2","MQ4","MQ9","MQ7","MQ8","MQ135","",""}
