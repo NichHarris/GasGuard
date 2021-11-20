@@ -301,16 +301,16 @@ public class SensorActivity extends AppCompatActivity {
         if (data.get(0).getValues().size() != 0) {
             int start = 0;
             int size = data.get(0).getValues().size();
-            if (size > 50) {
-                start = data.get(0).getValues().size() - 1 - 50;
-                size = 50;
+            if (size > 10) {
+                start = data.get(0).getValues().size() - 1 - 10;
+                size = 10;
             }
 
             double sum = 0;
             for (int i = start; i < data.get(0).getValues().size(); i++) {
                 sum += data.get(0).getValues().get(i);
             }
-            score = sum / size;
+            score = sum / (size + 1);
             //TODO Convert to PPM value to display on DeviceActivity and home screen
             dB.getSensorChild(sensorId).child("SensorScore").setValue(score).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
@@ -381,8 +381,8 @@ public class SensorActivity extends AppCompatActivity {
         leftAxis.setTextColor(Color.BLACK);
         leftAxis.setGranularityEnabled(true);
         leftAxis.setAxisMinimum(0f);
-        leftAxis.setAxisMaximum(1.1f);
-        leftAxis.setGranularity(0.1f);
+        leftAxis.setAxisMaximum(4.1f);
+        leftAxis.setGranularity(0.5f);
 
         YAxis rightAxis = sensorChart.getAxisRight();
         rightAxis.setEnabled(false);
