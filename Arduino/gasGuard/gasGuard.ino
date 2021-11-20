@@ -14,18 +14,8 @@ FirebaseData fbdo;
 int GMT = -5;
 RTCZero rtc;
 
-// TODO: put this shit in a list, and loop through it to set the firebase stuff, this is too hard coded... pls
-
-// Array containing all declartions of sensors;
-// Sensor sensorArray[7];
-float Sensor1Value;
-float Sensor2Value;
-float Sensor3Value;
-float Sensor4Value;
-float Sensor5Value;
-float Sensor6Value;
-float Sensor7Value;
-float Sensor8Value;
+float SensorValue;
+String SensorNames[] = NameOfSensors;
 
 void setup() {
   Serial.begin(115200);
@@ -41,121 +31,78 @@ void setup() {
     Serial.print(".");
     delay(100);
   }
-  Serial.println();
+  Serial.println(); 
   Serial.print("Connected with IP: ");
-  Serial.println(WiFi.localIP());
+  Serial.println(WiFi.localIP()); 
   Serial.println();
-  
-  
-  // TODO: put this shit in a list, and loop through it to set the firebase stuff, this is too hard coded... pls
+
   //Provide the authentication data
   Firebase.begin(DATABASE_URL, DATABASE_SECRET, WIFI_SSID, WIFI_PASSWORD);
   Firebase.reconnectWiFi(true);
-  Firebase.setString(fbdo, "Devices/"+String(DeviceID)+"/sensors/0", String(DeviceID)+"-1");
-  Firebase.setString(fbdo, "Devices/"+String(DeviceID)+"/sensors/1", String(DeviceID)+"-2");
-  Firebase.setString(fbdo, "Devices/"+String(DeviceID)+"/sensors/2", String(DeviceID)+"-3");
-  Firebase.setString(fbdo, "Devices/"+String(DeviceID)+"/sensors/3", String(DeviceID)+"-4");
-  Firebase.setString(fbdo, "Devices/"+String(DeviceID)+"/sensors/4", String(DeviceID)+"-5");
-  Firebase.setString(fbdo, "Devices/"+String(DeviceID)+"/sensors/5", String(DeviceID)+"-6");
-  Firebase.setString(fbdo, "Devices/"+String(DeviceID)+"/sensors/6", String(DeviceID)+"-7");
-  Firebase.setString(fbdo, "Devices/"+String(DeviceID)+"/sensors/7", String(DeviceID)+"-8");
-  Firebase.setBool(fbdo, "Devices/"+String(DeviceID)+"/status", true);
-  if(!Firebase.getString(fbdo, "Devices/"+String(DeviceID)+"/deviceName")){
-    Firebase.setString(fbdo, "Devices/"+String(DeviceID)+"/deviceName", "");
-      Serial.println("device name created");
-    }
-  if(!Firebase.getString(fbdo, "Devices/"+String(DeviceID)+"/location")){
-    Firebase.setString(fbdo, "Devices/"+String(DeviceID)+"/location", "");
-    Serial.println("location");
-   }
+
+  for (int i = 0; i < NumOfSensors; i++) {
+    Firebase.setString(fbdo, "Devices/" + String(DeviceID) + "/sensors/" + String(i), String(DeviceID) + "-" + String(i));
+  }
+
+  if (!Firebase.getBool(fbdo, "Devices/" + String(DeviceID) + "/status")) {
+    Firebase.setBool(fbdo, "Devices/" + String(DeviceID) + "/status", true);
+  }
+
+  if (!Firebase.getString(fbdo, "Devices/" + String(DeviceID) + "/deviceName")) {
+    Firebase.setString(fbdo, "Devices/" + String(DeviceID) + "/deviceName", DeviceName);
+  }
+
+  if (!Firebase.getString(fbdo, "Devices/" + String(DeviceID) + "/location")) {
+    Firebase.setString(fbdo, "Devices/" + String(DeviceID) + "/location", "");
+  }
   
-  // TODO: put this shit in a list, and loop through it to set the firebase stuff, this is too hard coded... pls
-  Firebase.setString(fbdo, "Sensors/"+String(DeviceID)+"-1/SensorName", Sensor1Name);
-  Firebase.setString(fbdo, "Sensors/"+String(DeviceID)+"-2/SensorName", Sensor2Name);
-  Firebase.setString(fbdo, "Sensors/"+String(DeviceID)+"-3/SensorName", Sensor3Name);
-  Firebase.setString(fbdo, "Sensors/"+String(DeviceID)+"-4/SensorName", Sensor4Name);
-  Firebase.setString(fbdo, "Sensors/"+String(DeviceID)+"-5/SensorName", Sensor5Name);
-  Firebase.setString(fbdo, "Sensors/"+String(DeviceID)+"-6/SensorName", Sensor6Name);
-  Firebase.setString(fbdo, "Sensors/"+String(DeviceID)+"-7/SensorName", Sensor7Name);
-  Firebase.setString(fbdo, "Sensors/"+String(DeviceID)+"-8/SensorName", Sensor8Name);
-  
-  setTime(WiFi.getTime());
+  for (int i = 0; i < NumOfSensors; i++) {
+    Firebase.setString(fbdo, "Sensors/" + String(DeviceID) + "-" + String(i) + "/SensorName", SensorNames[i]);
+  }
+  setTime(WiFi.getTime()); 
   adjustTime(GMT*60*60);
   setSyncProvider(requestSync);  //set function to call when sync required
   Serial.println("Waiting for sync message");
 }
-
 void loop() {
-  
+
   if (Serial.available()) {
     processSyncMessage();
   }
-      // TODO: put this shit in a list, and loop through it to set the firebase stuff, this is too hard coded... pls
-      Sensor1Value = analogRead(A0)/1023.0;
-      Sensor2Value = analogRead(A1)/1023.0;
-      Sensor3Value = analogRead(A2)/1023.0;
-      Sensor4Value = analogRead(A3)/1023.0;
-      Sensor5Value = analogRead(A4)/1023.0;
-      Sensor6Value = analogRead(A5)/1023.0;
-      Sensor7Value = analogRead(A6)/1023.0;
-      Sensor8Value = analogRead(A7)/1023.0;
 
-  Firebase.setFloat(fbdo, "Sensors/"+String(DeviceID)+"-1/SensorType", 2);
-  Firebase.setFloat(fbdo, "Sensors/"+String(DeviceID)+"-1/SensorValue", Sensor1Value);
-  Firebase.setFloat(fbdo, "Sensors/"+String(DeviceID)+"-1/SensorPastValues/"+Timestamp()+"/Value",Sensor1Value);
-
-  Firebase.setFloat(fbdo, "Sensors/"+String(DeviceID)+"-2/SensorType", 3);
-  Firebase.setFloat(fbdo, "Sensors/"+String(DeviceID)+"-2/SensorValue", Sensor2Value);
-  Firebase.setFloat(fbdo, "Sensors/"+String(DeviceID)+"-2/SensorPastValues/"+Timestamp()+"/Value",Sensor2Value);
-
-  Firebase.setFloat(fbdo, "Sensors/"+String(DeviceID)+"-3/SensorType", 4);
-  Firebase.setFloat(fbdo, "Sensors/"+String(DeviceID)+"-3/SensorValue", Sensor3Value);  
-  Firebase.setFloat(fbdo, "Sensors/"+String(DeviceID)+"-3/SensorPastValues/"+Timestamp()+"/Value",Sensor3Value);
-
-  Firebase.setFloat(fbdo, "Sensors/"+String(DeviceID)+"-4/SensorType", 6);
-  Firebase.setFloat(fbdo, "Sensors/"+String(DeviceID)+"-4/SensorValue", Sensor4Value);
-  Firebase.setFloat(fbdo, "Sensors/"+String(DeviceID)+"-4/SensorPastValues/"+Timestamp()+"/Value",Sensor4Value);
-
-  Firebase.setFloat(fbdo, "Sensors/"+String(DeviceID)+"-5/SensorType", 135);
-  Firebase.setFloat(fbdo, "Sensors/"+String(DeviceID)+"-5/SensorValue", Sensor5Value);
-  Firebase.setFloat(fbdo, "Sensors/"+String(DeviceID)+"-5/SensorPastValues/"+Timestamp()+"/Value",Sensor5Value);
-
-  Firebase.setFloat(fbdo, "Sensors/"+String(DeviceID)+"-6/SensorType", 9);
-  Firebase.setFloat(fbdo, "Sensors/"+String(DeviceID)+"-6/SensorValue", Sensor6Value);
-  Firebase.setFloat(fbdo, "Sensors/"+String(DeviceID)+"-6/SensorPastValues/"+Timestamp()+"/Value",Sensor6Value);
-  
-  Firebase.setFloat(fbdo, "Sensors/"+String(DeviceID)+"-7/SensorType", 8);
-  Firebase.setFloat(fbdo, "Sensors/"+String(DeviceID)+"-7/SensorValue", Sensor7Value);
-  Firebase.setFloat(fbdo, "Sensors/"+String(DeviceID)+"-7/SensorPastValues/"+Timestamp()+"/Value", Sensor7Value);
-
-  Firebase.setFloat(fbdo, "Sensors/"+String(DeviceID)+"-8/SensorType", 7);
-  Firebase.setFloat(fbdo, "Sensors/"+String(DeviceID)+"-8/SensorValue", Sensor8Value);
-  Firebase.setFloat(fbdo, "Sensors/"+String(DeviceID)+"-8/SensorPastValues/"+Timestamp()+"/Value", Sensor8Value);
-  
-  delay(5000);
+  Firebase.getBool(fbdo, "Devices/" + String(DeviceID) + "/status");
+  if (fbdo.boolData() == true) {
+    for (int i = 0; i < NumOfSensors; i++) {
+      SensorValue = analogRead(i) / 1023.0 * 4.5;
+      Firebase.setFloat(fbdo, "Sensors/" + String(DeviceID) + "-" + String(i) + "/SensorType", i);
+      Firebase.setFloat(fbdo, "Sensors/" + String(DeviceID) + "-" + String(i) + "/SensorValue", SensorValue);
+      Firebase.setFloat(fbdo, "Sensors/" + String(DeviceID)+"-" + String(i) + "/SensorPastValues/" + Timestamp() + "/Value", SensorValue);
+    }
+  }
+  delay(Delay);
 }
 
 void processSyncMessage() {
   unsigned long pctime;
   const unsigned long DEFAULT_TIME = WiFi.getTime(); // Jan 1 2013
 
-  if(Serial.find(TIME_HEADER)) {
-     pctime = Serial.parseInt();
-     if( pctime >= DEFAULT_TIME) { // check the integer is a valid time (greater than Jan 1 2013)
-       setTime(pctime); // Sync Arduino clock to the time received on the serial port
-     }
+  if (Serial.find(TIME_HEADER)) {
+    pctime = Serial.parseInt();
+    if ( pctime >= DEFAULT_TIME) { // check the integer is a valid time (greater than Jan 1 2013)
+      setTime(pctime); // Sync Arduino clock to the time received on the serial port
+    }
   }
 }
 
 time_t requestSync()
 {
-  Serial.write(TIME_REQUEST);  
+  Serial.write(TIME_REQUEST);
   return 0; // the time will be sent later in response to serial mesg
 }
 
 String Timestamp()
 {
-  
+
   time_t t = now();
   time_t MM = month(t);
   time_t DD = day(t);
@@ -167,21 +114,21 @@ String Timestamp()
   String hour = String( (unsigned long) H );
   String minute = String( (unsigned long) M );
   String second = String( (unsigned long) S );
-  
-  if (month.toInt()<10){
-    month = "0"+month;
-    }
-  if (day.toInt()<10){
-    day = "0"+day;
-    }
-  if (hour.toInt()<10){
-    hour = "0"+hour;
-    }
-  if (minute.toInt()<10){
-    minute = "0"+minute;
-    }
-  if (second.toInt()<10){
-    second = "0"+second;
-    }
-  return String(year(t))+"-"+month+"-"+day+"T"+hour+":"+minute+":"+second;
+
+  if (month.toInt() < 10) {
+    month = "0" + month;
+  }
+  if (day.toInt() < 10) {
+    day = "0" + day;
+  }
+  if (hour.toInt() < 10) {
+    hour = "0" + hour;
+  }
+  if (minute.toInt() < 10) {
+    minute = "0" + minute;
+  }
+  if (second.toInt() < 10) {
+    second = "0" + second;
+  }
+  return String(year(t)) + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second;
 }
