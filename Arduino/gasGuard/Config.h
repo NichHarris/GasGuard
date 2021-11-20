@@ -11,6 +11,8 @@
 // UPDATE YOUR DEVICE INFORMATION BEFORE RUNNING
 
 #define DeviceID "201"
-#define DeviceName "GasGuard201"
+#define DeviceName "GasGuard-201"
 #define NumOfSensors 6
 #define NameOfSensors {"MQ2","MQ4","MQ9","MQ7","MQ8","MQ135","",""}
+
+#define Delay 30

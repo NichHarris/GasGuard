@@ -31,9 +31,9 @@ void setup() {
     Serial.print(".");
     delay(100);
   }
-  Serial.println();
+  Serial.println(); 
   Serial.print("Connected with IP: ");
-  Serial.println(WiFi.localIP());
+  Serial.println(WiFi.localIP()); 
   Serial.println();
 
   //Provide the authentication data
@@ -55,8 +55,7 @@ void setup() {
   if (!Firebase.getString(fbdo, "Devices/" + String(DeviceID) + "/location")) {
     Firebase.setString(fbdo, "Devices/" + String(DeviceID) + "/location", "");
   }
-
-  // TODO: put this shit in a list, and loop through it to set the firebase stuff, this is too hard coded... pls
+  
   for (int i = 0; i < NumOfSensors; i++) {
     Firebase.setString(fbdo, "Sensors/" + String(DeviceID) + "-" + String(i) + "/SensorName", SensorNames[i]);
   }
@@ -64,9 +63,7 @@ void setup() {
   adjustTime(GMT*60*60);
   setSyncProvider(requestSync);  //set function to call when sync required
   Serial.println("Waiting for sync message");
-
 }
-
 void loop() {
 
   if (Serial.available()) {
@@ -82,7 +79,7 @@ void loop() {
       Firebase.setFloat(fbdo, "Sensors/" + String(DeviceID)+"-" + String(i) + "/SensorPastValues/" + Timestamp() + "/Value", SensorValue);
     }
   }
-  delay(5000);
+  delay(Delay);
 }
 
 void processSyncMessage() {
