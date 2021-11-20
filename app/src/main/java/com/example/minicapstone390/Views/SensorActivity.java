@@ -409,7 +409,7 @@ public class SensorActivity extends AppCompatActivity {
                 LocalDateTime start = data.getTimes().get(0);
                 LocalDateTime end = data.getTimes().get(data.getTimes().size() - 1);
                 // TODO: Check if first state is ever passing? Appending -1 to start isn't working
-                if (results.get(x).isBefore(start) || results.get(x).isAfter(end)) {
+                if (results.get(x).isBefore(start) || results.get(x).isAfter(end) || i >= data.getValues().size()) {
                     values.add(new Entry(x, -1));
                 } else {
                     values.add(new Entry(x, data.getValues().get(i).floatValue()));
