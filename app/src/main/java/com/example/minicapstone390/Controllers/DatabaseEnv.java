@@ -19,6 +19,7 @@ public enum DatabaseEnv {
     VALUE("Value"),
     SENSORTYPE("SensorType"),
     SENSORVALUE("SensorValue"),
+    SENSORSCORE("SensorScore"),
     SENSORSTATUS("status");
 
     private String endpoint;
