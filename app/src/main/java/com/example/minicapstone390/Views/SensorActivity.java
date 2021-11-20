@@ -293,27 +293,31 @@ public class SensorActivity extends AppCompatActivity {
 
     // TODO May need to move logic around so stuff is always calculated...
     public void calculateThreshold(ArrayList<SensorData> data) {
-        int start = 0;
-        int size = data.get(0).getValues().size();
-        if (size > 50) {
-            start = data.get(0).getValues().size() - 50;
-            size = 50;
-        }
-
-        double sum = 0;
-        for (int i = start; i < data.get(0).getValues().size(); i++) {
-            sum += data.get(0).getValues().get(i);
-        }
-        score = sum/size;
-        //TODO Convert to PPM value to display on DeviceActivity and home screen
-        dB.getSensorChild(sensorId).child("SensorScore").setValue(score).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (!task.isSuccessful()) {
-                    Log.e(TAG, "Unable to access SensorScore");
-                }
+        if (data.get(0).getValues().size() != 0) {
+            int start = 0;
+            int size = data.get(0).getValues().size();
+            if (size > 50) {
+                start = data.get(0).getValues().size() - 1 - 50;
+                size = 50;
             }
-        });
+
+            double sum = 0;
+            for (int i = start; i < data.get(0).getValues().size(); i++) {
+                sum += data.get(0).getValues().get(i);
+            }
+            score = sum / size;
+            //TODO Convert to PPM value to display on DeviceActivity and home screen
+            dB.getSensorChild(sensorId).child("SensorScore").setValue(score).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if (!task.isSuccessful()) {
+                        Log.e(TAG, "Unable to access SensorScore");
+                    }
+                }
+            });
+        } else {
+            Log.d(TAG, "Data size is 0");
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -322,13 +326,13 @@ public class SensorActivity extends AppCompatActivity {
             LocalDateTime start = history.get(0);
             LocalDateTime end = history.get(history.size() - 1);
             long duration = Duration.between(start, end).getSeconds();
-            long cuts = data.getValues().size();
-            long delta = duration / (cuts - 1);
+            long size = data.getValues().size() != 0 ? data.getValues().size() : 1;
+            long delta = duration/size;
             ArrayList<LocalDateTime> results = new ArrayList<>();
-
-            for (int i = 0; i < cuts; i++) {
+            for (int i = 0; i < size; i++) {
                 results.add(start.plusSeconds(i * delta));
             }
+//            System.out.println(results);
             setXAxisLabels(history, data, results);
         }
     }
@@ -383,27 +387,29 @@ public class SensorActivity extends AppCompatActivity {
     protected void setData(SensorData data, ArrayList<LocalDateTime> results) {
         ArrayList<Entry> values = new ArrayList<>();
         for (int x = 1; x < results.size() - 1; x++) {
-            LocalDateTime start = results.get(0);
-            LocalDateTime end = results.get(results.size() - 1);
-
+            LocalDateTime start = data.getTimes().get(0);
+            LocalDateTime end = data.getTimes().get(data.getTimes().size() - 1);
             // TODO: Check if first state is ever passing? Appending -1 to start isn't working
-            if (data.getTimes().get(x).isBefore(start) || data.getTimes().get(x).isAfter(end)) {
+            if (results.get(x).isBefore(start) || results.get(x).isAfter(end)) {
                 values.add(new Entry(x, -1));
             } else {
                 values.add(new Entry(x, data.getValues().get(x).floatValue()));
             }
         }
+        if (values.size() != 0) {
+            LineDataSet set = new LineDataSet(values, "SensorGraph");
+            set.setDrawValues(false);
+            set.setLineWidth(2);
 
-        LineDataSet set = new LineDataSet(values, "SensorGraph");
-        set.setDrawValues(false);
-        set.setLineWidth(2);
-
-        LineData lineData = new LineData(set);
-        lineData.setValueTextColor(Color.BLACK);
-        lineData.setValueTextSize(9f);
-
-        sensorChart.setData(lineData);
-        sensorChart.invalidate();
+            LineData lineData = new LineData(set);
+            lineData.setValueTextColor(Color.BLACK);
+            lineData.setValueTextSize(9f);
+//        sensorChart.setBackgroundColor(Color.WHITE);
+            sensorChart.setData(lineData);
+            sensorChart.invalidate();
+        } else {
+            Log.d(TAG, "Value is empty");
+        }
     }
 
     private void notification() {
