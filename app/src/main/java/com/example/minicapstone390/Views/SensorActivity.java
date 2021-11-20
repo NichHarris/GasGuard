@@ -66,6 +66,7 @@ public class SensorActivity extends AppCompatActivity {
     protected String function;
     protected double score = 0.0;
     public int graphTimeScale = 7;
+    public long delta = 60;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -214,15 +215,19 @@ public class SensorActivity extends AppCompatActivity {
                 switch (id) {
                     case R.id.dayButton:
                         graphTimeScale = 0;
+                        delta = 60;
                         break;
                     case R.id.weeksButton:
                         graphTimeScale = 14;
+                        delta = 360;
                         break;
                     case R.id.monthButton:
                         graphTimeScale = 28;
+                        delta = 720;
                         break;
                     default:
                         graphTimeScale = 7;
+                        delta = 180;
                 }
                 getAllSensorData();
             }
@@ -326,7 +331,7 @@ public class SensorActivity extends AppCompatActivity {
             LocalDateTime start = history.get(0);
             LocalDateTime end = history.get(history.size() - 1);
             long duration = Duration.between(start, end).getSeconds();
-            long delta = 60;
+//            long delta = 60;
             long size = duration / delta;
 //            long size = data.getValues().size() != 0 ? data.getValues().size() : 1;
 //            long delta = duration/size;
