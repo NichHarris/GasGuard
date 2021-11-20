@@ -326,13 +326,14 @@ public class SensorActivity extends AppCompatActivity {
             LocalDateTime start = history.get(0);
             LocalDateTime end = history.get(history.size() - 1);
             long duration = Duration.between(start, end).getSeconds();
-            long size = data.getValues().size() != 0 ? data.getValues().size() : 1;
-            long delta = duration/size;
+            long delta = 60;
+            long size = duration / delta;
+//            long size = data.getValues().size() != 0 ? data.getValues().size() : 1;
+//            long delta = duration/size;
             ArrayList<LocalDateTime> results = new ArrayList<>();
             for (int i = 0; i < size; i++) {
                 results.add(start.plusSeconds(i * delta));
             }
-//            System.out.println(results);
             setXAxisLabels(history, data, results);
         }
     }
@@ -386,6 +387,7 @@ public class SensorActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.O)
     protected void setData(SensorData data, ArrayList<LocalDateTime> results) {
         ArrayList<Entry> values = new ArrayList<>();
+        int i = 0;
         for (int x = 1; x < results.size() - 1; x++) {
             LocalDateTime start = data.getTimes().get(0);
             LocalDateTime end = data.getTimes().get(data.getTimes().size() - 1);
@@ -393,7 +395,8 @@ public class SensorActivity extends AppCompatActivity {
             if (results.get(x).isBefore(start) || results.get(x).isAfter(end)) {
                 values.add(new Entry(x, -1));
             } else {
-                values.add(new Entry(x, data.getValues().get(x).floatValue()));
+                values.add(new Entry(x, data.getValues().get(i).floatValue()));
+                i++;
             }
         }
         if (values.size() != 0) {
