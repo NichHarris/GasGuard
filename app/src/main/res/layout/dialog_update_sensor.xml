@@ -48,7 +48,7 @@
 
         </RadioGroup>
 
-        <Button
+        <android.widget.Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/save_add_device_button"
@@ -56,17 +56,21 @@
             android:textSize="14sp"
             android:layout_alignParentBottom="true"
             android:layout_alignParentStart="true"
-            android:layout_marginStart="140dp"/>
+            android:layout_marginStart="140dp"
+            android:background="@color/g_guard_font"
+            android:textColor="@color/white"/>
 
-        <Button
+        <android.widget.Button
+            android:id="@+id/cancel_add_device_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/cancel_add_device_button"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="20dp"
             android:text="@android:string/cancel"
             android:textSize="14sp"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentStart="true"
-            android:layout_marginStart="20dp"/>
+            android:background="@color/g_guard_font"
+            android:textColor="@color/white"/>
 
     </RelativeLayout>
 

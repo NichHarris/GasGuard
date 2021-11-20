@@ -24,28 +24,28 @@
             android:autofillHints="name" />
 
         <android.widget.Button
+            android:id="@+id/save_add_device_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/save_add_device_button"
-            android:text="@string/save"
-            android:textSize="14sp"
-            android:textColor="@color/white"
-            android:background="@color/g_guard_font"
-            android:layout_alignParentBottom="true"
             android:layout_alignParentStart="true"
-            android:layout_marginStart="140dp"/>
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="140dp"
+            android:background="@color/g_guard_font"
+            android:text="@string/save"
+            android:textColor="@color/white"
+            android:textSize="14sp" />
 
         <android.widget.Button
+            android:id="@+id/cancel_add_device_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/cancel_add_device_button"
-            android:text="@android:string/cancel"
-            android:textSize="14sp"
-            android:textColor="@color/white"
-            android:background="@color/g_guard_font"
-            android:layout_alignParentBottom="true"
             android:layout_alignParentStart="true"
-            android:layout_marginStart="20dp"/>
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="20dp"
+            android:background="@color/g_guard_font"
+            android:text="@android:string/cancel"
+            android:textColor="@color/white"
+            android:textSize="14sp" />
 
     </RelativeLayout>
 
