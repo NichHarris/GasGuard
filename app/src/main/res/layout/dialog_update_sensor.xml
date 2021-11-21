@@ -8,7 +8,7 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:layout_width="250dp"
-        android:layout_height="175dp" >
+        android:layout_height="160dp" >
 
         <EditText
             android:id="@+id/sensorName"
@@ -18,7 +18,7 @@
             android:layout_marginEnd="20dp"
             android:layout_marginTop="15dp"
             android:ems="16"
-            android:maxLength="20"
+            android:maxLength="10"
             android:hint="@string/sensorname"
             android:autofillHints="name"
             android:inputType="textShortMessage" />
@@ -27,9 +27,9 @@
             android:id="@+id/sensorOptions"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
-            android:layout_marginTop="70dp"
-            android:layout_marginRight="30dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="55dp"
+            android:layout_marginRight="20dp"
             android:orientation="horizontal"
             android:gravity="center" >
 
@@ -48,7 +48,7 @@
 
         </RadioGroup>
 
-        <Button
+        <android.widget.Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/save_add_device_button"
@@ -56,17 +56,24 @@
             android:textSize="14sp"
             android:layout_alignParentBottom="true"
             android:layout_alignParentStart="true"
-            android:layout_marginStart="140dp"/>
+            android:layout_marginStart="140dp"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/button_custom"
+            android:textColor="@color/white"
+            android:layout_marginVertical="10dp"/>
 
-        <Button
+        <android.widget.Button
+            android:id="@+id/cancel_add_device_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/cancel_add_device_button"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="20dp"
             android:text="@android:string/cancel"
             android:textSize="14sp"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentStart="true"
-            android:layout_marginStart="20dp"/>
+            android:background="@drawable/button_custom"
+            android:textColor="@color/white"
+            android:layout_marginVertical="10dp"/>
 
     </RelativeLayout>
 

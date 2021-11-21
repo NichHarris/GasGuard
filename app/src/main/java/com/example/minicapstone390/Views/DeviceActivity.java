@@ -46,6 +46,7 @@ public class DeviceActivity extends AppCompatActivity {
     private static final String SENSORNAME = DatabaseEnv.SENSORNAME.getEnv();
     private static final String SENSORTYPE = DatabaseEnv.SENSORTYPE.getEnv();
     private static final String SENSORVALUE = DatabaseEnv.SENSORVALUE.getEnv();
+    private static final String SENSORSCORE = DatabaseEnv.SENSORSCORE.getEnv();
 
     // Declare variables
     private final Database dB = new Database();
@@ -152,7 +153,7 @@ public class DeviceActivity extends AppCompatActivity {
     }
 
     // Set text change on option selected
-    private void setDropDownText(MenuItem item, boolean status) {
+    public void setDropDownText(MenuItem item, boolean status) {
         if(!status) {
             item.setTitle("Enable Device");
         } else {
@@ -161,7 +162,7 @@ public class DeviceActivity extends AppCompatActivity {
     }
 
     // Change the active status of a device
-    private void disableDevice(MenuItem item) {
+    public void disableDevice(MenuItem item) {
         dB.getDeviceChild(deviceId).child(DEVICESTATUS).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -194,7 +195,7 @@ public class DeviceActivity extends AppCompatActivity {
     }
 
     // Remove device from the user
-    private void deleteDevice(String deviceId) {
+    public void deleteDevice(String deviceId) {
         // TODO: Copied from android jdk just modify it
         // TODO: Create a builder class...
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -254,7 +255,7 @@ public class DeviceActivity extends AppCompatActivity {
     }
 
     // Display relevant device information
-    private void displayDeviceInfo(String deviceId) {
+    public void displayDeviceInfo(String deviceId) {
         dB.getDeviceChild(deviceId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -308,7 +309,7 @@ public class DeviceActivity extends AppCompatActivity {
     }
 
     // Get List of all sensor names
-    private void getSensorNames() {
+    public void getSensorNames() {
         ArrayList<Sensor> sensData = new ArrayList<>();
         Map<String, Sensor> sensorMap = new HashMap<String, Sensor>();
         for (String id: sensorIds) {
@@ -320,9 +321,8 @@ public class DeviceActivity extends AppCompatActivity {
                         String sensorName = snapshot.child(SENSORNAME).exists() ? snapshot.child(SENSORNAME).getValue(String.class) : id;
                         int sensorType =  snapshot.child(SENSORTYPE).exists() ? snapshot.child(SENSORTYPE).getValue(Integer.class): 0;
                         double sensorValue = snapshot.child(SENSORVALUE).exists() ? snapshot.child(SENSORVALUE).getValue(Double.class): 0.0;
-//                        boolean status = snapshot.child("status").exists() ? snapshot.child("status").getValue(Boolean.class) : true; // set status to safe as default
                         boolean status = true;
-                        double sensorScore = snapshot.child("SensorScore").exists() ? snapshot.child("SensorScore").getValue(Double.class) : 0.0;
+                        double sensorScore = snapshot.child(SENSORSCORE).exists() ? snapshot.child(SENSORSCORE).getValue(Double.class) : 0.0;
 
                         if (sensorScore >= sensorThreshold(sensorType) && sensorThreshold(sensorType) != 0.0) {
                             status = false;
@@ -361,7 +361,7 @@ public class DeviceActivity extends AppCompatActivity {
         }
     }
 
-    private double sensorThreshold(int type) {
+    public double sensorThreshold(int type) {
         String strType = "MQ" + type;
         double threshold = 0.0;
         switch (strType) {
@@ -394,7 +394,7 @@ public class DeviceActivity extends AppCompatActivity {
     }
 
     // Set ListView of sensors
-    private void setSensorList(ArrayList<Sensor> sensData) {
+    public void setSensorList(ArrayList<Sensor> sensData) {
         // TODO: Limit Sensor Name to 13 Characters
         // Recycler View for Sensors
         sensorAdapter = new SensorAdapter(sensData);
@@ -410,7 +410,7 @@ public class DeviceActivity extends AppCompatActivity {
     }
 
     // Open sensor activity for selected sensor
-    private void goToHomeActivity() {
+    public void goToHomeActivity() {
         Intent intent = new Intent(this, HomeActivity.class);
         startActivity(intent);
     }
