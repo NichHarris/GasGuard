@@ -54,6 +54,7 @@ public class SensorActivity extends AppCompatActivity {
     private static final String SENSORNAME = DatabaseEnv.SENSORNAME.getEnv();
     private static final String VALUE = DatabaseEnv.VALUE.getEnv();
     private static final String SENSORSTATUS = DatabaseEnv.SENSORSTATUS.getEnv();
+    private static final String SENSORSCORE = DatabaseEnv.SENSORSCORE.getEnv();
 
     // Declare variables
     private final Database dB = new Database();
@@ -66,6 +67,7 @@ public class SensorActivity extends AppCompatActivity {
     protected String function;
     protected double score = 0.0;
     public int graphTimeScale = 7;
+    public long delta = 60;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -127,7 +129,7 @@ public class SensorActivity extends AppCompatActivity {
         setGraphScale();
     }
 
-    private void deleteSensorData(String sensorId) {
+    public void deleteSensorData(String sensorId) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(true);
         builder.setTitle("Delete Sensor Data Confirmation");
@@ -178,7 +180,7 @@ public class SensorActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    private void editSensor(String sensorId) {
+    public void editSensor(String sensorId) {
         Bundle bundle = new Bundle();
         bundle.putString("id", sensorId);
         SensorFragment dialog = new SensorFragment();
@@ -187,7 +189,7 @@ public class SensorActivity extends AppCompatActivity {
     }
 
     // Display basic info of the sensor
-    private void displaySensorInfo(String sensorId) {
+    public void displaySensorInfo(String sensorId) {
         DatabaseReference sensorRef = dB.getSensorChild(sensorId);
 
         sensorRef.addValueEventListener(new ValueEventListener() {
@@ -206,7 +208,7 @@ public class SensorActivity extends AppCompatActivity {
 
     // Set the graph scale when button is selected
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void setGraphScale() {
+    public void setGraphScale() {
         graphTimesOptions.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
@@ -214,15 +216,19 @@ public class SensorActivity extends AppCompatActivity {
                 switch (id) {
                     case R.id.dayButton:
                         graphTimeScale = 0;
+                        delta = 60;
                         break;
                     case R.id.weeksButton:
                         graphTimeScale = 14;
+                        delta = 360;
                         break;
                     case R.id.monthButton:
                         graphTimeScale = 28;
+                        delta = 720;
                         break;
                     default:
                         graphTimeScale = 7;
+                        delta = 180;
                 }
                 getAllSensorData();
             }
@@ -232,7 +238,7 @@ public class SensorActivity extends AppCompatActivity {
     // TODO: Fix spaghetti
     // Get the time scale of the X axis of the graph
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private ArrayList<LocalDateTime> updateGraphDates() {
+    public ArrayList<LocalDateTime> updateGraphDates() {
         List<LocalDateTime> history = new ArrayList<>();
         setGraphScale();
         long decrement = graphTimeScale / 7;
@@ -291,42 +297,52 @@ public class SensorActivity extends AppCompatActivity {
         });
     }
 
-    private void calculateThreshold(ArrayList<SensorData> data) {
-        int start = 0;
-        int size = data.get(0).getValues().size();
-        if (size > 50) {
-            start = data.get(0).getValues().size() - 50;
-            size = 50;
-        }
-
-        double sum = 0;
-        for (int i = start; i < data.get(0).getValues().size(); i++) {
-            Log.i(TAG, String.format("%f", data.get(0).getValues().get(i)));
-            sum += data.get(0).getValues().get(i);
-        }
-        score = sum/size;
-        //TODO Convert to PPM value to display on DeviceActivity and home screen
-        dB.getSensorChild(sensorId).child("SensorScore").setValue(score).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (!task.isSuccessful()) {
-                    Log.e(TAG, "Unable to access SensorScore");
+    // TODO May need to move logic around so stuff is always calculated...
+    public void calculateThreshold(ArrayList<SensorData> data) {
+        if (data.size() != 0) {
+            if (data.get(0).getValues().size() != 0) {
+                int start = 0;
+                int size = data.get(0).getValues().size();
+                if (size > 10) {
+                    start = data.get(0).getValues().size() - 1 - 10;
+                    size = 10;
                 }
+
+                double sum = 0;
+                for (int i = start; i < data.get(0).getValues().size(); i++) {
+                    sum += data.get(0).getValues().get(i);
+                }
+                
+                score = sum / (size + 1);
+                //TODO Convert to PPM value to display on DeviceActivity and home screen
+                dB.getSensorChild(sensorId).child(SENSORSCORE).setValue(score).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (!task.isSuccessful()) {
+                            Log.e(TAG, "Unable to access SensorScore");
+                        }
+                    }
+                });
+            } else {
+                Log.d(TAG, "Data values size is 0");
             }
-        });
+        } else {            
+            Log.d(TAG, "Data size is 0");
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    protected void producer(List<LocalDateTime> history, SensorData data) {
+    public void producer(List<LocalDateTime> history, SensorData data) {
         if (data.getValues().size() != 0) {
             LocalDateTime start = history.get(0);
             LocalDateTime end = history.get(history.size() - 1);
             long duration = Duration.between(start, end).getSeconds();
-            long cuts = data.getValues().size();
-            long delta = duration / (cuts - 1);
+//            long delta = 60;
+            long size = duration / delta;
+//            long size = data.getValues().size() != 0 ? data.getValues().size() : 1;
+//            long delta = duration/size;
             ArrayList<LocalDateTime> results = new ArrayList<>();
-
-            for (int i = 0; i < cuts; i++) {
+            for (int i = 0; i < size; i++) {
                 results.add(start.plusSeconds(i * delta));
             }
             setXAxisLabels(history, data, results);
@@ -335,44 +351,48 @@ public class SensorActivity extends AppCompatActivity {
 
     // Setting LineChart
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void setXAxisLabels(List<LocalDateTime> history, SensorData data, ArrayList<LocalDateTime> results) {
-        ArrayList<String> xAxisLabel = new ArrayList<>(results.size());
-        DateTimeFormatter format;
-        if (graphTimesOptions.getCheckedRadioButtonId() == R.id.dayButton) {
-            format = DateTimeFormatter.ofPattern("HH:mm");
-        } else {
-            format = DateTimeFormatter.ofPattern("MM/dd");
-        }
-
-        for (int i = 0; i < results.size(); i++) {
-            xAxisLabel.add(results.get(i).format(format));
-        }
-
-        XAxis xAxis = sensorChart.getXAxis();
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setLabelCount(history.size() + 1,true);
-        xAxis.setCenterAxisLabels(true);
-        xAxis.setValueFormatter(new IAxisValueFormatter() {
-            @Override
-            public String getFormattedValue(float value, AxisBase axis) {
-                if (value < results.size()) {
-                    return xAxisLabel.get((int) value);
-                }
-                return "";
+    public void setXAxisLabels(List<LocalDateTime> history, SensorData data, ArrayList<LocalDateTime> results) {
+        if (results.size() != 0) {
+            ArrayList<String> xAxisLabel = new ArrayList<>(results.size());
+            DateTimeFormatter format;
+            if (graphTimesOptions.getCheckedRadioButtonId() == R.id.dayButton) {
+                format = DateTimeFormatter.ofPattern("HH:mm");
+            } else {
+                format = DateTimeFormatter.ofPattern("MM/dd");
             }
-        });
-        setYAxis();
-        setData(data, results);
+
+            for (int i = 0; i < results.size(); i++) {
+                xAxisLabel.add(results.get(i).format(format));
+            }
+
+            XAxis xAxis = sensorChart.getXAxis();
+            xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+            xAxis.setLabelCount(history.size() + 1, true);
+            xAxis.setCenterAxisLabels(true);
+            xAxis.setValueFormatter(new IAxisValueFormatter() {
+                @Override
+                public String getFormattedValue(float value, AxisBase axis) {
+                    if (value < results.size()) {
+                        return xAxisLabel.get((int) value);
+                    }
+                    return "";
+                }
+            });
+            setYAxis();
+            setData(data, results);
+        } else {
+            Log.d(TAG, "Result is empty");
+        }
     }
 
-    private void setYAxis() {
+    public void setYAxis() {
         YAxis leftAxis = sensorChart.getAxisLeft();
         leftAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
         leftAxis.setTextColor(Color.BLACK);
         leftAxis.setGranularityEnabled(true);
         leftAxis.setAxisMinimum(0f);
-        leftAxis.setAxisMaximum(1.1f);
-        leftAxis.setGranularity(0.1f);
+        leftAxis.setAxisMaximum(4.1f);
+        leftAxis.setGranularity(0.5f);
 
         YAxis rightAxis = sensorChart.getAxisRight();
         rightAxis.setEnabled(false);
@@ -381,32 +401,42 @@ public class SensorActivity extends AppCompatActivity {
     // TODO: Fix spaghetti
     @RequiresApi(api = Build.VERSION_CODES.O)
     protected void setData(SensorData data, ArrayList<LocalDateTime> results) {
-        ArrayList<Entry> values = new ArrayList<>();
-        for (int x = 1; x < results.size() - 1; x++) {
-            LocalDateTime start = results.get(0);
-            LocalDateTime end = results.get(results.size() - 1);
-
-            // TODO: Check if first state is ever passing? Appending -1 to start isn't working
-            if (data.getTimes().get(x).isBefore(start) || data.getTimes().get(x).isAfter(end)) {
-                values.add(new Entry(x, -1));
-            } else {
-                values.add(new Entry(x, data.getValues().get(x).floatValue()));
+        
+        if (data.getValues().size() != 0) {
+            ArrayList<Entry> values = new ArrayList<>();
+            int i = 0;
+            for (int x = 1; x < results.size() - 1; x++) {
+                LocalDateTime start = data.getTimes().get(0);
+                LocalDateTime end = data.getTimes().get(data.getTimes().size() - 1);
+                // TODO: Check if first state is ever passing? Appending -1 to start isn't working
+                if (results.get(x).isBefore(start) || results.get(x).isAfter(end) || i >= data.getValues().size()) {
+                    values.add(new Entry(x, -1));
+                } else {
+                    values.add(new Entry(x, data.getValues().get(i).floatValue()));
+                    i++;
+                }
             }
+
+            if (values.size() != 0) {
+                LineDataSet set = new LineDataSet(values, "SensorGraph");
+                set.setDrawValues(false);
+                set.setLineWidth(2);
+
+                LineData lineData = new LineData(set);
+                lineData.setValueTextColor(Color.BLACK);
+                lineData.setValueTextSize(9f);
+//        sensorChart.setBackgroundColor(Color.WHITE);
+                sensorChart.setData(lineData);
+                sensorChart.invalidate();
+            } else {
+                Log.d(TAG, "Value is empty");
+            }
+        } else {
+            Log.d(TAG, "Data is empty");
         }
-
-        LineDataSet set = new LineDataSet(values, "SensorGraph");
-        set.setDrawValues(false);
-        set.setLineWidth(2);
-
-        LineData lineData = new LineData(set);
-        lineData.setValueTextColor(Color.BLACK);
-        lineData.setValueTextSize(9f);
-
-        sensorChart.setData(lineData);
-        sensorChart.invalidate();
     }
 
-    private void notification() {
+    public void notification() {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "id").setContentTitle("Notif").setContentText("Over 10").setPriority(NotificationCompat.PRIORITY_DEFAULT);
     }
 
@@ -423,7 +453,7 @@ public class SensorActivity extends AppCompatActivity {
         int id = item.getItemId();
         if(id == R.id.disable_sensor) {
             Log.d(TAG, "Disable sensor called but not implemented");
-            disableSensor();
+//            disableSensor();
         } else if (id == R.id.delete_sensor_data) {
             deleteSensorData(sensorId);
         } else {
@@ -434,7 +464,7 @@ public class SensorActivity extends AppCompatActivity {
     }
 
     // TODO: Add status to DB
-    private void disableSensor() {
+    public void disableSensor() {
         dB.getSensorChild(sensorId).child(SENSORSTATUS).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -464,7 +494,7 @@ public class SensorActivity extends AppCompatActivity {
     }
 
     // Navigate back to Home Activity
-    private void openHomeActivity() {
+    public void openHomeActivity() {
         Intent intent = new Intent(this, HomeActivity.class);
         startActivity(intent);
     }
