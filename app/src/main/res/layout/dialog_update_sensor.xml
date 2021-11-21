@@ -21,7 +21,8 @@
             android:maxLength="10"
             android:hint="@string/sensorname"
             android:autofillHints="name"
-            android:inputType="textShortMessage" />
+            android:inputType="textShortMessage"
+            android:background="@drawable/input_styles"/>
 
         <RadioGroup
             android:id="@+id/sensorOptions"
