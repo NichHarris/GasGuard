@@ -74,7 +74,8 @@
             android:background="@color/g_guard_font"
             android:text="@string/save"
             android:textColor="@color/white"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:layout_marginVertical="10dp"/>
 
         <android.widget.Button
             android:id="@+id/cancel_add_device_button"
@@ -86,7 +87,8 @@
             android:background="@color/g_guard_font"
             android:text="@string/cancel"
             android:textColor="@color/white"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:layout_marginVertical="10dp"/>
 
     </RelativeLayout>
 

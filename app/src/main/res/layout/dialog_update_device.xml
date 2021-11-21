@@ -21,7 +21,8 @@
             android:ems="16"
             android:maxLength="10"
             android:hint="@string/device_name"
-            android:autofillHints="name" />
+            android:autofillHints="name"
+            android:layout_marginVertical="4dp"/>
 
         <android.widget.Button
             android:layout_width="wrap_content"
@@ -33,7 +34,8 @@
             android:textColor="@color/white"
             android:layout_alignParentBottom="true"
             android:layout_alignParentStart="true"
-            android:layout_marginStart="140dp"/>
+            android:layout_marginStart="140dp"
+            android:layout_marginVertical="3dp"/>
 
         <android.widget.Button
             android:id="@+id/cancel_add_device_button"
@@ -45,7 +47,8 @@
             android:background="@color/g_guard_font"
             android:textColor="@color/white"
             android:text="@android:string/cancel"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:layout_marginVertical="3dp"/>
 
     </RelativeLayout>
 

@@ -18,10 +18,11 @@
             android:layout_marginStart="20dp"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="20dp"
+            android:autofillHints="name"
             android:ems="16"
-            android:maxLength="20"
             android:hint="@string/device_id"
-            android:autofillHints="name" />
+            android:maxLength="20"
+            android:layout_marginVertical="4dp"/>
 
         <android.widget.Button
             android:id="@+id/save_add_device_button"
@@ -33,7 +34,8 @@
             android:background="@color/g_guard_font"
             android:text="@string/save"
             android:textColor="@color/white"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:layout_marginVertical="3dp"/>
 
         <android.widget.Button
             android:id="@+id/cancel_add_device_button"
@@ -45,7 +47,8 @@
             android:background="@color/g_guard_font"
             android:text="@android:string/cancel"
             android:textColor="@color/white"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:layout_marginVertical="3dp"/>
 
     </RelativeLayout>
 
