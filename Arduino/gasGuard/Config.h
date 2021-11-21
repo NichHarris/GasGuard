@@ -5,14 +5,14 @@
 
 // UPDATE WIFI SSID AND PASSWORD BEFORE RUNNING 
 
-#define WIFI_SSID "TEMP"
-#define WIFI_PASSWORD "TEMP"
+#define WIFI_SSID "VIRGIN188"
+#define WIFI_PASSWORD "KhaledWIFI"
 
 // UPDATE YOUR DEVICE INFORMATION BEFORE RUNNING
 
-#define DeviceID "201"
+#define DeviceID "202"
 #define DeviceName "GasGuard-201"
 #define NumOfSensors 6
 #define NameOfSensors {"MQ2","MQ4","MQ9","MQ7","MQ8","MQ135","",""}
 
-#define Delay 30
+#define Delay 30000
