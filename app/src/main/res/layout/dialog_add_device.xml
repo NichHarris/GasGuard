@@ -23,7 +23,8 @@
             android:background="@drawable/input_styles"
             android:ems="16"
             android:hint="@string/device_id"
-            android:maxLength="20" />
+            android:maxLength="20"
+            android:paddingHorizontal="15dp"/>
 
         <android.widget.Button
             android:id="@+id/save_add_device_button"

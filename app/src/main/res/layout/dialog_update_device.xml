@@ -23,7 +23,7 @@
             android:maxLength="10"
             android:hint="@string/device_name"
             android:autofillHints="name"
-
+            android:paddingHorizontal="15dp"
             />
 
         <android.widget.Button

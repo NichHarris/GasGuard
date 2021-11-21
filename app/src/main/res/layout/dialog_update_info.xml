@@ -19,7 +19,8 @@
             android:ems="16"
             android:hint="@string/username"
             android:maxLength="20"
-            android:background="@drawable/input_styles"/>
+            android:background="@drawable/input_styles"
+            android:paddingHorizontal="15dp"/>
 
         <EditText
             android:id="@+id/updateEmail"
@@ -31,7 +32,8 @@
             android:ems="16"
             android:hint="@string/email"
             android:maxLength="50"
-            android:background="@drawable/input_styles"/>
+            android:background="@drawable/input_styles"
+            android:paddingHorizontal="15dp"/>
 
         <EditText
             android:id="@+id/updatePhone"
@@ -43,7 +45,8 @@
             android:ems="16"
             android:hint="@string/phone"
             android:maxLength="20"
-            android:background="@drawable/input_styles"/>
+            android:background="@drawable/input_styles"
+            android:paddingHorizontal="15dp"/>
 
         <EditText
             android:id="@+id/updateFirstName"
@@ -56,7 +59,7 @@
             android:hint="@string/first_name"
             android:maxLength="20"
             android:background="@drawable/input_styles"
-            />
+            android:paddingHorizontal="15dp"/>
 
         <EditText
             android:id="@+id/updateLastName"
@@ -69,7 +72,7 @@
             android:hint="@string/last_name"
             android:maxLength="20"
             android:background="@drawable/input_styles"
-            />
+            android:paddingHorizontal="15dp"/>
 
         <android.widget.Button
             android:id="@+id/save_add_device_button"
