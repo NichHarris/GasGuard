@@ -5,13 +5,13 @@
 
 // UPDATE WIFI SSID AND PASSWORD BEFORE RUNNING 
 
-#define WIFI_SSID "TEMP"
-#define WIFI_PASSWORD "TEMP"
+#define WIFI_SSID "Isengard-Network"
+#define WIFI_PASSWORD "Play4Keep$"
 
 // UPDATE YOUR DEVICE INFORMATION BEFORE RUNNING
 
-#define DeviceID "203"
-#define DeviceName "GasGuard-203"
+#define DeviceID "210"
+#define DeviceName "GasGuard-210"
 #define NumOfSensors 8
 #define NameOfSensors {"MQ2","MQ3", "MQ4","MQ6", "MQ135", "MQ9","MQ8", "MQ7"}
 

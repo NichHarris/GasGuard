@@ -235,7 +235,6 @@ public class SensorActivity extends AppCompatActivity {
         });
     }
 
-    // TODO: Fix spaghetti
     // Get the time scale of the X axis of the graph
     @RequiresApi(api = Build.VERSION_CODES.O)
     public ArrayList<LocalDateTime> updateGraphDates() {
@@ -398,7 +397,6 @@ public class SensorActivity extends AppCompatActivity {
         rightAxis.setEnabled(false);
     }
 
-    // TODO: Fix spaghetti
     @RequiresApi(api = Build.VERSION_CODES.O)
     protected void setData(SensorData data, ArrayList<LocalDateTime> results) {
         
