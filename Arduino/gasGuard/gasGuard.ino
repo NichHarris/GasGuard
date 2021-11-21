@@ -14,7 +14,7 @@ FirebaseData fbdo;
 int GMT = -5;
 RTCZero rtc;
 
-float SensorValue;
+int SensorValue;
 String SensorNames[] = NameOfSensors;
 
 void setup() {
@@ -73,7 +73,8 @@ void loop() {
   Firebase.getBool(fbdo, "Devices/" + String(DeviceID) + "/status");
   if (fbdo.boolData() == true) {
     for (int i = 0; i < NumOfSensors; i++) {
-      SensorValue = analogRead(i) / 1023.0 * 4.5;
+      // conversion from Voltage to PPM
+      SensorValue = analogRead(i) / 1023.0 * 4 * 10000;
       Firebase.setFloat(fbdo, "Sensors/" + String(DeviceID) + "-" + String(i) + "/SensorType", i);
       Firebase.setFloat(fbdo, "Sensors/" + String(DeviceID) + "-" + String(i) + "/SensorValue", SensorValue);
       Firebase.setFloat(fbdo, "Sensors/" + String(DeviceID)+"-" + String(i) + "/SensorPastValues/" + Timestamp() + "/Value", SensorValue);
