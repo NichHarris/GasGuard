@@ -8,40 +8,45 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:layout_width="250dp"
-        android:layout_height="100dp" >
-
+        android:layout_height="130dp" >
 
         <EditText
             android:id="@+id/update_device_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="20dp"
             android:layout_marginEnd="20dp"
             android:ems="16"
-            android:maxLength="20"
+            android:maxLength="10"
             android:hint="@string/device_name"
             android:autofillHints="name" />
 
-        <Button
+        <android.widget.Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/save_add_device_button"
             android:text="@string/save"
             android:textSize="14sp"
+            android:background="@drawable/button_custom"
+            android:textColor="@color/white"
             android:layout_alignParentBottom="true"
             android:layout_alignParentStart="true"
-            android:layout_marginStart="140dp"/>
+            android:layout_marginStart="140dp"
+            android:layout_marginVertical="10dp"/>
 
-        <Button
+        <android.widget.Button
+            android:id="@+id/cancel_add_device_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/cancel_add_device_button"
-            android:text="@android:string/cancel"
-            android:textSize="14sp"
-            android:layout_alignParentBottom="true"
             android:layout_alignParentStart="true"
-            android:layout_marginStart="20dp"/>
+            android:layout_alignParentBottom="true"
+            android:layout_marginVertical="10dp"
+            android:layout_marginStart="20dp"
+            android:background="@drawable/button_custom"
+            android:text="@android:string/cancel"
+            android:textColor="@color/white"
+            android:textSize="14sp" />
 
     </RelativeLayout>
 
