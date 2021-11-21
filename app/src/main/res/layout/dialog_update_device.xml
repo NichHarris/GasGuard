@@ -8,8 +8,7 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:layout_width="250dp"
-        android:layout_height="200dp" >
-
+        android:layout_height="130dp" >
 
         <EditText
             android:id="@+id/update_device_name"
@@ -21,9 +20,7 @@
             android:ems="16"
             android:maxLength="10"
             android:hint="@string/device_name"
-            android:autofillHints="name"
-
-            />
+            android:autofillHints="name" />
 
         <android.widget.Button
             android:layout_width="wrap_content"
