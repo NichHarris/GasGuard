@@ -20,4 +20,14 @@ public class SharedPreferenceHelper {
     }
 
     public Boolean getTheme() { return sharedPreferences.getBoolean("themeMode", false); }
+
+    public void setUUID(String uuid) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        assert editor != null;
+        editor.putString("uuid", uuid);
+        editor.apply();
+    }
+
+    public String getUUID() { return sharedPreferences.getString("uuid", ""); }
+
 }

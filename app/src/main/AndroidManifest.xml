@@ -16,6 +16,7 @@
         android:name="com.name.name.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
 
+    <uses-permission android:name="android.permission.READ_PRIVILEGED_PHONE_STATE" />
     <uses-permission android:name="com.name.name.permission.C2D_MESSAGE" />
         
     <application

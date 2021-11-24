@@ -1,6 +1,10 @@
 package com.example.minicapstone390.Views;
 
 import android.app.Activity;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothSocket;
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -8,6 +12,7 @@ import androidx.annotation.Nullable;
 
 import androidx.fragment.app.DialogFragment;
 
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -22,6 +27,7 @@ import android.widget.Toast;
 
 import com.example.minicapstone390.Controllers.Database;
 import com.example.minicapstone390.Controllers.DatabaseEnv;
+import com.example.minicapstone390.Controllers.SharedPreferenceHelper;
 import com.example.minicapstone390.Models.Device;
 import com.example.minicapstone390.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -33,6 +39,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 // Device Fragment
 public class DeviceFragment extends DialogFragment {
@@ -41,7 +48,13 @@ public class DeviceFragment extends DialogFragment {
 
     // Declare variables
     private final Database dB = new Database();
+    protected SharedPreferenceHelper sharePreferenceHelper;
 
+    protected BluetoothSocket btSocket;
+    protected BluetoothAdapter btAdapter;
+    protected BluetoothDevice btDevice;
+    protected UUID uuid;
+    private boolean btConnectionState = false;
     protected Button cancelButton, saveButton;
     protected EditText wifiNameInput, wifiPasswordInput;
     protected PopupWindow popupWindow;
@@ -60,6 +73,12 @@ public class DeviceFragment extends DialogFragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dialog_add_device, container, false);
 
+        // Initialize SharedPref and check theme
+        sharePreferenceHelper = new SharedPreferenceHelper(getContext());
+        // TODO CHECK THEME
+
+        uuid = UUID.fromString(sharePreferenceHelper.getUUID());
+        
         // Input Fields for Student Profile Data
         wifiNameInput = (EditText) view.findViewById(R.id.wifi_name);
         wifiPasswordInput = (EditText) view.findViewById(R.id.wifi_password);
@@ -86,9 +105,24 @@ public class DeviceFragment extends DialogFragment {
         */
         saveButton.setOnClickListener(view1 -> {
             // Get Input Responses
-            String deviceId = "hi";
+            String wifiName = wifiNameInput.getText().toString();
+            String wifiPassword = wifiPasswordInput.getText().toString();
 
             // Validate Inputs
+            if (wifiName.equals("")) {
+                wifiNameInput.setError("Please enter a wifi name");
+                wifiNameInput.requestFocus();
+                return;
+            }
+            if (wifiPassword.equals("")) {
+                wifiPasswordInput.setError("Please enter a wifi password");
+                wifiPasswordInput.requestFocus();
+                return;
+            }
+
+            btAdapter = BluetoothAdapter.getDefaultAdapter();
+
+
             // 1) All Inputs Must Be Filled
             if (deviceId.isEmpty()) {
                 Toast.makeText(getActivity().getApplicationContext(), "Must Fill All Input Fields!", Toast.LENGTH_LONG).show();

@@ -1,19 +1,25 @@
 package com.example.minicapstone390.Views;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.content.Intent;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import com.example.minicapstone390.R;
 import com.example.minicapstone390.Controllers.Database;
 import com.example.minicapstone390.Controllers.SharedPreferenceHelper;
 
+@RequiresApi(api = Build.VERSION_CODES.M)
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
 
     // Declare variables
     private final Database dB = new Database();
+    private final TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
     protected SharedPreferenceHelper sharePreferenceHelper;
 
     @Override
@@ -55,12 +61,14 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 try {
                     // Sleep Run for 5s (Delay Home/Main Screen Load)
+
                     super.run();
                     sleep(1000);
                 } catch (Exception e) {
                     // Nothing to Catch
                     Log.i(TAG, e.getMessage());
                 } finally {
+                    sharePreferenceHelper.setUUID(telephonyManager.getDeviceId());
                     // If Not Authenticated, Send to Login Page
                     if (dB.getUser() == null) {
                         Log.i(TAG, "User Not Authenticated, sending to login page.");
