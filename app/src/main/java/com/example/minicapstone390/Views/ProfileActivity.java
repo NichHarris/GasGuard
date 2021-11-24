@@ -28,7 +28,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.Objects;
 
 public class ProfileActivity extends AppCompatActivity {
-    private static final String TAG = "ProfileActivity";
+    private static final String TAG = ProfileActivity.class.getSimpleName();
     private static final String USERNAME = DatabaseEnv.USERNAME.getEnv();
     private static final String USEREMAIL = DatabaseEnv.USEREMAIL.getEnv();
     private static final String USERFIRST = DatabaseEnv.USERFIRST.getEnv();

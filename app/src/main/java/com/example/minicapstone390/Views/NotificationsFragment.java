@@ -16,7 +16,7 @@ import com.example.minicapstone390.R;
 
 
 public class NotificationsFragment extends DialogFragment {
-    private static final String TAG = "NotificationFragment";
+    private static final String TAG = NotificationsFragment.class.getSimpleName();
 
     // Declare variables
     private final Database dB = new Database();

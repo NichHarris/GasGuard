@@ -38,7 +38,7 @@ import java.util.Map;
 import java.util.Objects;
 
 public class DeviceActivity extends AppCompatActivity {
-    private static final String TAG = "DeviceActivity";
+    private static final String TAG = DeviceActivity.class.getSimpleName();
     private static final String DEVICES = DatabaseEnv.USERDEVICES.getEnv();
     private static final String DEVICENAME = DatabaseEnv.DEVICENAME.getEnv();
     private static final String DEVICESTATUS = DatabaseEnv.DEVICESTATUS.getEnv();

@@ -24,7 +24,7 @@ import com.google.android.gms.tasks.Task;
 
 // Device Fragment
 public class SensorFragment extends DialogFragment {
-    private static final String TAG = "SensorFragment";
+    private static final String TAG = SensorFragment.class.getSimpleName();
     private static final String SENSORNAME = DatabaseEnv.SENSORNAME.getEnv();
 
     // Declare variables

@@ -20,7 +20,7 @@ import java.util.Objects;
 import java.util.regex.Pattern;
 
 public class SignupActivity extends AppCompatActivity {
-    private static final String TAG = "SignupActivity";
+    private static final String TAG = SignupActivity.class.getSimpleName();
 
     // Declare variables
     private final Database dB = new Database();

@@ -7,13 +7,17 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
 
     <permission
         android:name="com.name.name.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
 
     <uses-permission android:name="com.name.name.permission.C2D_MESSAGE" />
-
+        
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -55,6 +59,14 @@
             android:name=".Views.HomeActivity"
             android:exported="true"
             android:label="Home" />
+        
+        <service
+            android:name=".Controllers.Database"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MEESAGING_EVENT" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

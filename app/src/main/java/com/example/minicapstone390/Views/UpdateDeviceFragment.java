@@ -21,7 +21,7 @@ import com.google.android.gms.tasks.Task;
 
 // Device Fragment
 public class UpdateDeviceFragment extends DialogFragment {
-    private static final String TAG = "UpdateDeviceFragment";
+    private static final String TAG = UpdateDeviceFragment.class.getSimpleName();
     private static final String DEVICENAME = DatabaseEnv.DEVICENAME.getEnv();
 
     // Declare variables

@@ -9,11 +9,15 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.minicapstone390.Controllers.Database;
@@ -32,15 +36,15 @@ import java.util.Map;
 
 // Device Fragment
 public class DeviceFragment extends DialogFragment {
-    private static final String TAG = "AddDeviceFragment";
+    private static final String TAG = DeviceFragment.class.getSimpleName();
     private static final String DEVICES = DatabaseEnv.USERDEVICES.getEnv();
 
     // Declare variables
     private final Database dB = new Database();
 
     protected Button cancelButton, saveButton;
-    protected EditText deviceIdInput;
-
+    protected EditText wifiNameInput, wifiPasswordInput;
+    protected PopupWindow popupWindow;
     public HomeActivity activity;
 
     @Override
@@ -57,17 +61,32 @@ public class DeviceFragment extends DialogFragment {
         View view = inflater.inflate(R.layout.dialog_add_device, container, false);
 
         // Input Fields for Student Profile Data
-        deviceIdInput = (EditText) view.findViewById(R.id.device_id);
+        wifiNameInput = (EditText) view.findViewById(R.id.wifi_name);
+        wifiPasswordInput = (EditText) view.findViewById(R.id.wifi_password);
 
+        View popupView = inflater.inflate(R.layout.popup_window, null);
+        popupWindow = new PopupWindow(popupView, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, false);
+//        popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
         //Create Object and Listener for Cancel and Save Buttons
         cancelButton = (Button) view.findViewById(R.id.cancel_add_device_button);
         saveButton = (Button) view.findViewById(R.id.save_add_device_button);
 
         cancelButton.setOnClickListener(v -> dismiss());
 
+        /*
+            TODO FOR BLUETOOTH
+            - Need to search for local devices when the CONNECT Button is clicked.
+            - Verify the user has entered password and name credentials when connect is clicked, if not request focus
+            - If a device is not found send a toast
+            - If a device is found, send a toast attempting to connect
+            - If the wifi connection fails, send a toast and request focus on name/password
+            - If the wifi connection succeeds, send back the device ID and a passed status
+            - Verify the user doesn't already have a connection to the device
+            - Set the device location based on the bluetooth fine location
+        */
         saveButton.setOnClickListener(view1 -> {
             // Get Input Responses
-            String deviceId = deviceIdInput.getText().toString();
+            String deviceId = "hi";
 
             // Validate Inputs
             // 1) All Inputs Must Be Filled

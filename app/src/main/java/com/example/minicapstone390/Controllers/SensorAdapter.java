@@ -22,7 +22,7 @@ import com.example.minicapstone390.Views.SensorFragment;
 import java.util.ArrayList;
 
 public class SensorAdapter extends RecyclerView.Adapter<SensorAdapter.ViewHolder> {
-    private static final String TAG = "SensorAdapter";
+    private static final String TAG = SensorAdapter.class.getSimpleName();
     private static final String sensorIdCall = "sensorId";
     private static final String callFunction = "callFunction";
     private static final String DELETE = "DELETE ";

@@ -82,4 +82,9 @@
     <string name="sensorname">SensorName</string>
     <string name="device_name">Device Name</string>
     <string name="device_ids">Device IDs</string>
+    <string name="wifi_name">Wifi Name</string>
+    <string name="wifi_password">Wifi Password</string>
+    <string name="connect">CONNECT</string>
+    <string name="loading_progress">Loading...</string>
+    <string name="connecting">Connecting...</string>
 </resources>

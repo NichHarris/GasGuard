@@ -28,7 +28,7 @@ import java.util.Map;
 
 // Device Fragment
 public class UpdateInfoFragment extends DialogFragment {
-    private static final String TAG = "UpdateInfoFragment";
+    private static final String TAG = UpdateInfoFragment.class.getSimpleName();
     private static final String USERNAME = DatabaseEnv.USERNAME.getEnv();
     private static final String USEREMAIL = DatabaseEnv.USEREMAIL.getEnv();
     private static final String USERPHONE = DatabaseEnv.USERPHONE.getEnv();

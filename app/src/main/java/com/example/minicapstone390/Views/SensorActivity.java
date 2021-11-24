@@ -49,7 +49,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class SensorActivity extends AppCompatActivity {
-    private static final String TAG = "SensorActivity";
+    private static final String TAG = SensorActivity.class.getSimpleName();
     private static final String SENSORPAST = DatabaseEnv.SENSORPAST.getEnv();
     private static final String SENSORNAME = DatabaseEnv.SENSORNAME.getEnv();
     private static final String VALUE = DatabaseEnv.VALUE.getEnv();
