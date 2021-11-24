@@ -7,6 +7,7 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.content.Intent;
+import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import com.example.minicapstone390.R;
@@ -19,14 +20,14 @@ public class MainActivity extends AppCompatActivity {
 
     // Declare variables
     private final Database dB = new Database();
-    private final TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+    private TelephonyManager telephonyManager;
     protected SharedPreferenceHelper sharePreferenceHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // Initialize SharedPref and check theme
         sharePreferenceHelper = new SharedPreferenceHelper(MainActivity.this);
-
+        telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         // Set theme
         if (sharePreferenceHelper.getTheme()) {
             setTheme(R.style.NightMode);
@@ -68,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
                     // Nothing to Catch
                     Log.i(TAG, e.getMessage());
                 } finally {
-                    sharePreferenceHelper.setUUID(telephonyManager.getDeviceId());
+                    sharePreferenceHelper.setUUID(Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID));
                     // If Not Authenticated, Send to Login Page
                     if (dB.getUser() == null) {
                         Log.i(TAG, "User Not Authenticated, sending to login page.");

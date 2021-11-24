@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -37,6 +38,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -51,10 +53,10 @@ public class DeviceFragment extends DialogFragment {
     protected SharedPreferenceHelper sharePreferenceHelper;
 
     protected BluetoothSocket btSocket;
-    protected BluetoothAdapter btAdapter;
+    protected BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
     protected BluetoothDevice btDevice;
-    protected UUID uuid;
     private boolean btConnectionState = false;
+    protected UUID uuid;
     protected Button cancelButton, saveButton;
     protected EditText wifiNameInput, wifiPasswordInput;
     protected PopupWindow popupWindow;
@@ -78,7 +80,7 @@ public class DeviceFragment extends DialogFragment {
         // TODO CHECK THEME
 
         uuid = UUID.fromString(sharePreferenceHelper.getUUID());
-        
+
         // Input Fields for Student Profile Data
         wifiNameInput = (EditText) view.findViewById(R.id.wifi_name);
         wifiPasswordInput = (EditText) view.findViewById(R.id.wifi_password);
@@ -120,64 +122,106 @@ public class DeviceFragment extends DialogFragment {
                 return;
             }
 
-            btAdapter = BluetoothAdapter.getDefaultAdapter();
+            // request permissions
+//            new Connection().execute();
 
-
-            // 1) All Inputs Must Be Filled
-            if (deviceId.isEmpty()) {
-                Toast.makeText(getActivity().getApplicationContext(), "Must Fill All Input Fields!", Toast.LENGTH_LONG).show();
-            } else {
-
-                dB.getDeviceChild(deviceId).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if(snapshot.exists()) {
-                            DatabaseReference userRef = dB.getUserChild(dB.getUserId());
-                            userRef.child(DEVICES).addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    for (DataSnapshot ds: snapshot.getChildren()) {
-                                        if (ds.exists()) {
-                                            if (ds.getKey().equals(deviceId)) {
-                                                Log.i(TAG, "User already owns that device");
-                                                Toast.makeText(activity, String.format("User already has device: %s", deviceId), Toast.LENGTH_SHORT).show();
-                                                dismiss();
-                                            }
-                                        } else {
-                                            Log.e(TAG, "Unable to locate device");
-                                            dismiss();
-                                        }
-                                    }
-                                    // for updating users with a device
-                                    Map<String, Object> keys = new HashMap<>();
-                                    keys.put(deviceId, deviceId);
-                                    userRef.child(DEVICES).updateChildren(keys);
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError e) {
-                                    Log.d(TAG, e.toString());
-                                    dismiss();
-                                }
-                            });
-                        } else {
-                            Log.e(TAG, "No such device ID exists");
-                            Toast.makeText(activity, "No such device ID exists", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError e) {
-                        Log.d(TAG, e.toString());
-                        dismiss();
-                    }
-                });
-                ((HomeActivity)getActivity()).updatePage();
-                // Close Fragment
-                dismiss();
-            }
+//
+//            // 1) All Inputs Must Be Filled
+//            if (deviceId.isEmpty()) {
+//                Toast.makeText(getActivity().getApplicationContext(), "Must Fill All Input Fields!", Toast.LENGTH_LONG).show();
+//            } else {
+//
+//                dB.getDeviceChild(deviceId).addListenerForSingleValueEvent(new ValueEventListener() {
+//                    @Override
+//                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                        if(snapshot.exists()) {
+//                            DatabaseReference userRef = dB.getUserChild(dB.getUserId());
+//                            userRef.child(DEVICES).addListenerForSingleValueEvent(new ValueEventListener() {
+//                                @Override
+//                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                                    for (DataSnapshot ds: snapshot.getChildren()) {
+//                                        if (ds.exists()) {
+//                                            if (ds.getKey().equals(deviceId)) {
+//                                                Log.i(TAG, "User already owns that device");
+//                                                Toast.makeText(activity, String.format("User already has device: %s", deviceId), Toast.LENGTH_SHORT).show();
+//                                                dismiss();
+//                                            }
+//                                        } else {
+//                                            Log.e(TAG, "Unable to locate device");
+//                                            dismiss();
+//                                        }
+//                                    }
+//                                    // for updating users with a device
+//                                    Map<String, Object> keys = new HashMap<>();
+//                                    keys.put(deviceId, deviceId);
+//                                    userRef.child(DEVICES).updateChildren(keys);
+//                                }
+//
+//                                @Override
+//                                public void onCancelled(@NonNull DatabaseError e) {
+//                                    Log.d(TAG, e.toString());
+//                                    dismiss();
+//                                }
+//                            });
+//                        } else {
+//                            Log.e(TAG, "No such device ID exists");
+//                            Toast.makeText(activity, "No such device ID exists", Toast.LENGTH_SHORT).show();
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onCancelled(@NonNull DatabaseError e) {
+//                        Log.d(TAG, e.toString());
+//                        dismiss();
+//                    }
+//                });
+//                ((HomeActivity)getActivity()).updatePage();
+//                // Close Fragment
+//                dismiss();
+//            }
         });
         return view;
     }
 
+    public void requestWifiFocus() {
+        wifiNameInput.setError("Verify wifi name");
+        wifiNameInput.requestFocus();
+        wifiPasswordInput.setError("Verify wifi password");
+        wifiPasswordInput.requestFocus();
+    }
+
+//
+//    private class Connection extends AsyncTask<Void, Void, Void> {
+//        private boolean connectionState = true;
+//        @Override
+//        protected void onPreExecute() {
+//            popupWindow.showAtLocation(getView(), Gravity.CENTER, 0, 0);
+//        }
+//
+//        @Override
+//        protected Void doInBackground(Void... devices) {
+//            try {
+//                if (btSocket == null || !btConnectionState) {
+//                    BluetoothDevice dispositivo = btAdapter.getRemoteDevice("remote_address");
+//                    btSocket = dispositivo.createInsecureRfcommSocketToServiceRecord(sharePreferenceHelper.getUUID());
+//                    btAdapter.cancelDiscovery();
+//                    btSocket.connect();
+//                }
+//            } catch (IOException e) {
+//                connectionState = false;
+//            }
+//            return null;
+//        }
+//
+//        @Override
+//        protected void onPostExecute(Void result) {
+//            super.onPostExecute(result);
+//            if (!connectionState) {
+//                Toast.makeText(getContext(), "Connection Failed", Toast.LENGTH_SHORT).show();
+//                requestWifiFocus();
+//            } else {
+//                btConnectionState = true;
+//            }
+//        }
+//    }
 }

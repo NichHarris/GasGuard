@@ -87,4 +87,6 @@
     <string name="connect">CONNECT</string>
     <string name="loading_progress">Loading...</string>
     <string name="connecting">Connecting...</string>
+    <string name="error_bluetooth_not_supported">Bluetooth not supported</string>
+    <string name="unknown_device">Unknown Device</string>
 </resources>
