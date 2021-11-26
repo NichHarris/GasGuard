@@ -168,18 +168,6 @@ void setFirebase(){
   delay(Delay);
 }
 
-void processSyncMessage() {
-  unsigned long pctime;
-  const unsigned long DEFAULT_TIME = WiFi.getTime(); // Jan 1 2013
-
-  if (Serial.find(TIME_HEADER)) {
-    pctime = Serial.parseInt();
-    if ( pctime >= DEFAULT_TIME) { // check the integer is a valid time (greater than Jan 1 2013)
-      setTime(pctime); // Sync Arduino clock to the time received on the serial port
-    }
-  }
-} 
-
 String Timestamp()
 {
   time_t t = now();
