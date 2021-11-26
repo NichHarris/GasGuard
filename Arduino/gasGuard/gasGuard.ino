@@ -15,7 +15,6 @@ const char* UUID_serv = "84582cd0-3df0-4e73-9496-29010d7445dd";
 
 // UUids for WiFi status 
 const char* UUID_status   = "84582cd1-3df0-4e73-9496-29010d7445dd";
-bool isCalibratedBool = false;
 BLEService myService(UUID_serv); 
 BLEFloatCharacteristic  WiFi_status(UUID_status,  BLERead|BLENotify);
 
@@ -45,7 +44,7 @@ void loop() {
   if (Serial.available()) {
     processSyncMessage();
   }
-  if(!isCalibratedBool){
+  if(isCalibrated()){
     Calibrate();
   }
   else{
@@ -95,8 +94,8 @@ void setBLE(){
     Serial.println("starting BLE failed!");
   }
   
-  BLE.setLocalName("GasGaurd");
-  BLE.setDeviceName("GasGaurd"); // Arduino is the default value on this module
+  BLE.setLocalName("GasGuard");
+  BLE.setDeviceName("GasGuard"); // Arduino is the default value on this module
   
   // Set advertised Service
   BLE.setAdvertisedService(myService);
@@ -118,19 +117,19 @@ void Calibrate(){
   }
   
   Serial.println("Calibration Complete");
+  Firebase.setBool(fbdo, "Devices/" + String(DeviceID) + "/CalibrationStatus", true);
   Firebase.setFloat(fbdo, "Sensors/" + String(DeviceID) + "-0/CalibratedValue", CalibratedValues[0]/CalNum);
   for (int i = 0; i < NumOfSensors; i++) {
       CalibratedValues[i] = CalibratedValues[i]/CalNum;
       Serial.println(CalibratedValues[i]);
       Firebase.setFloat(fbdo, "Sensors/" + String(DeviceID) + "-" + String(i) + "/CalibratedValue", CalibratedValues[i]); //send the average value back
   }
-  isCalibratedBool = true;
   delay(500);
 }
 
 // replaced with get CalibrationState from device on Firebase
 bool isCalibrated(){
-  return Firebase.getFloat(fbdo, "Sensors/" + String(DeviceID) + "-0/CalibratedValue");
+  return Firebase.getBool(fbdo, "Devices/" + String(DeviceID) + "/CalibrationStatus");
 }
  
 void setFirebase(){
@@ -156,6 +155,9 @@ void setFirebase(){
   if (!Firebase.getBool(fbdo, "Devices/" + String(DeviceID) + "/status")) {
     Firebase.setBool(fbdo, "Devices/" + String(DeviceID) + "/status", true);
   }
+  if (!Firebase.getBool(fbdo, "Devices/" + String(DeviceID) + "/CalibrationStatus")) {
+    Firebase.setBool(fbdo, "Devices/" + String(DeviceID) + "/CalibrationStatus", false);
+  }
   if (!Firebase.getString(fbdo, "Devices/" + String(DeviceID) + "/deviceName")) {
     Firebase.setString(fbdo, "Devices/" + String(DeviceID) + "/deviceName", DeviceName);
   }
@@ -166,12 +168,6 @@ void setFirebase(){
     Firebase.setString(fbdo, "Sensors/" + String(DeviceID) + "-" + String(i) + "/SensorName", SensorNames[i]);
     Firebase.setInt(fbdo, "Sensors/" + String(DeviceID) + "-" + String(i) + "/SensorType", SensorTypes[i]);
   }
-//  if(isCalibratedBool){
-//    for (int i = 0; i < NumOfSensors; i++) {
-//       Firebase.getFloat(fbdo, "Sensors/" + String(DeviceID) + "-" + String(i) + "/CalibratedValue");
-//       CalibratedValues[i] = fbdo.floatData();   
-//    }
-//  }
   delay(Delay);
 }
 
