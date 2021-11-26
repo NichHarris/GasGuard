@@ -44,7 +44,8 @@ void loop() {
   if (Serial.available()) {
     processSyncMessage();
   }
-  if(isCalibrated()){
+  if(!isCalibrated()){
+    Serial.println("here");
     Calibrate();
   }
   else{
@@ -112,7 +113,9 @@ void Calibrate(){
   for(int i = 0; i<CalNum; i++){
         for (int j = 0; j < NumOfSensors; j++) {
             CalibratedValues[j] = CalibratedValues[j] + analogRead(j); // get sum of all 100 readings
+            Serial.println(CalibratedValues[j]);
         }
+        Serial.println(i);
         delay(CalDelay);
   }
   
@@ -129,7 +132,8 @@ void Calibrate(){
 
 // replaced with get CalibrationState from device on Firebase
 bool isCalibrated(){
-  return Firebase.getBool(fbdo, "Devices/" + String(DeviceID) + "/CalibrationStatus");
+  Serial.println(Firebase.getBool(fbdo, "Devices/" + String(DeviceID) + "/CalibrationStatus:"));
+  return Firebase.getBool(fbdo, "Devices/" + String(DeviceID) + "/CalibrationStatus:");
 }
  
 void setFirebase(){
@@ -152,23 +156,23 @@ void setFirebase(){
   for (int i = 0; i < NumOfSensors; i++) {
     Firebase.setString(fbdo, "Devices/" + String(DeviceID) + "/sensors/" + String(i), String(DeviceID) + "-" + String(i));
   }
-  if (!Firebase.getBool(fbdo, "Devices/" + String(DeviceID) + "/status")) {
+  if (!Firebase.getBool(fbdo, "Devices/" + String(DeviceID) + "/status:")) {
     Firebase.setBool(fbdo, "Devices/" + String(DeviceID) + "/status", true);
   }
-  if (!Firebase.getBool(fbdo, "Devices/" + String(DeviceID) + "/CalibrationStatus")) {
+  if (!Firebase.getBool(fbdo, "Devices/" + String(DeviceID) + "/CalibrationStatus:")) {
     Firebase.setBool(fbdo, "Devices/" + String(DeviceID) + "/CalibrationStatus", false);
   }
-  if (!Firebase.getString(fbdo, "Devices/" + String(DeviceID) + "/deviceName")) {
+  if (!Firebase.getString(fbdo, "Devices/" + String(DeviceID) + "/deviceName:")) {
     Firebase.setString(fbdo, "Devices/" + String(DeviceID) + "/deviceName", DeviceName);
   }
-  if (!Firebase.getString(fbdo, "Devices/" + String(DeviceID) + "/location")) {
+  if (!Firebase.getString(fbdo, "Devices/" + String(DeviceID) + "/location:")) {
     Firebase.setString(fbdo, "Devices/" + String(DeviceID) + "/location", "");
   }
   for (int i = 0; i < NumOfSensors; i++) {
     Firebase.setString(fbdo, "Sensors/" + String(DeviceID) + "-" + String(i) + "/SensorName", SensorNames[i]);
     Firebase.setInt(fbdo, "Sensors/" + String(DeviceID) + "-" + String(i) + "/SensorType", SensorTypes[i]);
   }
-  delay(Delay);
+  delay(500);
 }
 
 String Timestamp()
