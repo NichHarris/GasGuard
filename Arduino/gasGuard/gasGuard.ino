@@ -45,7 +45,6 @@ void loop() {
     processSyncMessage();
   }
   if(!isCalibrated()){
-    Serial.println("here");
     Calibrate();
   }
   else{
