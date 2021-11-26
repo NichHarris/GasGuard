@@ -216,19 +216,23 @@ public class SensorActivity extends AppCompatActivity {
                 switch (id) {
                     case R.id.dayButton:
                         graphTimeScale = 0;
-                        delta = 60;
+//                        delta = 60;
+                        delta = 10;
                         break;
                     case R.id.weeksButton:
                         graphTimeScale = 14;
-                        delta = 360;
+//                        delta = 360;
+                        delta = 60;
                         break;
                     case R.id.monthButton:
                         graphTimeScale = 28;
-                        delta = 720;
+//                        delta = 720;
+                        delta = 120;
                         break;
                     default:
                         graphTimeScale = 7;
-                        delta = 180;
+//                        delta = 180;
+                        delta = 30;
                 }
                 getAllSensorData();
             }

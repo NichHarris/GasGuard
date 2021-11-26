@@ -17,7 +17,7 @@ const char* UUID_serv = "84582cd0-3df0-4e73-9496-29010d7445dd";
 const char* UUID_status   = "84582cd1-3df0-4e73-9496-29010d7445dd";
 BLEService myService(UUID_serv); 
 BLEFloatCharacteristic  WiFi_status(UUID_status,  BLERead|BLENotify);
-
+bool calibrationStatus = false;
 FirebaseData fbdo;
 
 int GMT = -5;
@@ -78,7 +78,6 @@ void sendData(){
     for (int i = 0; i < NumOfSensors; i++) {
       // conversion from Voltage to PPM
       SensorValue = analogRead(i) - CalibratedValues[i];
-      Serial.println(SensorValue, DEC);
       
       if(SensorValue < 0){
         SensorValue = 0;
@@ -112,28 +111,28 @@ void Calibrate(){
   Serial.println("Calibrating...");
   for(int i = 0; i<CalNum; i++){
         for (int j = 0; j < NumOfSensors; j++) {
-            CalibratedValues[j] = CalibratedValues[j] + analogRead(j); // get sum of all 100 readings
-            Serial.println(CalibratedValues[j]);
+            CalibratedValues[j] = CalibratedValues[j] + analogRead(j); // get sum of all readings
         }
-        Serial.println(i);
         delay(CalDelay);
   }
   
   Serial.println("Calibration Complete");
-  Firebase.setBool(fbdo, "Devices/" + String(DeviceID) + "/CalibrationStatus", true);
+  calibrationStatus = true;
+  delay(1000);
+  // Arduino sucks for absolutely no reason this works...
+  Firebase.setBool(fbdo, "Devices/" + String(DeviceID) + "/CalibrationStatus:", calibrationStatus);
+  Firebase.setBool(fbdo, "Devices/" + String(DeviceID) + "/CalibrationStatus", calibrationStatus);
   Firebase.setFloat(fbdo, "Sensors/" + String(DeviceID) + "-0/CalibratedValue", CalibratedValues[0]/CalNum);
   for (int i = 0; i < NumOfSensors; i++) {
       CalibratedValues[i] = CalibratedValues[i]/CalNum;
-      Serial.println(CalibratedValues[i]);
       Firebase.setFloat(fbdo, "Sensors/" + String(DeviceID) + "-" + String(i) + "/CalibratedValue", CalibratedValues[i]); //send the average value back
   }
   delay(500);
 }
 
-// replaced with get CalibrationState from device on Firebase
 bool isCalibrated(){
-  Serial.println(Firebase.getBool(fbdo, "Devices/" + String(DeviceID) + "/CalibrationStatus:"));
-  return Firebase.getBool(fbdo, "Devices/" + String(DeviceID) + "/CalibrationStatus:");
+  Firebase.getBool(fbdo, "Devices/" + String(DeviceID) + "/CalibrationStatus");
+  return fbdo.boolData();
 }
  
 void setFirebase(){
@@ -157,11 +156,11 @@ void setFirebase(){
     Firebase.setString(fbdo, "Devices/" + String(DeviceID) + "/sensors/" + String(i), String(DeviceID) + "-" + String(i));
   }
   if (!Firebase.getBool(fbdo, "Devices/" + String(DeviceID) + "/status:")) {
-    Firebase.setBool(fbdo, "Devices/" + String(DeviceID) + "/status", true);
+    Firebase.setBool(fbdo, "Devices/" + String(DeviceID) + "/status", 1);
   }
-  if (!Firebase.getBool(fbdo, "Devices/" + String(DeviceID) + "/CalibrationStatus:")) {
-    Firebase.setBool(fbdo, "Devices/" + String(DeviceID) + "/CalibrationStatus", false);
-  }
+//  if (!Firebase.getBool(fbdo, "Devices/" + String(DeviceID) + "/CalibrationStatus:")) {
+//    Firebase.setBool(fbdo, "Devices/" + String(DeviceID) + "/CalibrationStatus", calibrationStatus);
+//  }
   if (!Firebase.getString(fbdo, "Devices/" + String(DeviceID) + "/deviceName:")) {
     Firebase.setString(fbdo, "Devices/" + String(DeviceID) + "/deviceName", DeviceName);
   }
@@ -171,6 +170,12 @@ void setFirebase(){
   for (int i = 0; i < NumOfSensors; i++) {
     Firebase.setString(fbdo, "Sensors/" + String(DeviceID) + "-" + String(i) + "/SensorName", SensorNames[i]);
     Firebase.setInt(fbdo, "Sensors/" + String(DeviceID) + "-" + String(i) + "/SensorType", SensorTypes[i]);
+  }
+  if (isCalibrated()) {
+    for (int i = 0; i < NumOfSensors; i++) {
+      Firebase.getFloat(fbdo, "Sensors/" + String(DeviceID) + "-" + String(i) + "/CalibratedValue");
+      CalibratedValues[i] = fbdo.floatData();
+    }
   }
   delay(500);
 }
