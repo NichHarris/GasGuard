@@ -23,4 +23,9 @@
     <color name="purple_700">#FF3700B3</color>
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
+
+    <color name="g_guard_dm_theme">#1F3A4B</color>
+    <color name="g_guard_dm_banner">#1F4E6C</color>
+    <color name="g_guard_dm_font">#4BB2F9</color>
+
 </resources>
