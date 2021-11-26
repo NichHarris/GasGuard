@@ -5,14 +5,24 @@
 
 // UPDATE WIFI SSID AND PASSWORD BEFORE RUNNING 
 
-#define WIFI_SSID "VIRGIN188"
-#define WIFI_PASSWORD "KhaledWIFI"
+#define WIFI_SSID "Khaled's hotspot"
+#define WIFI_PASSWORD "hellohello"
 
 // UPDATE YOUR DEVICE INFORMATION BEFORE RUNNING
 
-#define DeviceID "202"
-#define DeviceName "GasGuard-201"
+#define DeviceID "8001"
+#define DeviceName "GasGuard-3000"
 #define NumOfSensors 6
+// Type of Sensor is name of sensor without MQ
 #define NameOfSensors {"MQ2","MQ4","MQ9","MQ7","MQ8","MQ135","",""}
+#define TypeOfSensors {2,4,9,7,8,135,0,0}
 
+
+//in ms
 #define Delay 30000
+
+// Total time for calibration is CalDelay*CalNum
+// Number of samples used for calibration
+#define CalNum 100
+// delay between each calibration sample (in ms)
+#define CalDelay 1000 
