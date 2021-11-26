@@ -106,7 +106,7 @@ public class SensorAdapter extends RecyclerView.Adapter<SensorAdapter.ViewHolder
         // Set Data to Recycler View List
         Sensor s = sensors.get(position);
         int type = s.getSensorType();
-        String sensorTypeText = "Sensor: MC" + type;
+        String sensorTypeText = "Sensor: MQ" + type;
         String liveDataText = String.format("Live: %.3f", s.getSensorValue());
         String pastDataText = String.format("Prev: %.3f", s.getSensorScore());
         holder.sensorName.setText(s.getSensorName());

@@ -6,7 +6,7 @@
 
     <RelativeLayout
         android:layout_width="250dp"
-        android:layout_height="350dp"
+        android:layout_height="360dp"
         android:layout_centerInParent="true">
 
         <EditText
@@ -71,10 +71,11 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentBottom="true"
             android:layout_marginStart="140dp"
-            android:background="@color/g_guard_font"
+            android:background="@drawable/button_custom"
             android:text="@string/save"
             android:textColor="@color/white"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:layout_marginVertical="10dp"/>
 
         <android.widget.Button
             android:id="@+id/cancel_add_device_button"
@@ -83,10 +84,11 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentBottom="true"
             android:layout_marginStart="20dp"
-            android:background="@color/g_guard_font"
+            android:background="@drawable/button_custom"
             android:text="@string/cancel"
             android:textColor="@color/white"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:layout_marginVertical="10dp"/>
 
     </RelativeLayout>
 
