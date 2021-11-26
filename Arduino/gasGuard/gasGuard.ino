@@ -15,7 +15,7 @@ const char* UUID_serv = "84582cd0-3df0-4e73-9496-29010d7445dd";
 
 // UUids for WiFi status 
 const char* UUID_status   = "84582cd1-3df0-4e73-9496-29010d7445dd";
-
+bool isCalibratedBool = false;
 BLEService myService(UUID_serv); 
 BLEFloatCharacteristic  WiFi_status(UUID_status,  BLERead|BLENotify);
 
@@ -45,7 +45,7 @@ void loop() {
   if (Serial.available()) {
     processSyncMessage();
   }
-  if(!isCalibrated()){
+  if(!isCalibratedBool){
     Calibrate();
   }
   else{
@@ -77,7 +77,9 @@ void sendData(){
   if (fbdo.boolData() == true) {
     for (int i = 0; i < NumOfSensors; i++) {
       // conversion from Voltage to PPM
-      SensorValue = analogRead(i) / 1023.0 * 4.5 * 10000 - CalibratedValues[i];
+      SensorValue = analogRead(i) - CalibratedValues[i];
+      Serial.println(SensorValue, DEC);
+      
       if(SensorValue < 0){
         SensorValue = 0;
       }
@@ -107,21 +109,26 @@ void setBLE(){
 }
 
 void Calibrate(){
+  Serial.println("Calibrating...");
   for(int i = 0; i<CalNum; i++){
         for (int j = 0; j < NumOfSensors; j++) {
-            CalibratedValues[j] = (CalibratedValues[j]*i+ (analogRead(j)/1023.0*4.5*10000))/(i+1);
+            CalibratedValues[j] = CalibratedValues[j] + analogRead(j); // get sum of all 100 readings
         }
         delay(CalDelay);
   }
   
   Serial.println("Calibration Complete");
-  Firebase.setFloat(fbdo, "Sensors/" + String(DeviceID) + "-0/CalibratedValue", CalibratedValues[0]);
+  Firebase.setFloat(fbdo, "Sensors/" + String(DeviceID) + "-0/CalibratedValue", CalibratedValues[0]/CalNum);
   for (int i = 0; i < NumOfSensors; i++) {
-      Firebase.setFloat(fbdo, "Sensors/" + String(DeviceID) + "-" + String(i) + "/CalibratedValue", CalibratedValues[i]);
+      CalibratedValues[i] = CalibratedValues[i]/CalNum;
+      Serial.println(CalibratedValues[i]);
+      Firebase.setFloat(fbdo, "Sensors/" + String(DeviceID) + "-" + String(i) + "/CalibratedValue", CalibratedValues[i]); //send the average value back
   }
-  delay(10000);
+  isCalibratedBool = true;
+  delay(500);
 }
 
+// replaced with get CalibrationState from device on Firebase
 bool isCalibrated(){
   return Firebase.getFloat(fbdo, "Sensors/" + String(DeviceID) + "-0/CalibratedValue");
 }
@@ -159,26 +166,14 @@ void setFirebase(){
     Firebase.setString(fbdo, "Sensors/" + String(DeviceID) + "-" + String(i) + "/SensorName", SensorNames[i]);
     Firebase.setInt(fbdo, "Sensors/" + String(DeviceID) + "-" + String(i) + "/SensorType", SensorTypes[i]);
   }
-  if(isCalibrated()){
-    for (int i = 0; i < NumOfSensors; i++) {
-       Firebase.getFloat(fbdo, "Sensors/" + String(DeviceID) + "-" + String(i) + "/CalibratedValue");
-       CalibratedValues[i] = fbdo.floatData();   
-    }
-  }
+//  if(isCalibratedBool){
+//    for (int i = 0; i < NumOfSensors; i++) {
+//       Firebase.getFloat(fbdo, "Sensors/" + String(DeviceID) + "-" + String(i) + "/CalibratedValue");
+//       CalibratedValues[i] = fbdo.floatData();   
+//    }
+//  }
   delay(Delay);
 }
-
-void processSyncMessage() {
-  unsigned long pctime;
-  const unsigned long DEFAULT_TIME = WiFi.getTime(); // Jan 1 2013
-
-  if (Serial.find(TIME_HEADER)) {
-    pctime = Serial.parseInt();
-    if ( pctime >= DEFAULT_TIME) { // check the integer is a valid time (greater than Jan 1 2013)
-      setTime(pctime); // Sync Arduino clock to the time received on the serial port
-    }
-  }
-} 
 
 String Timestamp()
 {
