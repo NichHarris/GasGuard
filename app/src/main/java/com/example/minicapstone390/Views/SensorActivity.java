@@ -391,8 +391,8 @@ public class SensorActivity extends AppCompatActivity {
         leftAxis.setTextColor(Color.BLACK);
         leftAxis.setGranularityEnabled(true);
         leftAxis.setAxisMinimum(0f);
-        leftAxis.setAxisMaximum(4.1f);
-        leftAxis.setGranularity(0.5f);
+        leftAxis.setAxisMaximum(300f);
+        leftAxis.setGranularity(30f);
 
         YAxis rightAxis = sensorChart.getAxisRight();
         rightAxis.setEnabled(false);
