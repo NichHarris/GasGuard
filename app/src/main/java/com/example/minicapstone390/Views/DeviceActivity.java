@@ -119,6 +119,21 @@ public class DeviceActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setTheme();
+    }
+
+    public void setTheme() {
+        // Set theme
+        if (sharePreferenceHelper.getTheme()) {
+            setTheme(R.style.NightMode);
+        } else {
+            setTheme(R.style.LightMode);
+        }
+    }
+
     private void editDevice(String deviceId) {
         Bundle bundle = new Bundle();
         bundle.putString("id", deviceId);
@@ -141,6 +156,8 @@ public class DeviceActivity extends AppCompatActivity {
 
         if(id == R.id.update_device) {
             editDevice(deviceId);
+        } else if(id == R.id.calibrate_device) {
+            calibrateDevice(item);
         } else if(id == R.id.disable_device) {
             disableDevice(item);
         } else if(id == R.id.remove_device) {
@@ -159,6 +176,50 @@ public class DeviceActivity extends AppCompatActivity {
         } else {
             item.setTitle("Disable Device");
         }
+    }
+
+    public void calibrateDevice(MenuItem item) {
+        // TODO: Copied from android jdk just modify it
+        // TODO: Create a builder class...
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(true);
+        builder.setTitle("Calibrate Device Confirmation");
+        builder.setMessage("Calibrating will completely remove all stored data from device");
+        builder.setPositiveButton("Confirm",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dB.getDeviceChild(deviceId).child("CalibrationStatus").addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if (snapshot.exists()) {
+                                    dB.getDeviceChild(deviceId).child("CalibrationStatus").setValue(false);
+                                    Toast.makeText(DeviceActivity.this, "Calibration started, please leave device for 30 min", Toast.LENGTH_LONG).show();
+
+                                    // TODO: Clear all sensor values
+                                } else {
+                                    Log.e(TAG, "Unable to get calibration status");
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError e) {
+                                Log.d(TAG, e.toString());
+                                throw e.toException();
+                            }
+                        });
+                    }
+                });
+        builder.setNegativeButton("Cancel",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Log.i(TAG, "Device calibration cancelled");
+                    }
+                });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     // Change the active status of a device

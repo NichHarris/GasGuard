@@ -34,11 +34,7 @@ public class LoginActivity extends AppCompatActivity {
         sharePreferenceHelper = new SharedPreferenceHelper(LoginActivity.this);
 
         // Set theme
-        if (sharePreferenceHelper.getTheme()) {
-            setTheme(R.style.NightMode);
-        } else {
-            setTheme(R.style.LightMode);
-        }
+        setTheme();
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
@@ -57,6 +53,21 @@ public class LoginActivity extends AppCompatActivity {
         // Send password reset email
         forgotPassword = (TextView) findViewById(R.id.loginForgot);
         forgotPassword.setOnClickListener(view -> sendReset());
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setTheme();
+    }
+
+    public void setTheme() {
+        // Set theme
+        if (sharePreferenceHelper.getTheme()) {
+            setTheme(R.style.NightMode);
+        } else {
+            setTheme(R.style.LightMode);
+        }
     }
 
     private void sendReset() {

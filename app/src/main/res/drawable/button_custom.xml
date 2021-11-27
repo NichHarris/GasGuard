@@ -3,7 +3,7 @@
     <corners
         android:radius="18dp"/>
     <solid
-        android:color="@color/auth_button_border"/>
+        android:color="?attr/colorPrimary"/>
     <stroke
         android:width="2dp"
         android:color="@color/auth_button"/>

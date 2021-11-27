@@ -8,6 +8,11 @@
         app:showAsAction="never" />
 
     <item
+        android:id="@+id/calibrate_device"
+        android:title="@string/calibrate_device"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/disable_device"
         android:title="@string/disable_device"
         app:showAsAction="never" />

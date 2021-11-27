@@ -5,14 +5,24 @@
 
 // UPDATE WIFI SSID AND PASSWORD BEFORE RUNNING 
 
-#define WIFI_SSID "TEMP"
-#define WIFI_PASSWORD "TEMP"
+#define WIFI_SSID "Isengard-Network"
+#define WIFI_PASSWORD "Play4Keep$"
 
 // UPDATE YOUR DEVICE INFORMATION BEFORE RUNNING
 
-#define DeviceID "203"
-#define DeviceName "GasGuard-203"
-#define NumOfSensors 8
-#define NameOfSensors {"MQ2","MQ3", "MQ4","MQ6", "MQ135", "MQ9","MQ8", "MQ7"}
+#define DeviceID "3005"
+#define DeviceName "GasGuard-3005"
+#define NumOfSensors 6
+// Type of Sensor is name of sensor without MQ
+#define NameOfSensors {"MQ2","MQ4","MQ9","MQ7","MQ8","MQ135","",""}
+#define TypeOfSensors {2,4,9,7,8,135,0,0}
 
-#define Delay 60000
+
+//in ms
+#define Delay 30000
+
+// Total time for calibration is CalDelay*CalNum
+// Number of samples used for calibration
+#define CalNum 10000
+// delay between each calibration sample (in ms)
+#define CalDelay 1000 

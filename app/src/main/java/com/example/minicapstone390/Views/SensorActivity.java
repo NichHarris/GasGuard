@@ -67,7 +67,7 @@ public class SensorActivity extends AppCompatActivity {
     protected String function;
     protected double score = 0.0;
     public int graphTimeScale = 7;
-    public long delta = 60;
+    public long delta = 30;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -75,11 +75,7 @@ public class SensorActivity extends AppCompatActivity {
         // Initialize SharedPref and check theme
         sharePreferenceHelper = new SharedPreferenceHelper(SensorActivity.this);
         // Set theme
-        if (sharePreferenceHelper.getTheme()) {
-            setTheme(R.style.NightMode);
-        } else {
-            setTheme(R.style.LightMode);
-        }
+        setTheme();
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sensor);
@@ -125,8 +121,18 @@ public class SensorActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        setTheme();
         displaySensorInfo(sensorId);
         setGraphScale();
+    }
+
+    public void setTheme() {
+        // Set theme
+        if (sharePreferenceHelper.getTheme()) {
+            setTheme(R.style.NightMode);
+        } else {
+            setTheme(R.style.LightMode);
+        }
     }
 
     public void deleteSensorData(String sensorId) {
@@ -216,19 +222,19 @@ public class SensorActivity extends AppCompatActivity {
                 switch (id) {
                     case R.id.dayButton:
                         graphTimeScale = 0;
-                        delta = 60;
+                        delta = 30;
                         break;
                     case R.id.weeksButton:
                         graphTimeScale = 14;
-                        delta = 360;
+                        delta = 180;
                         break;
                     case R.id.monthButton:
                         graphTimeScale = 28;
-                        delta = 720;
+                        delta = 360;
                         break;
                     default:
                         graphTimeScale = 7;
-                        delta = 180;
+                        delta = 90;
                 }
                 getAllSensorData();
             }
@@ -391,8 +397,8 @@ public class SensorActivity extends AppCompatActivity {
         leftAxis.setTextColor(Color.BLACK);
         leftAxis.setGranularityEnabled(true);
         leftAxis.setAxisMinimum(0f);
-        leftAxis.setAxisMaximum(4.1f);
-        leftAxis.setGranularity(0.5f);
+        leftAxis.setAxisMaximum(300f);
+        leftAxis.setGranularity(30f);
 
         YAxis rightAxis = sensorChart.getAxisRight();
         rightAxis.setEnabled(false);
