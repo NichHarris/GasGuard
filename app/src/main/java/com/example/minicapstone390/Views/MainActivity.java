@@ -22,17 +22,28 @@ public class MainActivity extends AppCompatActivity {
         sharePreferenceHelper = new SharedPreferenceHelper(MainActivity.this);
 
         // Set theme
-        if (sharePreferenceHelper.getTheme()) {
-            setTheme(R.style.NightMode);
-        } else {
-            setTheme(R.style.LightMode);
-        }
+        setTheme();
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         // Add 5 Second Delay Before Reaching Home or Login Screens
         loadAppContent();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setTheme();
+    }
+
+    public void setTheme() {
+        // Set theme
+        if (sharePreferenceHelper.getTheme()) {
+            setTheme(R.style.NightMode);
+        } else {
+            setTheme(R.style.LightMode);
+        }
     }
 
     // Navigate to the LoginActivity

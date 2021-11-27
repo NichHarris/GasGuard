@@ -48,12 +48,9 @@ public class ProfileActivity extends AppCompatActivity {
 
         // Initialize SharedPref and check theme
         sharePreferenceHelper = new SharedPreferenceHelper(ProfileActivity.this);
+
         // Set theme
-        if (sharePreferenceHelper.getTheme()) {
-            setTheme(R.style.NightMode);
-        } else {
-            setTheme(R.style.LightMode);
-        }
+        setTheme();
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
@@ -72,6 +69,21 @@ public class ProfileActivity extends AppCompatActivity {
 
         // Update user info page
         updateAllInfo();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setTheme();
+    }
+
+    public void setTheme() {
+        // Set theme
+        if (sharePreferenceHelper.getTheme()) {
+            setTheme(R.style.NightMode);
+        } else {
+            setTheme(R.style.LightMode);
+        }
     }
 
     // Display options menu in task-bar
