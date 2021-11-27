@@ -146,7 +146,6 @@ void setFirebase(){
   Serial.println(); 
   Serial.print("Connected with IP: ");
   Serial.println(WiFi.localIP()); 
-  Serial.println();
 
   Firebase.begin(DATABASE_URL, DATABASE_SECRET, WIFI_SSID, WIFI_PASSWORD);
   Firebase.reconnectWiFi(true);
@@ -157,9 +156,9 @@ void setFirebase(){
   if (!Firebase.getBool(fbdo, "Devices/" + String(DeviceID) + "/status:")) {
     Firebase.setBool(fbdo, "Devices/" + String(DeviceID) + "/status", 1);
   }
-//  if (!Firebase.getBool(fbdo, "Devices/" + String(DeviceID) + "/CalibrationStatus:")) {
-//    Firebase.setBool(fbdo, "Devices/" + String(DeviceID) + "/CalibrationStatus", calibrationStatus);
-//  }
+  if (!Firebase.getBool(fbdo, "Devices/" + String(DeviceID) + "/CalibrationStatus")) {
+    Firebase.setBool(fbdo, "Devices/" + String(DeviceID) + "/CalibrationStatus", calibrationStatus);
+  }
   if (!Firebase.getString(fbdo, "Devices/" + String(DeviceID) + "/deviceName:")) {
     Firebase.setString(fbdo, "Devices/" + String(DeviceID) + "/deviceName", DeviceName);
   }
