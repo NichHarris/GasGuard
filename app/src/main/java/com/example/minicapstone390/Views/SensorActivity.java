@@ -66,7 +66,7 @@ public class SensorActivity extends AppCompatActivity {
     protected String sensorId;
     protected String function;
     protected double score = 0.0;
-    public int graphTimeScale = 7;
+    public int graphTimeScale = 0;
     public long delta = 30;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -85,7 +85,7 @@ public class SensorActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         graphTimesOptions = (RadioGroup) findViewById(R.id.graphTimeOptions);
-        graphTimesOptions.check(R.id.weekButton);
+        graphTimesOptions.check(R.id.dayButton);
 
         chartTitle = (TextView) findViewById(R.id.chart_title);
         sensorChart = (LineChart) findViewById(R.id.sensorChart);
@@ -220,9 +220,9 @@ public class SensorActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int id) {
                 switch (id) {
-                    case R.id.dayButton:
-                        graphTimeScale = 0;
-                        delta = 30;
+                    case R.id.weekButton:
+                        graphTimeScale = 7;
+                        delta = 90;
                         break;
                     case R.id.weeksButton:
                         graphTimeScale = 14;
@@ -233,8 +233,8 @@ public class SensorActivity extends AppCompatActivity {
                         delta = 360;
                         break;
                     default:
-                        graphTimeScale = 7;
-                        delta = 90;
+                        graphTimeScale = 0;
+                        delta = 30;
                 }
                 getAllSensorData();
             }

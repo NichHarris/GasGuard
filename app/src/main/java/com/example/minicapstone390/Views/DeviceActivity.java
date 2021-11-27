@@ -4,11 +4,17 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -46,6 +52,7 @@ public class DeviceActivity extends AppCompatActivity {
     private static final String SENSORNAME = DatabaseEnv.SENSORNAME.getEnv();
     private static final String SENSORTYPE = DatabaseEnv.SENSORTYPE.getEnv();
     private static final String SENSORVALUE = DatabaseEnv.SENSORVALUE.getEnv();
+    private static final String SENSORSTATUS = DatabaseEnv.SENSORSTATUS.getEnv();
     private static final String SENSORSCORE = DatabaseEnv.SENSORSCORE.getEnv();
 
     // Declare variables
@@ -382,16 +389,30 @@ public class DeviceActivity extends AppCompatActivity {
                         String sensorName = snapshot.child(SENSORNAME).exists() ? snapshot.child(SENSORNAME).getValue(String.class) : id;
                         int sensorType =  snapshot.child(SENSORTYPE).exists() ? snapshot.child(SENSORTYPE).getValue(Integer.class): 0;
                         double sensorValue = snapshot.child(SENSORVALUE).exists() ? snapshot.child(SENSORVALUE).getValue(Double.class): 0.0;
-                        boolean status = true;
+                        boolean status = snapshot.child(SENSORSTATUS).exists() ? snapshot.child(SENSORSTATUS).getValue(Boolean.class): true;
                         double sensorScore = snapshot.child(SENSORSCORE).exists() ? snapshot.child(SENSORSCORE).getValue(Double.class) : 0.0;
 
                         if (sensorScore >= sensorThreshold(sensorType) && sensorThreshold(sensorType) != 0.0) {
-                            status = false;
                             Log.i(TAG,  String.format("Sensor Threshold reached: %d", sensorType));
-                            // TODO call a notification
+                            // Ensures notification is only called when the status changes to unsafe
+                            if (status) {
+                                status = false;
+                                Log.i(TAG, String.format("Status of sensor %d switched to unsafe", sensorType));
+                                notification(sensorName, sensorScore);
+                            }
+                        } else {
+                            status = true;
                         }
 
-                        // TODO: Function to determine if the sensor threshold is exceeded;
+                        sensorRef.child(SENSORSTATUS).setValue(status).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (!task.isSuccessful()) {
+                                    Log.d(TAG, "Error updating status");
+                                }
+                            }
+                        });
+
                         if (!sensorMap.containsKey(id)) {
                             Sensor sensor = new Sensor(id, sensorType, sensorName, sensorValue, status, sensorScore);
                             sensData.add(sensor);
@@ -420,6 +441,24 @@ public class DeviceActivity extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    public void notification(String sensorName, Double sensorScore) {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel("Threshold Notification", "Threshold Notification", NotificationManager.IMPORTANCE_HIGH);
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+
+        @SuppressLint("DefaultLocale") NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "Threshold Notification")
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setSmallIcon(R.drawable.gg_logo)
+                .setContentTitle("Gas Concentration Warning!")
+                .setContentText(String.format("Sensor %s of device: %s has exceeded threshold levels: %f", sensorName, deviceId, sensorScore));
+
+        NotificationManagerCompat managerCompat = NotificationManagerCompat.from(DeviceActivity.this);
+        managerCompat.notify(1, builder.build());
     }
 
     public double sensorThreshold(int type) {
