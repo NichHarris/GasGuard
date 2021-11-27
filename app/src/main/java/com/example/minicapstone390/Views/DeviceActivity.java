@@ -119,6 +119,21 @@ public class DeviceActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setTheme();
+    }
+
+    public void setTheme() {
+        // Set theme
+        if (sharePreferenceHelper.getTheme()) {
+            setTheme(R.style.NightMode);
+        } else {
+            setTheme(R.style.LightMode);
+        }
+    }
+
     private void editDevice(String deviceId) {
         Bundle bundle = new Bundle();
         bundle.putString("id", deviceId);
