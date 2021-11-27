@@ -91,5 +91,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/gg_corner"/>
+        app:srcCompat="@drawable/gg_corner_no_background"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

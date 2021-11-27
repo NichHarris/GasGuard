@@ -47,7 +47,7 @@
         app:layout_constraintHorizontal_bias="0.422"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/gg_logo" />
+        app:srcCompat="@drawable/gg_logo_no_background" />
 
     <LinearLayout
         android:id="@+id/navbar"
@@ -195,6 +195,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/signup_form"
         app:layout_constraintVertical_bias="1.0"
-        app:srcCompat="@drawable/gg_corner"
+        app:srcCompat="@drawable/gg_corner_no_background"
         tools:visibility="visible" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -17,10 +17,13 @@
             android:layout_marginStart="20dp"
             android:layout_marginTop="20dp"
             android:layout_marginEnd="20dp"
+            android:background="@drawable/input_styles"
             android:ems="16"
             android:maxLength="10"
             android:hint="@string/device_name"
-            android:autofillHints="name" />
+            android:autofillHints="name"
+            android:paddingHorizontal="15dp"
+            />
 
         <android.widget.Button
             android:layout_width="wrap_content"

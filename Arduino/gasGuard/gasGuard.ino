@@ -168,6 +168,7 @@ void setFirebase(){
   for (int i = 0; i < NumOfSensors; i++) {
     Firebase.setString(fbdo, "Sensors/" + String(DeviceID) + "-" + String(i) + "/SensorName", SensorNames[i]);
     Firebase.setInt(fbdo, "Sensors/" + String(DeviceID) + "-" + String(i) + "/SensorType", SensorTypes[i]);
+    Firebase.setBool(fbdo, "Sensors/" + String(DeviceID) + "-" + String(i) + "/status", true);
   }
   if (isCalibrated()) {
     for (int i = 0; i < NumOfSensors; i++) {

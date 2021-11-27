@@ -21,7 +21,9 @@
             android:maxLength="10"
             android:hint="@string/sensorname"
             android:autofillHints="name"
-            android:inputType="textShortMessage" />
+            android:inputType="textShortMessage"
+            android:background="@drawable/input_styles"
+            android:paddingHorizontal="15dp"/>
 
         <RadioGroup
             android:id="@+id/sensorOptions"
@@ -31,14 +33,15 @@
             android:layout_marginTop="55dp"
             android:layout_marginRight="20dp"
             android:orientation="horizontal"
-            android:gravity="center" >
+            android:gravity="center">
 
             <RadioButton
                 android:id="@+id/typeOutput"
                 android:layout_marginEnd="60dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/type"/>
+                android:text="@string/type"
+                />
 
             <RadioButton
                 android:id="@+id/gasOutput"

@@ -33,9 +33,9 @@
 
     <!-- Profile Page   -->
     <string name="profile">Profile</string>
-    <string name="phone">Phone</string>
-    <string name="first_name">First Name</string>
-    <string name="last_name">Last Name</string>
+    <string name="phone"> Phone</string>
+    <string name="first_name"> First Name</string>
+    <string name="last_name"> Last Name</string>
     <string name="logOut">Log Out</string>
     <string name="update_info">UPDATE INFO</string>
     <string name="delete_user">Delete User</string>
