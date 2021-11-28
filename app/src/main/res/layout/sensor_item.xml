@@ -24,7 +24,7 @@
             android:padding="5dp"
             android:layout_marginStart="110dp"
             android:text="@string/sensorListName"
-            android:textColor="@color/black"
+            android:textColor="?attr/colorOnSecondary"
             android:textStyle="bold"
             android:textSize="24sp" />
 
@@ -36,7 +36,7 @@
             android:layout_marginStart="115dp"
             android:text="@string/safeSensorValue"
             android:textSize="18sp"
-            android:textColor="@color/black"/>
+            android:textColor="?attr/colorOnSecondary"/>
 
         <TextView
             android:id="@+id/sensorListType"
@@ -47,7 +47,7 @@
             android:layout_marginStart="220dp"
             android:textSize="18sp"
             android:textStyle="italic"
-            android:textColor="@color/black" />
+            android:textColor="?attr/colorOnSecondary" />
 
         <TextView
             android:id="@+id/sensorListCurrentValue"
@@ -58,7 +58,7 @@
             android:layout_marginStart="115dp"
             android:textSize="16sp"
             android:textStyle="italic"
-            android:textColor="@color/black" />
+            android:textColor="?attr/colorOnSecondary" />
 
         <TextView
             android:id="@+id/sensorListPastValue"
@@ -69,7 +69,7 @@
             android:layout_marginStart="240dp"
             android:textSize="16sp"
             android:textStyle="italic"
-            android:textColor="@color/black" />
+            android:textColor="?attr/colorOnSecondary" />
 
         <ImageView
             android:id="@+id/sensorEditIcon"
