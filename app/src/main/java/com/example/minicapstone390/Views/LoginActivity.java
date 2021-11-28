@@ -114,10 +114,10 @@ public class LoginActivity extends AppCompatActivity {
                 if (!task.isSuccessful()) {
                     Log.i(TAG,"Login attempt failed");
                     Toast.makeText(getApplicationContext(), "Login failed. Try again!", Toast.LENGTH_LONG).show();
-                    openHomeActivity();
                 } else {
                     Log.i(TAG,String.format("Successfully logged in user: %s", userEmail));
                     Toast.makeText(getApplicationContext(), "Successfully Logged In!", Toast.LENGTH_SHORT).show();
+                    openHomeActivity();
                 }
         });
     }

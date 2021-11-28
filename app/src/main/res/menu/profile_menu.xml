@@ -13,11 +13,6 @@
         app:showAsAction="never" />
 
     <item
-        android:id="@+id/update_notification"
-        android:title="@string/notifications"
-        app:showAsAction="never" />
-
-    <item
         android:id="@+id/logout_user"
         android:title="@string/logOut"
         app:showAsAction="never" />

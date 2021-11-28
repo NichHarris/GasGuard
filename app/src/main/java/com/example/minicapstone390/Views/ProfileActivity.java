@@ -118,11 +118,6 @@ public class ProfileActivity extends AppCompatActivity {
                 reload();
                 //TODO Add transitions
                 break;
-            case R.id.update_notification:
-                NotificationsFragment notificationsFragment = new NotificationsFragment();
-                notificationsFragment.show(getSupportFragmentManager(), "NotificationFragment");
-                updateAllInfo();
-                break;
             case R.id.logout_user:
                 logoutUser();
                 break;
