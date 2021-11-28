@@ -118,11 +118,6 @@ public class ProfileActivity extends AppCompatActivity {
                 reload();
                 //TODO Add transitions
                 break;
-            case R.id.update_notification:
-                NotificationsFragment notificationsFragment = new NotificationsFragment();
-                notificationsFragment.show(getSupportFragmentManager(), "NotificationFragment");
-                updateAllInfo();
-                break;
             case R.id.logout_user:
                 logoutUser();
                 break;
@@ -152,14 +147,37 @@ public class ProfileActivity extends AppCompatActivity {
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        dB.getUser().delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                        dB.getUserChild().addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if (task.isSuccessful()) {
-                                    goToLoginActivity();
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if (snapshot.exists()) {
+                                    snapshot.getRef().removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()) {
+                                                dB.getUser().delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                        if (!task.isSuccessful()) {
+                                                            Log.d(TAG, "Delete user failed");
+                                                        }
+                                                    }
+                                                });
+                                                goToLoginActivity();
+                                            } else {
+                                                Log.e(TAG, "Task failed");
+                                            }
+                                        }
+                                    });
                                 } else {
-                                    // TODO: Send toast for failed delete
+                                    Log.d(TAG, "No user found");
                                 }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError e) {
+                                Log.d(TAG, e.toString());
+                                throw e.toException();
                             }
                         });
                     }

@@ -274,11 +274,11 @@ public class DeviceActivity extends AppCompatActivity {
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        if(dB.getUserChild().child(DEVICES) != null){
-                            dB.getUserChild().child(DEVICES).addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    for (DataSnapshot ds : snapshot.getChildren()) {
+                        dB.getUserChild().child(DEVICES).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                for (DataSnapshot ds : snapshot.getChildren()) {
+                                    if (ds.exists()) {
                                         if (ds.getValue(String.class).equals(deviceId)) {
                                             ds.getRef().removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
                                                 @Override
@@ -287,21 +287,46 @@ public class DeviceActivity extends AppCompatActivity {
                                                         Log.d(TAG, String.format("Unable to remove device: %s", deviceId));
                                                     } else {
                                                         Log.i(TAG, String.format("Removed device: %s", deviceId));
+                                                        dB.getDeviceChild(deviceId).addListenerForSingleValueEvent(new ValueEventListener() {
+                                                            @Override
+                                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                                if (snapshot.exists()) {
+                                                                    snapshot.getRef().removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                        @Override
+                                                                        public void onComplete(@NonNull Task<Void> task) {
+                                                                            if (!task.isSuccessful()) {
+                                                                                Log.d(TAG, "Unable to remove device");
+                                                                            }
+                                                                        }
+                                                                    });
+                                                                } else {
+                                                                    Log.d(TAG, "Device doesn't exist");
+                                                                }
+                                                            }
+
+                                                            @Override
+                                                            public void onCancelled(@NonNull DatabaseError e) {
+                                                                Log.d(TAG, e.toString());
+                                                                throw e.toException();
+                                                            }
+                                                        });
                                                         openHomeActivity();
                                                     }
                                                 }
                                             });
                                         }
+                                    } else {
+                                        Log.d(TAG, "device doesn't exist");
                                     }
                                 }
+                            }
 
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError e) {
-                                    Log.d(TAG, e.toString());
-                                    throw e.toException();
-                                }
-                            });
-                        }
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError e) {
+                                Log.d(TAG, e.toString());
+                                throw e.toException();
+                            }
+                        });
                     }
                 });
         builder.setNegativeButton("Cancel",
