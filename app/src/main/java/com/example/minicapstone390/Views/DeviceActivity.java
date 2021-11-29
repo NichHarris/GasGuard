@@ -406,7 +406,7 @@ public class DeviceActivity extends AppCompatActivity {
             sensorRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    try {
+                    if (snapshot.exists()) {
                         String sensorName = snapshot.child(SENSORNAME).exists() ? snapshot.child(SENSORNAME).getValue(String.class) : id;
                         int sensorType =  snapshot.child(SENSORTYPE).exists() ? snapshot.child(SENSORTYPE).getValue(Integer.class): 0;
                         double sensorValue = snapshot.child(SENSORVALUE).exists() ? snapshot.child(SENSORVALUE).getValue(Double.class): 0.0;
@@ -449,9 +449,8 @@ public class DeviceActivity extends AppCompatActivity {
                             sensData.set(sensData.indexOf(sensor), sensor);
                         }
                         setSensorList(sensData);
-                    } catch (Exception e) {
-                        Log.d(TAG, e.toString());
-                        throw e;
+                    } else {
+                        Log.d(TAG, "Unable to find sensor");
                     }
                 }
 

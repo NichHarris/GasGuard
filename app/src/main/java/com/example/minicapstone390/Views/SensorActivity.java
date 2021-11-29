@@ -201,7 +201,11 @@ public class SensorActivity extends AppCompatActivity {
         sensorRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                chartTitle.setText(getResources().getString(R.string.sensor_graph).replace("{0}", Objects.requireNonNull(snapshot.child(SENSORNAME).getValue(String.class))));
+                if (snapshot.exists() && snapshot.child(SENSORNAME).exists()) {
+                    chartTitle.setText(getResources().getString(R.string.sensor_graph).replace("{0}", Objects.requireNonNull(snapshot.child(SENSORNAME).getValue(String.class))));
+                } else {
+                    Log.d(TAG, "Unable to find sensor");
+                }
             }
 
             @Override

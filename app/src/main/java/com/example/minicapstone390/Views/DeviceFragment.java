@@ -122,6 +122,7 @@ public class DeviceFragment extends DialogFragment {
                         } else {
                             Log.e(TAG, "No such device ID exists");
                             Toast.makeText(activity, "No such device ID exists", Toast.LENGTH_SHORT).show();
+                            dismiss();
                         }
                     }
 

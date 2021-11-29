@@ -221,12 +221,16 @@ public class ProfileActivity extends AppCompatActivity {
         dB.getUserChild(dB.getUserId()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                userName = snapshot.child(USERNAME).exists() ? snapshot.child(USERNAME).getValue(String.class) : "";
-                userEmail = snapshot.child(USEREMAIL).exists() ? snapshot.child(USEREMAIL).getValue(String.class) : "";
-                userPhone = snapshot.child(USERPHONE).exists() ? snapshot.child(USERPHONE).getValue(String.class) : "";
-                userFirstName = snapshot.child(USERFIRST).exists() ? snapshot.child(USERFIRST).getValue(String.class) : "";
-                userLastName = snapshot.child(USERLAST).exists() ? snapshot.child(USERLAST).getValue(String.class) : "";
-                updateProfile();
+                if (snapshot.exists()) {
+                    userName = snapshot.child(USERNAME).exists() ? snapshot.child(USERNAME).getValue(String.class) : "";
+                    userEmail = snapshot.child(USEREMAIL).exists() ? snapshot.child(USEREMAIL).getValue(String.class) : "";
+                    userPhone = snapshot.child(USERPHONE).exists() ? snapshot.child(USERPHONE).getValue(String.class) : "";
+                    userFirstName = snapshot.child(USERFIRST).exists() ? snapshot.child(USERFIRST).getValue(String.class) : "";
+                    userLastName = snapshot.child(USERLAST).exists() ? snapshot.child(USERLAST).getValue(String.class) : "";
+                    updateProfile();
+                } else {
+                    Log.d(TAG, "Unable to get user");
+                }
             }
 
             @Override

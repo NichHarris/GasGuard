@@ -167,13 +167,12 @@ public class HomeActivity extends AppCompatActivity {
         dB.getUserChild(dB.getUserId()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                try {
+                if (snapshot.exists()) {
                     String userName = snapshot.child(USERNAME).exists() ? snapshot.child(USERNAME).getValue(String.class) : "";
-
                     String defaultMessage = getResources().getString(R.string.welcome_user).replace("{0}", userName != null ? userName : "");
                     welcomeUserMessage.setText(defaultMessage);
-                } catch (Exception e) {
-                    // Call onCancelled to Throw Exception
+                } else {
+                    Log.d(TAG, "Unable to get user");
                 }
             }
 
@@ -234,7 +233,7 @@ public class HomeActivity extends AppCompatActivity {
                 deviceRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        try {
+                        if (snapshot.exists()) {
                             // Get Device Data from DB
                             String devName = id;
                             if (!nameState) {
@@ -254,9 +253,8 @@ public class HomeActivity extends AppCompatActivity {
                                 device.setStatus(devStatus);
                             }
                             setDeviceList(devData);
-                        } catch (Exception e) {
-                            Log.d(TAG, e.toString());
-                            return;
+                        } else {
+                            Log.d(TAG, "Unable to find device");
                         }
                     }
 
