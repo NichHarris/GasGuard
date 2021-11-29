@@ -48,6 +48,7 @@ public class DeviceActivity extends AppCompatActivity {
     private static final String DEVICES = DatabaseEnv.USERDEVICES.getEnv();
     private static final String DEVICENAME = DatabaseEnv.DEVICENAME.getEnv();
     private static final String DEVICESTATUS = DatabaseEnv.DEVICESTATUS.getEnv();
+    private static final String DEVICECALIBRATION = DatabaseEnv.DEVICECALIBRATION.getEnv();
     private static final String DEVICESENSORS = DatabaseEnv.DEVICESENSORS.getEnv();
     private static final String SENSORNAME = DatabaseEnv.SENSORNAME.getEnv();
     private static final String SENSORTYPE = DatabaseEnv.SENSORTYPE.getEnv();
@@ -120,12 +121,12 @@ public class DeviceActivity extends AppCompatActivity {
                 displayDeviceInfo(deviceId);
             } else {
                 Log.e(TAG, "Id is null");
-                openHomeActivity();
+                goToHomeActivity();
             }
         } else {
             Toast.makeText(this, "Error fetching device", Toast.LENGTH_LONG).show();
             Log.d(TAG, "No deviceId carry over, returning to HomeActivity");
-            openHomeActivity();
+            goToHomeActivity();
         }
     }
 
@@ -201,11 +202,12 @@ public class DeviceActivity extends AppCompatActivity {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 if (snapshot.exists()) {
-                                    dB.getDeviceChild(deviceId).child("CalibrationStatus").setValue(false);
+                                    dB.getDeviceChild(deviceId).child("CalibrationStatus").setValue(true);
                                     Toast.makeText(DeviceActivity.this, "Calibration started, please leave device for 30 min", Toast.LENGTH_LONG).show();
 
-                                    // TODO: Clear all sensor values
                                     goToHomeActivity();
+
+                                    // TODO: Clear all sensor values
                                 } else {
                                     Log.e(TAG, "Unable to get calibration status");
                                 }
@@ -310,7 +312,7 @@ public class DeviceActivity extends AppCompatActivity {
                                                                 throw e.toException();
                                                             }
                                                         });
-                                                        openHomeActivity();
+                                                        goToHomeActivity();
                                                     }
                                                 }
                                             });
@@ -341,23 +343,21 @@ public class DeviceActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    // Navigate to the HomeActivity
-    private void openHomeActivity() {
-        Intent intent = new Intent(this, HomeActivity.class);
-        startActivity(intent);
-    }
-
     // Display relevant device information
     public void displayDeviceInfo(String deviceId) {
         dB.getDeviceChild(deviceId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 String devNameText = snapshot.child(DEVICENAME).exists() ? snapshot.child(DEVICENAME).getValue(String.class) : "0";
-                deviceName.setText("Device: " + devNameText);
+                deviceName.setText(getText(R.string.device_name_display) + devNameText);
 
                 String status = getResources().getString(R.string.inactiveDeviceStatus);
                 try {
-                    if (snapshot.child(DEVICESTATUS).exists()) {
+                    if (snapshot.child(DEVICECALIBRATION).exists()) {
+                        if (snapshot.child(DEVICECALIBRATION).getValue(Boolean.class)) {
+                            status = getResources().getString(R.string.calibratingDeviceStatus);
+                        }
+                    } else if (snapshot.child(DEVICESTATUS).exists()) {
                         if (snapshot.child(DEVICESTATUS).getValue(Boolean.class)) {
                             status = getResources().getString(R.string.activeDeviceStatus);
                         }

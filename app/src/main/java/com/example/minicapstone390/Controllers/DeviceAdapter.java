@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,8 +18,6 @@ import com.example.minicapstone390.Models.Device;
 import com.example.minicapstone390.R;
 import com.example.minicapstone390.Views.DeviceActivity;
 import com.example.minicapstone390.Views.HomeActivity;
-import com.example.minicapstone390.Views.SensorActivity;
-import com.example.minicapstone390.Views.SensorFragment;
 
 import java.util.ArrayList;
 
@@ -74,7 +73,12 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
             v.setOnClickListener((view) -> {
                 int deviceIndex = getAdapterPosition();
                 Log.d(TAG,ACCESS + deviceIndex);
-                ((HomeActivity)mContext).goToDeviceActivity(deviceIndex);
+
+                if(!deviceStatus.getText().toString().contains("Calibrating")) {
+                    ((HomeActivity) mContext).goToDeviceActivity(deviceIndex);
+                } else {
+                    Toast.makeText(mContext, "Device is Calibrating! Wait for Calibration to End Before Accessing Device.", Toast.LENGTH_LONG).show();
+                }
             });
         }
     }

@@ -85,6 +85,9 @@
     <string name="gas">Gas</string>
     <string name="sensorname">SensorName</string>
     <string name="device_name">Device Name</string>
+    <string name="device_name_display"><b>Device: </b></string>
     <string name="device_ids">Device IDs</string>
     <string name="calibrate_device">Calibrate Device</string>
+    <string name="update_device_title">Update Device</string>
+    <string name="update_sensor_info">Update Sensor</string>
 </resources>
