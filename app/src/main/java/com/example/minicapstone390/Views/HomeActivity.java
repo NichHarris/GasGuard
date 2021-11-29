@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -37,9 +36,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -52,6 +48,7 @@ public class HomeActivity extends AppCompatActivity {
     private static final String DEVICENAME = DatabaseEnv.DEVICENAME.getEnv();
     private static final String DEVICELOC = DatabaseEnv.DEVICELOCATION.getEnv();
     private static final String DEVICESTATUS = DatabaseEnv.DEVICESTATUS.getEnv();
+    private static final String DEVICECALIBRATION = DatabaseEnv.DEVICECALIBRATION.getEnv();
 
     // Declare variables
     private final Database dB = new Database();
@@ -240,9 +237,12 @@ public class HomeActivity extends AppCompatActivity {
                                 devName = snapshot.child(DEVICENAME).exists() ? snapshot.child(DEVICENAME).getValue(String.class) : id;
                             }
                             String devLocation = snapshot.child(DEVICELOC).exists() || snapshot.child(DEVICELOC).getValue().equals("") ? snapshot.child(DEVICELOC).getValue(String.class) : "No location set";
+
+                            boolean devCalibration = snapshot.child(DEVICECALIBRATION).exists() ? snapshot.child(DEVICECALIBRATION).getValue(Boolean.class) : false;
                             boolean devStatus = snapshot.child(DEVICESTATUS).exists() ? snapshot.child(DEVICESTATUS).getValue(Boolean.class) : true;
+
                             if (!deviceMap.containsKey(id)) {
-                                Device device = new Device(id, devName, devLocation, devStatus);
+                                Device device = new Device(id, devName, devLocation, devStatus, devCalibration);
                                 devData.add(device);
                                 deviceMap.put(id, device);
                             } else {
@@ -251,6 +251,7 @@ public class HomeActivity extends AppCompatActivity {
                                 device.setDeviceName(devName);
                                 device.setLocation(devLocation);
                                 device.setStatus(devStatus);
+                                device.setCalibration(devCalibration);
                             }
                             setDeviceList(devData);
                         } else {

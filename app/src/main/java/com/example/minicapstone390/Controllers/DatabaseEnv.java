@@ -6,6 +6,7 @@ public enum DatabaseEnv {
     DEVICELOCATION("location"),
     DEVICESENSORS("sensors"),
     DEVICESTATUS("status"),
+    DEVICECALIBRATION("CalibrationStatus"),
     USERS("Users"),
     USERDEVICES("devices"),
     USEREMAIL("userEmail"),

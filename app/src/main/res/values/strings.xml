@@ -30,6 +30,7 @@
     <string name="device_id">Device Id</string>
     <string name="save">SAVE</string>
     <string name="cancel">CANCEL</string>
+    <string name="add_device_fragment">Add a New Device</string>
 
     <!-- Profile Page   -->
     <string name="profile">Profile</string>
@@ -64,8 +65,10 @@
     <!-- Device and Sensor Recycler View -->
     <string name="activeDeviceStatus">🟢 Active</string>
     <string name="inactiveDeviceStatus">🔴 Inactive</string>
+    <string name="calibratingDeviceStatus">🟠 Calibrating</string>
     <string name="safeSensorValue">🟢 Safe</string>
     <string name="unsafeSensorValue">🔴 Unsafe</string>
+    <string name="calibratingSensorValue">🟠 Calibrating</string>
 
     <!-- Device and Sensor Placeholders -->
     <string name="gasDeviceName"> Gas Device Name </string>
@@ -76,6 +79,7 @@
     <string name="pastValueData">Past: 2.0 ppm</string>
     <string name="sensorImageDescription"> MC Sensor Image </string>
     <string name="deleteIconDescription"> Delete Icon </string>
+    <string name="calibrationIconDescription"> Calibration Icon </string>
     <string name="editIconDescription"> Edit Icon </string>
     <string name="type">Type</string>
     <string name="gas">Gas</string>

@@ -28,10 +28,13 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
     private static final String callFunction = "callFunction";
     private static final String DELETE = "DELETE ";
     private static final String EDIT = "EDIT ";
+    private static final String CALIBRATION = "CALIBRATE ";
     private static final String ACCESS = "ACCESS ";
 
     private final String deleteDeviceFunction = "deleteDevice()";
     private final String editDeviceFunction = "editDevice()";
+    private final String calibrateDeviceFunction = "calibrateDevice()";
+
 
     // Define Context and ArrayList of Devices
     private Context mContext;
@@ -39,7 +42,7 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
 
     // Define Single Device Holder
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public ImageView editIcon, deleteIcon;
+        public ImageView editIcon, deleteIcon, calibrationIcon;
         public TextView deviceName, deviceStatus, deviceLocation;
 
         public ViewHolder(View v) {
@@ -54,6 +57,7 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
             deviceLocation = (TextView) v.findViewById(R.id.deviceListLocation);
             editIcon = (ImageView) v.findViewById(R.id.deviceEditIcon);
             deleteIcon = (ImageView) v.findViewById(R.id.deviceDeleteIcon);
+            calibrationIcon = (ImageView) v.findViewById(R.id.deviceCalibrationIcon);
 
             editIcon.setOnClickListener((view) -> {
                 callActivity(editDeviceFunction, EDIT, getAdapterPosition());
@@ -61,6 +65,10 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
 
             deleteIcon.setOnClickListener((view) -> {
                 callActivity(deleteDeviceFunction, DELETE, getAdapterPosition());
+            });
+
+            calibrationIcon.setOnClickListener((view) -> {
+                callActivity(calibrateDeviceFunction, CALIBRATION, getAdapterPosition());
             });
 
             v.setOnClickListener((view) -> {
@@ -101,7 +109,7 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
         Device d = devices.get(position);
 
         holder.deviceName.setText(d.getDeviceName());
-        holder.deviceStatus.setText(d.getStatus() ? R.string.activeDeviceStatus : R.string.inactiveDeviceStatus);
+        holder.deviceStatus.setText(getStatusDescription(d));
         holder.deviceLocation.setText(d.getDeviceLocation());
     }
 
@@ -109,5 +117,16 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
     public int getItemCount() {
         // Return Num Devices
         return devices.size();
+    }
+
+    public int getStatusDescription(Device d) {
+        if(d.getCalibration()) {
+            return R.string.calibratingDeviceStatus;
+        } else if(d.getStatus()) {
+            return R.string.activeDeviceStatus;
+        } else {
+            return R.string.inactiveDeviceStatus;
+        }
+
     }
 }

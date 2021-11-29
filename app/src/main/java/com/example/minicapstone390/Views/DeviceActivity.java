@@ -112,7 +112,10 @@ public class DeviceActivity extends AppCompatActivity {
                 editDevice(deviceId);
             } else if (function.equals("deleteDevice()")) {
                 deleteDevice(deviceId);
+            } else if(function.equals("calibrateDevice()")) {
+                calibrateDevice();
             }
+
             if (deviceId != null) {
                 displayDeviceInfo(deviceId);
             } else {
@@ -164,7 +167,7 @@ public class DeviceActivity extends AppCompatActivity {
         if(id == R.id.update_device) {
             editDevice(deviceId);
         } else if(id == R.id.calibrate_device) {
-            calibrateDevice(item);
+            calibrateDevice();
         } else if(id == R.id.disable_device) {
             disableDevice(item);
         } else if(id == R.id.remove_device) {
@@ -185,7 +188,7 @@ public class DeviceActivity extends AppCompatActivity {
         }
     }
 
-    public void calibrateDevice(MenuItem item) {
+    public void calibrateDevice() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(true);
         builder.setTitle("Calibrate Device Confirmation");
@@ -202,6 +205,7 @@ public class DeviceActivity extends AppCompatActivity {
                                     Toast.makeText(DeviceActivity.this, "Calibration started, please leave device for 30 min", Toast.LENGTH_LONG).show();
 
                                     // TODO: Clear all sensor values
+                                    goToHomeActivity();
                                 } else {
                                     Log.e(TAG, "Unable to get calibration status");
                                 }
@@ -365,7 +369,7 @@ public class DeviceActivity extends AppCompatActivity {
                     throw e;
                 }
 
-                String devStatusText = getResources().getString(R.string.status) +  status;
+                String devStatusText = getResources().getString(R.string.status) + " " + status;
                 deviceStatus.setText(devStatusText);
             }
 

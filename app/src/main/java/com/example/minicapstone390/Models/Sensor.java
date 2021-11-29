@@ -1,7 +1,5 @@
 package com.example.minicapstone390.Models;
 
-import java.util.Map;
-
 public class Sensor {
     private String id;
     private int SensorType;
