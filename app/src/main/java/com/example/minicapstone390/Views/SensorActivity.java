@@ -241,7 +241,6 @@ public class SensorActivity extends AppCompatActivity {
         });
     }
 
-    // TODO: Fix spaghetti
     // Get the time scale of the X axis of the graph
     @RequiresApi(api = Build.VERSION_CODES.O)
     public ArrayList<LocalDateTime> updateGraphDates() {
@@ -303,7 +302,6 @@ public class SensorActivity extends AppCompatActivity {
         });
     }
 
-    // TODO May need to move logic around so stuff is always calculated...
     public void calculateThreshold(ArrayList<SensorData> data) {
         if (data.size() != 0) {
             if (data.get(0).getValues().size() != 0) {
@@ -320,7 +318,6 @@ public class SensorActivity extends AppCompatActivity {
                 }
                 
                 score = sum / (size + 1);
-                //TODO Convert to PPM value to display on DeviceActivity and home screen
                 dB.getSensorChild(sensorId).child(SENSORSCORE).setValue(score).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
@@ -343,10 +340,7 @@ public class SensorActivity extends AppCompatActivity {
             LocalDateTime start = history.get(0);
             LocalDateTime end = history.get(history.size() - 1);
             long duration = Duration.between(start, end).getSeconds();
-//            long delta = 60;
             long size = duration / delta;
-//            long size = data.getValues().size() != 0 ? data.getValues().size() : 1;
-//            long delta = duration/size;
             ArrayList<LocalDateTime> results = new ArrayList<>();
             for (int i = 0; i < size; i++) {
                 results.add(start.plusSeconds(i * delta));
@@ -404,7 +398,6 @@ public class SensorActivity extends AppCompatActivity {
         rightAxis.setEnabled(false);
     }
 
-    // TODO: Fix spaghetti
     @RequiresApi(api = Build.VERSION_CODES.O)
     protected void setData(SensorData data, ArrayList<LocalDateTime> results) {
         
@@ -414,7 +407,6 @@ public class SensorActivity extends AppCompatActivity {
             for (int x = 1; x < results.size() - 1; x++) {
                 LocalDateTime start = data.getTimes().get(0);
                 LocalDateTime end = data.getTimes().get(data.getTimes().size() - 1);
-                // TODO: Check if first state is ever passing? Appending -1 to start isn't working
                 if (results.get(x).isBefore(start) || results.get(x).isAfter(end) || i >= data.getValues().size()) {
                     values.add(new Entry(x, -1));
                 } else {
@@ -431,7 +423,6 @@ public class SensorActivity extends AppCompatActivity {
                 LineData lineData = new LineData(set);
                 lineData.setValueTextColor(Color.BLACK);
                 lineData.setValueTextSize(9f);
-//        sensorChart.setBackgroundColor(Color.WHITE);
                 sensorChart.setData(lineData);
                 sensorChart.invalidate();
             } else {
@@ -440,10 +431,6 @@ public class SensorActivity extends AppCompatActivity {
         } else {
             Log.d(TAG, "Data is empty");
         }
-    }
-
-    public void notification() {
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "id").setContentTitle("Notif").setContentText("Over 10").setPriority(NotificationCompat.PRIORITY_DEFAULT);
     }
 
     // Display options menu in task-bar
@@ -469,7 +456,7 @@ public class SensorActivity extends AppCompatActivity {
         return true;
     }
 
-    // TODO: Add status to DB
+    // Deprecated
     public void disableSensor() {
         dB.getSensorChild(sensorId).child(SENSORSTATUS).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

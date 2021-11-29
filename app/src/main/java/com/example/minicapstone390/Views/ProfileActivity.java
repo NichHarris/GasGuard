@@ -116,7 +116,6 @@ public class ProfileActivity extends AppCompatActivity {
                 }
                 setDropDownText(item);
                 reload();
-                //TODO Add transitions
                 break;
             case R.id.logout_user:
                 logoutUser();
@@ -138,7 +137,6 @@ public class ProfileActivity extends AppCompatActivity {
 
     // Delete user
     private void deleteUser() {
-        // TODO: Copied from android jdk just modify it
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(true);
         builder.setTitle("Delete Account Confirmation");
@@ -198,7 +196,6 @@ public class ProfileActivity extends AppCompatActivity {
     private void reload() {
         Intent intent = new Intent(this, ProfileActivity.class);
         startActivity(intent);
-        // TODO: Add transition
     }
 
     // Navigation to Add Device Activity

@@ -186,8 +186,6 @@ public class DeviceActivity extends AppCompatActivity {
     }
 
     public void calibrateDevice(MenuItem item) {
-        // TODO: Copied from android jdk just modify it
-        // TODO: Create a builder class...
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(true);
         builder.setTitle("Calibrate Device Confirmation");
@@ -264,8 +262,6 @@ public class DeviceActivity extends AppCompatActivity {
 
     // Remove device from the user
     public void deleteDevice(String deviceId) {
-        // TODO: Copied from android jdk just modify it
-        // TODO: Create a builder class...
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(true);
         builder.setTitle("Delete Device Confirmation");
@@ -520,7 +516,6 @@ public class DeviceActivity extends AppCompatActivity {
 
     // Set ListView of sensors
     public void setSensorList(ArrayList<Sensor> sensData) {
-        // TODO: Limit Sensor Name to 13 Characters
         // Recycler View for Sensors
         sensorAdapter = new SensorAdapter(sensData);
         sensorListView.setAdapter(sensorAdapter);
