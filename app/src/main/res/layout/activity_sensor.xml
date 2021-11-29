@@ -28,10 +28,12 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.165"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:textColor="?attr/colorOnSecondary"/>
 
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/sensorChart"
+        android:background="@color/white"
         android:layout_width="350dp"
         android:layout_height="200dp"
         android:layout_marginTop="250dp"
