@@ -4,14 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/g_guard_theme"
+    android:background="?attr/colorPrimary"
     tools:context=".Views.SensorActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/g_guard_banner"
+        android:background="?attr/colorPrimaryVariant"
         app:titleTextColor="@android:color/transparent"
         app:layout_scrollFlags="scroll|enterAlways"
         app:layout_constraintEnd_toEndOf="parent"
@@ -28,10 +28,12 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.165"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:textColor="?attr/colorOnSecondary"/>
 
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/sensorChart"
+        android:background="@color/white"
         android:layout_width="350dp"
         android:layout_height="200dp"
         android:layout_marginTop="250dp"
@@ -56,6 +58,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:button="@drawable/button_selected"
+            android:textColor="?attr/colorOnSecondary"
             android:text="@string/day" />
 
         <RadioButton
@@ -63,6 +66,7 @@
             style="@style/RadioButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="?attr/colorOnSecondary"
             android:text="@string/week" />
 
         <RadioButton
@@ -70,6 +74,7 @@
             style="@style/RadioButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="?attr/colorOnSecondary"
             android:text="@string/_2_weeks" />
 
         <RadioButton
@@ -77,6 +82,7 @@
             style="@style/RadioButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="?attr/colorOnSecondary"
             android:text="@string/month" />
     </RadioGroup>
 

@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/g_guard_theme">
+    android:background="?attr/colorPrimary">
 
     <RelativeLayout
         android:layout_centerHorizontal="true"
@@ -41,12 +41,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/type"
+                android:textColor="?attr/colorOnSecondary"
                 />
 
             <RadioButton
                 android:id="@+id/gasOutput"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="?attr/colorOnSecondary"
                 android:text="@string/gas"/>
 
         </RadioGroup>

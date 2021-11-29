@@ -67,9 +67,6 @@ public class HomeActivity extends AppCompatActivity {
     protected DeviceAdapter deviceAdapter;
     protected boolean nameState = false; // False = use "deviceName", True = use "deviceId"
 
-    public static String wifiModuleIp = "";
-    public static int wifiModulePort = 0;
-
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -160,35 +157,9 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
-    // TODO: IMPLEMENT DEVICE CONNECTION
     public void connectDevice() {
         DeviceFragment dialog = new DeviceFragment();
         dialog.show(getSupportFragmentManager(), "AddDeviceFragment");
-//        getIpAndPort();
-//        Socket_AsyncTask connect_device = new Socket_AsyncTask();
-//        connect_device.execute();
-    }
-
-    // TODO
-    public void getIpAndPort() {
-        DeviceFragment dialog = new DeviceFragment();
-        dialog.show(getSupportFragmentManager(), "AddDeviceFragment");
-    }
-
-    // TODO: android.os.AsyncTask is Deprecated
-    public static class Socket_AsyncTask extends AsyncTask<Void, Void, Void> {
-        Socket socket;
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            try {
-                InetAddress inetAddress = InetAddress.getByName(HomeActivity.wifiModuleIp);
-                socket = new java.net.Socket(inetAddress, HomeActivity.wifiModulePort);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
     }
 
     // Update Page information
@@ -196,13 +167,12 @@ public class HomeActivity extends AppCompatActivity {
         dB.getUserChild(dB.getUserId()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                try {
+                if (snapshot.exists()) {
                     String userName = snapshot.child(USERNAME).exists() ? snapshot.child(USERNAME).getValue(String.class) : "";
-
                     String defaultMessage = getResources().getString(R.string.welcome_user).replace("{0}", userName != null ? userName : "");
                     welcomeUserMessage.setText(defaultMessage);
-                } catch (Exception e) {
-                    // Call onCancelled to Throw Exception
+                } else {
+                    Log.d(TAG, "Unable to get user");
                 }
             }
 
@@ -258,19 +228,18 @@ public class HomeActivity extends AppCompatActivity {
         Map<String, Device> deviceMap = new HashMap<String, Device>();
 
         for (String id: devices) {
-            //TODO: check if devices are part of the user
             if (id != null) {
                 DatabaseReference deviceRef = dB.getDeviceRef().child(id);
                 deviceRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        try {
+                        if (snapshot.exists()) {
                             // Get Device Data from DB
                             String devName = id;
                             if (!nameState) {
                                 devName = snapshot.child(DEVICENAME).exists() ? snapshot.child(DEVICENAME).getValue(String.class) : id;
                             }
-                            String devLocation = snapshot.child(DEVICELOC).exists() ? snapshot.child(DEVICELOC).getValue(String.class) : "No location set";
+                            String devLocation = snapshot.child(DEVICELOC).exists() || snapshot.child(DEVICELOC).getValue().equals("") ? snapshot.child(DEVICELOC).getValue(String.class) : "No location set";
                             boolean devStatus = snapshot.child(DEVICESTATUS).exists() ? snapshot.child(DEVICESTATUS).getValue(Boolean.class) : true;
                             if (!deviceMap.containsKey(id)) {
                                 Device device = new Device(id, devName, devLocation, devStatus);
@@ -284,9 +253,8 @@ public class HomeActivity extends AppCompatActivity {
                                 device.setStatus(devStatus);
                             }
                             setDeviceList(devData);
-                        } catch (Exception e) {
-                            Log.d(TAG, e.toString());
-                            return;
+                        } else {
+                            Log.d(TAG, "Unable to find device");
                         }
                     }
 

@@ -34,6 +34,7 @@ import java.util.Map;
 public class DeviceFragment extends DialogFragment {
     private static final String TAG = "AddDeviceFragment";
     private static final String DEVICES = DatabaseEnv.USERDEVICES.getEnv();
+    private static final String DEVICELOCATION = DatabaseEnv.DEVICELOCATION.getEnv();
 
     // Declare variables
     private final Database dB = new Database();
@@ -49,7 +50,6 @@ public class DeviceFragment extends DialogFragment {
         this.activity = (HomeActivity) activity;
     }
 
-    // TODO: Replace with check for device ID in database and add it to user
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -107,9 +107,22 @@ public class DeviceFragment extends DialogFragment {
                                     dismiss();
                                 }
                             });
+                            if (snapshot.child(DEVICELOCATION).exists()) {
+                                if (snapshot.child(DEVICELOCATION).getValue().equals("")) {
+                                    snapshot.child(DEVICELOCATION).getRef().setValue("No location set").addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (!task.isSuccessful()) {
+                                                Log.d(TAG, "Unable to add location");
+                                            }
+                                        }
+                                    });
+                                }
+                            }
                         } else {
                             Log.e(TAG, "No such device ID exists");
                             Toast.makeText(activity, "No such device ID exists", Toast.LENGTH_SHORT).show();
+                            dismiss();
                         }
                     }
 

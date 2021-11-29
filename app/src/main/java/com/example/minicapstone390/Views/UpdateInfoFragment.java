@@ -68,68 +68,72 @@ public class UpdateInfoFragment extends DialogFragment {
             userRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    String userName, userEmail, userPhone, userFirstName, userLastName;
-                    userName = userNameInput.getText().toString().equals("") ? (snapshot.child(USERNAME).exists() ? snapshot.child(USERNAME).getValue(String.class) : "") : userNameInput.getText().toString();
+                    if (snapshot.exists()) {
+                        String userName, userEmail, userPhone, userFirstName, userLastName;
+                        userName = userNameInput.getText().toString().equals("") ? (snapshot.child(USERNAME).exists() ? snapshot.child(USERNAME).getValue(String.class) : "") : userNameInput.getText().toString();
 
-                    if (!userEmailInput.getText().toString().equals("")) {
-                        // Email Must Be a Valid Email and Unique
-                        if (!Patterns.EMAIL_ADDRESS.matcher(userEmailInput.getText().toString()).matches()) {
-                            userEmailInput.setError("Email Must Be Valid!");
-                            userEmailInput.requestFocus();
-                            return;
-                        } else {
-                            userEmail = userEmailInput.getText().toString();
-                        }
-                    } else {
-                        userEmail = snapshot.child(USEREMAIL).exists() ? snapshot.child(USEREMAIL).getValue(String.class) : "";
-                    }
-                    assert userEmail != null;
-                    dB.getUser().verifyBeforeUpdateEmail(userEmail).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (!task.isSuccessful()) {
-                                userEmailInput.setError("Email already in use");
+                        if (!userEmailInput.getText().toString().equals("")) {
+                            // Email Must Be a Valid Email and Unique
+                            if (!Patterns.EMAIL_ADDRESS.matcher(userEmailInput.getText().toString()).matches()) {
+                                userEmailInput.setError("Email Must Be Valid!");
                                 userEmailInput.requestFocus();
+                                return;
+                            } else {
+                                userEmail = userEmailInput.getText().toString();
                             }
+                        } else {
+                            userEmail = snapshot.child(USEREMAIL).exists() ? snapshot.child(USEREMAIL).getValue(String.class) : "";
                         }
-                    });
-
-                    userPhone = userPhoneInput.getText().toString().equals("") ? (snapshot.child(USERPHONE).exists() ? snapshot.child(USERPHONE).getValue(String.class) : "") : userPhoneInput.getText().toString();
-                    userFirstName = userFirstNameInput.getText().toString().equals("") ? (snapshot.child(USERFIRST).exists() ? snapshot.child(USERFIRST).getValue(String.class) : "") : userFirstNameInput.getText().toString();
-                    userLastName = userLastNameInput.getText().toString().equals("") ? (snapshot.child(USERLAST).exists() ? snapshot.child(USERLAST).getValue(String.class) : "") : userLastNameInput.getText().toString();
-
-                    userRef.child(USERDEVICES).addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            Map<String, Object> devices = new HashMap<>();
-                            for (DataSnapshot ds : snapshot.getChildren()) {
-                                if (ds.exists()) {
-                                    devices.put(ds.getKey(), ds.getValue(String.class));
-                                } else {
-                                    Log.e(TAG, "Could not locate devices in user");
+                        assert userEmail != null;
+                        dB.getUser().verifyBeforeUpdateEmail(userEmail).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (!task.isSuccessful()) {
+                                    userEmailInput.setError("Email already in use");
+                                    userEmailInput.requestFocus();
                                 }
                             }
+                        });
 
-                            // Can add validation after
-                            Map<String, Object> userInfo = new HashMap<>();
-                            userInfo.put(USERNAME, userName);
-                            userInfo.put(USEREMAIL, userEmail);
-                            userInfo.put(USERPHONE, userPhone);
-                            userInfo.put(USERFIRST, userFirstName);
-                            userInfo.put(USERLAST, userLastName);
-                            userInfo.put(USERDEVICES, devices);
-                            userRef.updateChildren(userInfo);
+                        userPhone = userPhoneInput.getText().toString().equals("") ? (snapshot.child(USERPHONE).exists() ? snapshot.child(USERPHONE).getValue(String.class) : "") : userPhoneInput.getText().toString();
+                        userFirstName = userFirstNameInput.getText().toString().equals("") ? (snapshot.child(USERFIRST).exists() ? snapshot.child(USERFIRST).getValue(String.class) : "") : userFirstNameInput.getText().toString();
+                        userLastName = userLastNameInput.getText().toString().equals("") ? (snapshot.child(USERLAST).exists() ? snapshot.child(USERLAST).getValue(String.class) : "") : userLastNameInput.getText().toString();
 
-                            ((ProfileActivity)getActivity()).updateAllInfo();
-                            dismiss();
-                        }
+                        userRef.child(USERDEVICES).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                Map<String, Object> devices = new HashMap<>();
+                                for (DataSnapshot ds : snapshot.getChildren()) {
+                                    if (ds.exists()) {
+                                        devices.put(ds.getKey(), ds.getValue(String.class));
+                                    } else {
+                                        Log.e(TAG, "Could not locate devices in user");
+                                    }
+                                }
 
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError e) {
-                            Log.d(TAG, e.toString());
-                            dismiss();
-                        }
-                    });
+                                // Can add validation after
+                                Map<String, Object> userInfo = new HashMap<>();
+                                userInfo.put(USERNAME, userName);
+                                userInfo.put(USEREMAIL, userEmail);
+                                userInfo.put(USERPHONE, userPhone);
+                                userInfo.put(USERFIRST, userFirstName);
+                                userInfo.put(USERLAST, userLastName);
+                                userInfo.put(USERDEVICES, devices);
+                                userRef.updateChildren(userInfo);
+
+                                ((ProfileActivity) getActivity()).updateAllInfo();
+                                dismiss();
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError e) {
+                                Log.d(TAG, e.toString());
+                                dismiss();
+                            }
+                        });
+                    } else {
+                        Log.d(TAG, "Unable to get user");
+                    }
                 }
 
                 @Override

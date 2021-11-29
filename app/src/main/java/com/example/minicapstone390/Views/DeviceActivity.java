@@ -186,8 +186,6 @@ public class DeviceActivity extends AppCompatActivity {
     }
 
     public void calibrateDevice(MenuItem item) {
-        // TODO: Copied from android jdk just modify it
-        // TODO: Create a builder class...
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(true);
         builder.setTitle("Calibrate Device Confirmation");
@@ -264,8 +262,6 @@ public class DeviceActivity extends AppCompatActivity {
 
     // Remove device from the user
     public void deleteDevice(String deviceId) {
-        // TODO: Copied from android jdk just modify it
-        // TODO: Create a builder class...
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(true);
         builder.setTitle("Delete Device Confirmation");
@@ -410,7 +406,7 @@ public class DeviceActivity extends AppCompatActivity {
             sensorRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    try {
+                    if (snapshot.exists()) {
                         String sensorName = snapshot.child(SENSORNAME).exists() ? snapshot.child(SENSORNAME).getValue(String.class) : id;
                         int sensorType =  snapshot.child(SENSORTYPE).exists() ? snapshot.child(SENSORTYPE).getValue(Integer.class): 0;
                         double sensorValue = snapshot.child(SENSORVALUE).exists() ? snapshot.child(SENSORVALUE).getValue(Double.class): 0.0;
@@ -453,9 +449,8 @@ public class DeviceActivity extends AppCompatActivity {
                             sensData.set(sensData.indexOf(sensor), sensor);
                         }
                         setSensorList(sensData);
-                    } catch (Exception e) {
-                        Log.d(TAG, e.toString());
-                        throw e;
+                    } else {
+                        Log.d(TAG, "Unable to find sensor");
                     }
                 }
 
@@ -520,7 +515,6 @@ public class DeviceActivity extends AppCompatActivity {
 
     // Set ListView of sensors
     public void setSensorList(ArrayList<Sensor> sensData) {
-        // TODO: Limit Sensor Name to 13 Characters
         // Recycler View for Sensors
         sensorAdapter = new SensorAdapter(sensData);
         sensorListView.setAdapter(sensorAdapter);

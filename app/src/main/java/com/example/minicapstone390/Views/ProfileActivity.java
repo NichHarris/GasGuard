@@ -116,7 +116,6 @@ public class ProfileActivity extends AppCompatActivity {
                 }
                 setDropDownText(item);
                 reload();
-                //TODO Add transitions
                 break;
             case R.id.logout_user:
                 logoutUser();
@@ -138,7 +137,6 @@ public class ProfileActivity extends AppCompatActivity {
 
     // Delete user
     private void deleteUser() {
-        // TODO: Copied from android jdk just modify it
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(true);
         builder.setTitle("Delete Account Confirmation");
@@ -198,7 +196,6 @@ public class ProfileActivity extends AppCompatActivity {
     private void reload() {
         Intent intent = new Intent(this, ProfileActivity.class);
         startActivity(intent);
-        // TODO: Add transition
     }
 
     // Navigation to Add Device Activity
@@ -224,12 +221,16 @@ public class ProfileActivity extends AppCompatActivity {
         dB.getUserChild(dB.getUserId()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                userName = snapshot.child(USERNAME).exists() ? snapshot.child(USERNAME).getValue(String.class) : "";
-                userEmail = snapshot.child(USEREMAIL).exists() ? snapshot.child(USEREMAIL).getValue(String.class) : "";
-                userPhone = snapshot.child(USERPHONE).exists() ? snapshot.child(USERPHONE).getValue(String.class) : "";
-                userFirstName = snapshot.child(USERFIRST).exists() ? snapshot.child(USERFIRST).getValue(String.class) : "";
-                userLastName = snapshot.child(USERLAST).exists() ? snapshot.child(USERLAST).getValue(String.class) : "";
-                updateProfile();
+                if (snapshot.exists()) {
+                    userName = snapshot.child(USERNAME).exists() ? snapshot.child(USERNAME).getValue(String.class) : "";
+                    userEmail = snapshot.child(USEREMAIL).exists() ? snapshot.child(USEREMAIL).getValue(String.class) : "";
+                    userPhone = snapshot.child(USERPHONE).exists() ? snapshot.child(USERPHONE).getValue(String.class) : "";
+                    userFirstName = snapshot.child(USERFIRST).exists() ? snapshot.child(USERFIRST).getValue(String.class) : "";
+                    userLastName = snapshot.child(USERLAST).exists() ? snapshot.child(USERLAST).getValue(String.class) : "";
+                    updateProfile();
+                } else {
+                    Log.d(TAG, "Unable to get user");
+                }
             }
 
             @Override

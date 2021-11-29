@@ -34,7 +34,6 @@ public class SensorFragment extends DialogFragment {
     protected EditText sensorNameInput;
     protected String sensorId;
 
-    // TODO: Replace with check for device ID in database and add it to user
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -77,11 +76,11 @@ public class SensorFragment extends DialogFragment {
             }
         });
 
+        // Deprecated
         boolean type = true;
         if (sensorTypeOptions.getCheckedRadioButtonId() == R.id.gasOutput) {
             type = false;
         }
-        // TODO
         if (type) {
             Log.d(TAG, "Set sensor type as normal");
         } else {

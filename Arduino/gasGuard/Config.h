@@ -10,8 +10,8 @@
 
 // UPDATE YOUR DEVICE INFORMATION BEFORE RUNNING
 
-#define DeviceID "3005"
-#define DeviceName "GasGuard-3005"
+#define DeviceID "3020"
+#define DeviceName "GasGuard-3020"
 #define NumOfSensors 6
 // Type of Sensor is name of sensor without MQ
 #define NameOfSensors {"MQ2","MQ4","MQ9","MQ7","MQ8","MQ135","",""}
@@ -23,6 +23,6 @@
 
 // Total time for calibration is CalDelay*CalNum
 // Number of samples used for calibration
-#define CalNum 10000
+#define CalNum 1800
 // delay between each calibration sample (in ms)
 #define CalDelay 1000 
