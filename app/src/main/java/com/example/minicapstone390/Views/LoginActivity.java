@@ -111,13 +111,13 @@ public class LoginActivity extends AppCompatActivity {
         // Login User Using Firebase Auth
         dB.getAuth().signInWithEmailAndPassword(userEmail, password)
             .addOnCompleteListener(this, task -> {
-                if (task.isSuccessful()) {
+                if (!task.isSuccessful()) {
                     Log.i(TAG,"Login attempt failed");
-                    Toast.makeText(getApplicationContext(), "Successfully Logged In!", Toast.LENGTH_SHORT).show();
-                    openHomeActivity();
+                    Toast.makeText(getApplicationContext(), "Login failed. Try again!", Toast.LENGTH_LONG).show();
                 } else {
                     Log.i(TAG,String.format("Successfully logged in user: %s", userEmail));
-                    Toast.makeText(getApplicationContext(), "Login failed. Try again!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Successfully Logged In!", Toast.LENGTH_SHORT).show();
+                    openHomeActivity();
                 }
         });
     }
