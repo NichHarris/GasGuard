@@ -2,7 +2,6 @@ package com.example.minicapstone390.Views;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,25 +14,15 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.minicapstone390.Controllers.Database;
+import com.example.minicapstone390.Controllers.DatabaseEnv;
 import com.example.minicapstone390.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.ValueEventListener;
-
-import java.util.HashMap;
-import java.util.Map;
 
 // Device Fragment
 public class UpdateDeviceFragment extends DialogFragment {
     private static final String TAG = "UpdateDeviceFragment";
-
-    public interface OnInputListener{
-        void sendInput(String input);
-    }
-    public OnInputListener onInputListener;
+    private static final String DEVICENAME = DatabaseEnv.DEVICENAME.getEnv();
 
     // Declare variables
     private final Database dB = new Database();
@@ -41,8 +30,6 @@ public class UpdateDeviceFragment extends DialogFragment {
     protected EditText deviceNameInput;
     protected String deviceId;
 
-
-        // TODO: Change this to device info and not user info //
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -76,7 +63,7 @@ public class UpdateDeviceFragment extends DialogFragment {
 
 
     private void updateDevice(String deviceName) {
-        dB.getDeviceChild(deviceId).child("deviceName").setValue(deviceName).addOnCompleteListener(new OnCompleteListener<Void>() {
+        dB.getDeviceChild(deviceId).child(DEVICENAME).setValue(deviceName).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (!task.isSuccessful()) {

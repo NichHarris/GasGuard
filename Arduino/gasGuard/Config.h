@@ -1,19 +1,28 @@
 // UPDATE FIREBASE URL AND PASSWORD BEFORE RUNNING
+
 #define DATABASE_URL "gasguard-ae330-default-rtdb.firebaseio.com"
 #define DATABASE_SECRET "sef3dUyAPbvVrI6ANAIz3ikrSyg0mLXS7FPbXhHe"
 
 // UPDATE WIFI SSID AND PASSWORD BEFORE RUNNING 
 
-#define WIFI_SSID "Wings"
-#define WIFI_PASSWORD "qfx9oy6u"
+#define WIFI_SSID "Isengard-Network"
+#define WIFI_PASSWORD "Play4Keep$"
 
-#define DeviceID "237"
+// UPDATE YOUR DEVICE INFORMATION BEFORE RUNNING
 
-#define Sensor1Name "MQ2"
-#define Sensor2Name "MQ3"
-#define Sensor3Name "MQ4"
-#define Sensor4Name "MQ6"
-#define Sensor5Name "MQ7"
-#define Sensor6Name "MQ8"
-#define Sensor7Name "MQ9"
-#define Sensor8Name "MQ135"
+#define DeviceID "3005"
+#define DeviceName "GasGuard-3005"
+#define NumOfSensors 6
+// Type of Sensor is name of sensor without MQ
+#define NameOfSensors {"MQ2","MQ4","MQ9","MQ7","MQ8","MQ135","",""}
+#define TypeOfSensors {2,4,9,7,8,135,0,0}
+
+
+//in ms
+#define Delay 30000
+
+// Total time for calibration is CalDelay*CalNum
+// Number of samples used for calibration
+#define CalNum 10000
+// delay between each calibration sample (in ms)
+#define CalDelay 1000 

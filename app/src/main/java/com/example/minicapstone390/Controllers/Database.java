@@ -6,6 +6,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class Database {
+    private static final String DEVICES = DatabaseEnv.DEVICES.getEnv();
+    private static final String SENSORS = DatabaseEnv.SENSORS.getEnv();
+    private static final String USERS = DatabaseEnv.USERS.getEnv();
+
     private final FirebaseDatabase database;
     private final FirebaseAuth auth;
     private final FirebaseUser user;
@@ -16,43 +20,25 @@ public class Database {
         this.user = auth.getCurrentUser();
     }
 
-    public FirebaseUser getUser() {
-        return this.user;
-    }
+    public FirebaseUser getUser() { return this.user; }
 
-    public FirebaseAuth getAuth() {
-        return this.auth;
-    }
+    public FirebaseAuth getAuth() { return this.auth; }
 
-    public FirebaseDatabase getDatabase() {
-        return this.database;
-    }
+    public FirebaseDatabase getDatabase() { return this.database; }
 
-    public DatabaseReference getUserRef() {
-        return this.database.getReference("Users");
-    }
+    public DatabaseReference getUserRef() { return this.database.getReference(USERS); }
 
-    public DatabaseReference getUserChild(String node) {
-        return getUserRef().child(node);
-    }
+    public DatabaseReference getUserChild() { return this.database.getReference(USERS).child(getUserId()); }
 
-    public DatabaseReference getDeviceRef() {
-        return this.database.getReference("Devices");
-    }
+    public DatabaseReference getUserChild(String node) { return getUserRef().child(node); }
 
-    public DatabaseReference getDeviceChild(String node) {
-        return getDeviceRef().child(node);
-    }
+    public DatabaseReference getDeviceRef() { return this.database.getReference(DEVICES); }
 
-    public DatabaseReference getSensorRef() {
-        return this.database.getReference("Sensors");
-    }
+    public DatabaseReference getDeviceChild(String node) { return getDeviceRef().child(node); }
 
-    public DatabaseReference getSensorChild(String node) {
-        return getSensorRef().child(node);
-    }
+    public DatabaseReference getSensorRef() { return this.database.getReference(SENSORS); }
 
-    public String getUserId() {
-        return this.user.getUid();
-    }
+    public DatabaseReference getSensorChild(String node) { return getSensorRef().child(node); }
+
+    public String getUserId() { return this.user.getUid(); }
 }

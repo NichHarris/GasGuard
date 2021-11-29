@@ -5,95 +5,100 @@
     android:background="@color/g_guard_theme">
 
     <RelativeLayout
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
         android:layout_width="250dp"
-        android:layout_height="350dp" >
+        android:layout_height="250dp"
+        android:layout_centerInParent="true">
 
         <EditText
             android:id="@+id/updateUsername"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
             android:layout_marginTop="15dp"
+            android:layout_marginEnd="20dp"
             android:ems="16"
-            android:maxLength="20"
             android:hint="@string/username"
-            android:autofillHints="name"
-            android:inputType="textPersonName"/>
+            android:maxLength="20"
+            android:background="@drawable/input_styles"
+            android:paddingHorizontal="15dp"/>
 
         <EditText
             android:id="@+id/updateEmail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
+            android:layout_marginTop="50dp"
             android:layout_marginEnd="20dp"
-            android:layout_marginTop="75dp"
             android:ems="16"
-            android:maxLength="50"
             android:hint="@string/email"
-            android:autofillHints="emailAddress"
-            android:inputType="textEmailAddress"/>
+            android:maxLength="50"
+            android:background="@drawable/input_styles"
+            android:paddingHorizontal="15dp"/>
 
         <EditText
             android:id="@+id/updatePhone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
+            android:layout_marginTop="85dp"
             android:layout_marginEnd="20dp"
-            android:layout_marginTop="135dp"
             android:ems="16"
-            android:maxLength="20"
             android:hint="@string/phone"
-            android:autofillHints="phone"
-            android:inputType="phone"/>
+            android:maxLength="20"
+            android:background="@drawable/input_styles"
+            android:paddingHorizontal="15dp"/>
 
         <EditText
             android:id="@+id/updateFirstName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
+            android:layout_marginTop="120dp"
             android:layout_marginEnd="20dp"
-            android:layout_marginTop="195dp"
             android:ems="16"
-            android:maxLength="20"
             android:hint="@string/first_name"
-            android:autofillHints="name"
-            android:inputType="textPersonName"/>
+            android:maxLength="20"
+            android:background="@drawable/input_styles"
+            android:paddingHorizontal="15dp"/>
 
         <EditText
             android:id="@+id/updateLastName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
+            android:layout_marginTop="155dp"
             android:layout_marginEnd="20dp"
-            android:layout_marginTop="255dp"
             android:ems="16"
-            android:maxLength="20"
             android:hint="@string/last_name"
-            android:autofillHints="name"
-            android:inputType="textPersonName"/>
+            android:maxLength="20"
+            android:background="@drawable/input_styles"
+            android:paddingHorizontal="15dp"/>
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <android.widget.Button
             android:id="@+id/save_add_device_button"
-            android:text="@string/save"
-            android:textSize="14sp"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentStart="true"
-            android:layout_marginStart="140dp"/>
-
-        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/cancel_add_device_button"
-            android:text="@android:string/cancel"
-            android:textSize="14sp"
-            android:layout_alignParentBottom="true"
             android:layout_alignParentStart="true"
-            android:layout_marginStart="20dp"/>
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="140dp"
+            style="@style/NewButton"
+            android:text="@string/save"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:layout_marginVertical="10dp"/>
+
+        <android.widget.Button
+            android:id="@+id/cancel_add_device_button"
+            style="@style/NewButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="20dp"
+            android:text="@string/cancel"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:layout_marginVertical="10dp"/>
 
     </RelativeLayout>
 

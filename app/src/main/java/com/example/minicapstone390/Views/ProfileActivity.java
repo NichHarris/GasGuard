@@ -7,8 +7,6 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.location.LocationManager;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -16,9 +14,9 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.example.minicapstone390.Controllers.Database;
+import com.example.minicapstone390.Controllers.DatabaseEnv;
 import com.example.minicapstone390.R;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.example.minicapstone390.Views.UpdateInfoFragment;
 import com.example.minicapstone390.Controllers.SharedPreferenceHelper;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -27,12 +25,15 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
 
-import java.net.InetAddress;
-import java.net.Socket;
 import java.util.Objects;
 
 public class ProfileActivity extends AppCompatActivity {
     private static final String TAG = "ProfileActivity";
+    private static final String USERNAME = DatabaseEnv.USERNAME.getEnv();
+    private static final String USEREMAIL = DatabaseEnv.USEREMAIL.getEnv();
+    private static final String USERFIRST = DatabaseEnv.USERFIRST.getEnv();
+    private static final String USERLAST = DatabaseEnv.USERLAST.getEnv();
+    private static final String USERPHONE = DatabaseEnv.USERPHONE.getEnv();
 
     // Declare variables
     private final Database dB = new Database();
@@ -47,12 +48,9 @@ public class ProfileActivity extends AppCompatActivity {
 
         // Initialize SharedPref and check theme
         sharePreferenceHelper = new SharedPreferenceHelper(ProfileActivity.this);
+
         // Set theme
-        if (sharePreferenceHelper.getTheme()) {
-            setTheme(R.style.NightMode);
-        } else {
-            setTheme(R.style.LightMode);
-        }
+        setTheme();
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
@@ -73,10 +71,29 @@ public class ProfileActivity extends AppCompatActivity {
         updateAllInfo();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setTheme();
+    }
+
+    public void setTheme() {
+        // Set theme
+        if (sharePreferenceHelper.getTheme()) {
+            setTheme(R.style.NightMode);
+        } else {
+            setTheme(R.style.LightMode);
+        }
+    }
+
     // Display options menu in task-bar
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.profile_menu, menu);
+        MenuItem menuItem = menu.findItem(R.id.theme);
+        if (sharePreferenceHelper.getTheme()) {
+            menuItem.setTitle("Disable Dark Mode");
+        }
         return true;
     }
 
@@ -97,13 +114,9 @@ public class ProfileActivity extends AppCompatActivity {
                 } else {
                     sharePreferenceHelper.setTheme(true);
                 }
+                setDropDownText(item);
                 reload();
                 //TODO Add transitions
-                break;
-            case R.id.update_notification:
-                NotificationsFragment notificationsFragment = new NotificationsFragment();
-                notificationsFragment.show(getSupportFragmentManager(), "NotificationFragment");
-                updateAllInfo();
                 break;
             case R.id.logout_user:
                 logoutUser();
@@ -113,6 +126,14 @@ public class ProfileActivity extends AppCompatActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void setDropDownText(MenuItem item) {
+        if(sharePreferenceHelper.getTheme()) {
+            item.setTitle("Disable Dark Mode");
+        } else {
+            item.setTitle("Enable Dark Mode");
+        }
     }
 
     // Delete user
@@ -126,14 +147,37 @@ public class ProfileActivity extends AppCompatActivity {
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        dB.getUser().delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                        dB.getUserChild().addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if (task.isSuccessful()) {
-                                    goToLoginActivity();
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if (snapshot.exists()) {
+                                    snapshot.getRef().removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()) {
+                                                dB.getUser().delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                        if (!task.isSuccessful()) {
+                                                            Log.d(TAG, "Delete user failed");
+                                                        }
+                                                    }
+                                                });
+                                                goToLoginActivity();
+                                            } else {
+                                                Log.e(TAG, "Task failed");
+                                            }
+                                        }
+                                    });
                                 } else {
-                                    // TODO: Send toast for failed delete
+                                    Log.d(TAG, "No user found");
                                 }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError e) {
+                                Log.d(TAG, e.toString());
+                                throw e.toException();
                             }
                         });
                     }
@@ -142,7 +186,7 @@ public class ProfileActivity extends AppCompatActivity {
                 new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                // TODO LOG THAT IT IS A CANCEL
+                Log.i(TAG, "Cancelled Delete Account");
             }
         });
 
@@ -169,16 +213,22 @@ public class ProfileActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    // Navigate to long activity
+    private void goToHomeActivity() {
+        Intent intent = new Intent(this, HomeActivity.class);
+        startActivity(intent);
+    }
+
     // Update all user info
     public void updateAllInfo() {
         dB.getUserChild(dB.getUserId()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                userName = snapshot.child("userName").getValue(String.class);
-                userEmail = snapshot.child("userEmail").getValue(String.class);
-                userPhone = snapshot.child("userPhone").getValue(String.class);
-                userFirstName = snapshot.child("userFirstName").getValue(String.class);
-                userLastName = snapshot.child("userLastName").getValue(String.class);
+                userName = snapshot.child(USERNAME).exists() ? snapshot.child(USERNAME).getValue(String.class) : "";
+                userEmail = snapshot.child(USEREMAIL).exists() ? snapshot.child(USEREMAIL).getValue(String.class) : "";
+                userPhone = snapshot.child(USERPHONE).exists() ? snapshot.child(USERPHONE).getValue(String.class) : "";
+                userFirstName = snapshot.child(USERFIRST).exists() ? snapshot.child(USERFIRST).getValue(String.class) : "";
+                userLastName = snapshot.child(USERLAST).exists() ? snapshot.child(USERLAST).getValue(String.class) : "";
                 updateProfile();
             }
 
@@ -201,7 +251,13 @@ public class ProfileActivity extends AppCompatActivity {
     // Navigate back to homepage on task-bar return
     @Override
     public boolean onSupportNavigateUp() {
-        finish();
+        goToHomeActivity();
         return true;
+    }
+
+    // Navigate back to homepage on back pressed
+    @Override
+    public void onBackPressed() {
+        goToHomeActivity();
     }
 }

@@ -22,12 +22,6 @@
         android:supportsRtl="true"
         android:theme="@style/LightMode">
         <activity
-            android:name=".Views.LineChartTime"
-            android:exported="false" />
-        <activity
-            android:name=".Views.MainActivity2"
-            android:exported="false" />
-        <activity
             android:name=".Views.SensorActivity"
             android:exported="false"
             android:label="Sensor" />

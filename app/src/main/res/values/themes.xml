@@ -5,8 +5,8 @@
         <item name="colorPrimaryVariant">@color/purple_700</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color -->
-        <item name="colorSecondary">@color/teal_200</item>
-        <item name="colorSecondaryVariant">@color/teal_700</item>
+        <item name="colorSecondary">@color/g_guard_theme</item>
+        <item name="colorSecondaryVariant">@color/g_guard_banner</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
@@ -21,8 +21,8 @@
         <item name="colorPrimaryVariant">@color/purple_700</item>
         <item name="colorOnPrimary">@color/black</item>
         <!-- Secondary brand color -->
-        <item name="colorSecondary">@color/teal_200</item>
-        <item name="colorSecondaryVariant">@color/teal_200</item>
+        <item name="colorSecondary">@color/g_guard_dm_theme</item>
+        <item name="colorSecondaryVariant">@color/g_guard_dm_banner</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
@@ -30,11 +30,28 @@
         <item name="windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
     </style>
-    
+
+    <style name="NewButton" parent="Widget.AppCompat.Button">
+        <item name="android:background">@drawable/button_custom</item>
+    </style>
+
+
     <style name="RadioButton" parent="Widget.AppCompat.CompoundButton.RadioButton">
         <item name="android:background">@drawable/button</item>
         <item name="android:button">@null</item>
         <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="Cloud_corner_cropped">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:src">@drawable/gg_corner_no_background</item>
+    </style>
+
+    <style name="GasGuard_logo_cropped">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:src">@drawable/gg_logo_no_background</item>
     </style>
 
 </resources>

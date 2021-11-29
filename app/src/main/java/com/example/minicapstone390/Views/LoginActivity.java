@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -33,11 +34,7 @@ public class LoginActivity extends AppCompatActivity {
         sharePreferenceHelper = new SharedPreferenceHelper(LoginActivity.this);
 
         // Set theme
-        if (sharePreferenceHelper.getTheme()) {
-            setTheme(R.style.NightMode);
-        } else {
-            setTheme(R.style.LightMode);
-        }
+        setTheme();
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
@@ -58,11 +55,28 @@ public class LoginActivity extends AppCompatActivity {
         forgotPassword.setOnClickListener(view -> sendReset());
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setTheme();
+    }
+
+    public void setTheme() {
+        // Set theme
+        if (sharePreferenceHelper.getTheme()) {
+            setTheme(R.style.NightMode);
+        } else {
+            setTheme(R.style.LightMode);
+        }
+    }
+
     private void sendReset() {
         String userEmail = userEmailET.getText().toString();
 
         if (userEmail.equals("")) {
             userEmailET.setError("Please enter email to send reset to");
+            passwordET.setEnabled(false);
+            passwordET.setBackgroundColor(Color.DKGRAY);
             userEmailET.requestFocus();
             return;
         }
@@ -73,9 +87,11 @@ public class LoginActivity extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     Log.i(TAG, String.format("Password reset sent to: %s", userEmail));
                     Toast.makeText(getApplicationContext(), "Password reset sent successfully!", Toast.LENGTH_SHORT).show();
+                    reload();
                 } else {
                     Log.e(TAG, "Failed to send password reset email");
                     Toast.makeText(getApplicationContext(), "Error sending password reset, email is not associated with an account!", Toast.LENGTH_SHORT).show();
+                    userEmailET.requestFocus();
                 }
             }
         });
@@ -95,13 +111,13 @@ public class LoginActivity extends AppCompatActivity {
         // Login User Using Firebase Auth
         dB.getAuth().signInWithEmailAndPassword(userEmail, password)
             .addOnCompleteListener(this, task -> {
-                if (task.isSuccessful()) {
+                if (!task.isSuccessful()) {
                     Log.i(TAG,"Login attempt failed");
-                    Toast.makeText(getApplicationContext(), "Successfully Logged In!", Toast.LENGTH_SHORT).show();
-                    openHomeActivity();
+                    Toast.makeText(getApplicationContext(), "Login failed. Try again!", Toast.LENGTH_LONG).show();
                 } else {
                     Log.i(TAG,String.format("Successfully logged in user: %s", userEmail));
-                    Toast.makeText(getApplicationContext(), "Login failed. Try again!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Successfully Logged In!", Toast.LENGTH_SHORT).show();
+                    openHomeActivity();
                 }
         });
     }
@@ -109,6 +125,14 @@ public class LoginActivity extends AppCompatActivity {
     private void openHomeActivity() {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
+    }
+
+    private void reload() {
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
+
+        //Remove transition
+        overridePendingTransition(0, 0);
     }
 
     private void openSignupActivity() {

@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.example.minicapstone390.Controllers.Database;
+import com.example.minicapstone390.Controllers.DatabaseEnv;
 import com.example.minicapstone390.Controllers.SharedPreferenceHelper;
 import com.example.minicapstone390.Controllers.DeviceAdapter;
 import com.example.minicapstone390.Models.Device;
@@ -40,10 +41,17 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class HomeActivity extends AppCompatActivity {
     private static final String TAG = "HomeActivity";
+    private static final String USERNAME = DatabaseEnv.USERNAME.getEnv();
+    private static final String DEVICES = DatabaseEnv.USERDEVICES.getEnv();
+    private static final String DEVICENAME = DatabaseEnv.DEVICENAME.getEnv();
+    private static final String DEVICELOC = DatabaseEnv.DEVICELOCATION.getEnv();
+    private static final String DEVICESTATUS = DatabaseEnv.DEVICESTATUS.getEnv();
 
     // Declare variables
     private final Database dB = new Database();
@@ -57,6 +65,7 @@ public class HomeActivity extends AppCompatActivity {
     protected ArrayList<Device> deviceData;
     protected RecyclerView deviceListView;
     protected DeviceAdapter deviceAdapter;
+    protected boolean nameState = false; // False = use "deviceName", True = use "deviceId"
 
     public static String wifiModuleIp = "";
     public static int wifiModulePort = 0;
@@ -68,11 +77,7 @@ public class HomeActivity extends AppCompatActivity {
         sharePreferenceHelper = new SharedPreferenceHelper(HomeActivity.this);
 
         // Set theme
-        if (sharePreferenceHelper.getTheme()) {
-            setTheme(R.style.NightMode);
-        } else {
-            setTheme(R.style.LightMode);
-        }
+        setTheme();
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
@@ -105,7 +110,17 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        setTheme();
         updatePage();
+    }
+
+    public void setTheme() {
+        // Set theme
+        if (sharePreferenceHelper.getTheme()) {
+            setTheme(R.style.NightMode);
+        } else {
+            setTheme(R.style.LightMode);
+        }
     }
 
     // Display options menu in task-bar
@@ -126,13 +141,23 @@ public class HomeActivity extends AppCompatActivity {
         } else if(itemId == R.id.profile) {
             goToProfileActivity();
         } else if(itemId == R.id.device_names) {
-            //TODO: Change List of Device Names to Set Names
-            return true;
+            nameState = !nameState;
+            setDropDownText(item);
+            loadDeviceList();
         } else {
             return super.onOptionsItemSelected(item);
         }
 
         return true;
+    }
+
+    // Set text change on option selected
+    private void setDropDownText(MenuItem item) {
+        if(nameState) {
+            item.setTitle("Device Names");
+        } else {
+            item.setTitle("Device IDs");
+        }
     }
 
     // TODO: IMPLEMENT DEVICE CONNECTION
@@ -167,12 +192,12 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     // Update Page information
-    private void updatePage() {
+    public void updatePage() {
         dB.getUserChild(dB.getUserId()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 try {
-                    String userName = snapshot.child("userName").getValue(String.class);
+                    String userName = snapshot.child(USERNAME).exists() ? snapshot.child(USERNAME).getValue(String.class) : "";
 
                     String defaultMessage = getResources().getString(R.string.welcome_user).replace("{0}", userName != null ? userName : "");
                     welcomeUserMessage.setText(defaultMessage);
@@ -196,16 +221,20 @@ public class HomeActivity extends AppCompatActivity {
         ArrayList<String> devIds = new ArrayList<>();
 
         //Get List of Devices from DB
-        DatabaseReference usersRef = dB.getUserChild(dB.getUserId()).child("devices");
+        DatabaseReference usersRef = dB.getUserChild(dB.getUserId()).child(DEVICES);
 
-        usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        usersRef.addValueEventListener(new ValueEventListener() {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
                 // Format List from DB for Adapter
                 for (DataSnapshot ds : snapshot.getChildren()) {
-                    devIds.add(ds.getValue(String.class));
+                    if (ds.exists()) {
+                        devIds.add(ds.getValue(String.class));
+                    } else {
+                        Log.e(TAG, "Child does not exist");
+                    }
                 }
 
                 // Add Ids to Device Ids List
@@ -225,36 +254,51 @@ public class HomeActivity extends AppCompatActivity {
 
     // Get List of device names associated with the user
     private void getDeviceNames(List<String> devices) {
-        ArrayList<Device> devData = new ArrayList<>();
+        ArrayList<Device> devData = new ArrayList<>();;
+        Map<String, Device> deviceMap = new HashMap<String, Device>();
 
         for (String id: devices) {
             //TODO: check if devices are part of the user
-            DatabaseReference deviceRef = dB.getDeviceRef().child(id);
-            deviceRef.addListenerForSingleValueEvent(new ValueEventListener() {
-
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    try {
-                        // Get Device Data from DB
-                        String devName = snapshot.child("deviceName").getValue(String.class);
-                        String devLocation = snapshot.child("location").getValue(String.class);
-                        boolean devStatus = snapshot.child("status").getValue(Boolean.class);
-
-                        //Add Device to Device List
-                        devData.add(new Device(id, devName, devLocation, devStatus));
-                    } catch (Exception e) {
-                        Log.d(TAG, e.toString());
-                        return;
+            if (id != null) {
+                DatabaseReference deviceRef = dB.getDeviceRef().child(id);
+                deviceRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        try {
+                            // Get Device Data from DB
+                            String devName = id;
+                            if (!nameState) {
+                                devName = snapshot.child(DEVICENAME).exists() ? snapshot.child(DEVICENAME).getValue(String.class) : id;
+                            }
+                            String devLocation = snapshot.child(DEVICELOC).exists() ? snapshot.child(DEVICELOC).getValue(String.class) : "No location set";
+                            boolean devStatus = snapshot.child(DEVICESTATUS).exists() ? snapshot.child(DEVICESTATUS).getValue(Boolean.class) : true;
+                            if (!deviceMap.containsKey(id)) {
+                                Device device = new Device(id, devName, devLocation, devStatus);
+                                devData.add(device);
+                                deviceMap.put(id, device);
+                            } else {
+                                Device device = deviceMap.get(id);
+                                assert device != null;
+                                device.setDeviceName(devName);
+                                device.setLocation(devLocation);
+                                device.setStatus(devStatus);
+                            }
+                            setDeviceList(devData);
+                        } catch (Exception e) {
+                            Log.d(TAG, e.toString());
+                            return;
+                        }
                     }
-                    setDeviceList(devData);
-                }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError e) {
-                    Log.d(TAG, e.toString());
-                    throw e.toException();
-                }
-            });
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError e) {
+                        Log.d(TAG, e.toString());
+                        throw e.toException();
+                    }
+                });
+            } else {
+                Log.d(TAG, "Id is null");
+            }
         }
 
     }
@@ -263,7 +307,6 @@ public class HomeActivity extends AppCompatActivity {
     private void setDeviceList(ArrayList<Device> devData) {
         deviceAdapter = new DeviceAdapter(devData);
         deviceListView.setAdapter(deviceAdapter);
-
         setXAxisLabels(devData);
     }
 
@@ -340,5 +383,19 @@ public class HomeActivity extends AppCompatActivity {
         Intent intent = new Intent(this, DeviceActivity.class);
         intent.putExtra("deviceId", deviceId);
         startActivity(intent);
+    }
+
+    // Close app on back pressed
+    private void closeApp() {
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_HOME);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
+
+    // Close app on home menu
+    @Override
+    public void onBackPressed() {
+        closeApp();
     }
 }
