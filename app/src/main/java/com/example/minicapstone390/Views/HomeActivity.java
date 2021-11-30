@@ -227,7 +227,7 @@ public class HomeActivity extends AppCompatActivity {
         for (String id: devices) {
             if (id != null) {
                 DatabaseReference deviceRef = dB.getDeviceRef().child(id);
-                deviceRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                deviceRef.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if (snapshot.exists()) {

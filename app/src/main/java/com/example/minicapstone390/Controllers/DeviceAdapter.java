@@ -59,7 +59,11 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
             calibrationIcon = (ImageView) v.findViewById(R.id.deviceCalibrationIcon);
 
             editIcon.setOnClickListener((view) -> {
-                callActivity(editDeviceFunction, EDIT, getAdapterPosition());
+                if(!deviceStatus.getText().toString().contains("Calibrating")) {
+                    callActivity(editDeviceFunction, EDIT, getAdapterPosition());
+                } else {
+                    Toast.makeText(mContext, "Device is Calibrating! Wait for Calibration to End Before Accessing Device.", Toast.LENGTH_LONG).show();
+                }
             });
 
             deleteIcon.setOnClickListener((view) -> {
@@ -124,7 +128,7 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
     }
 
     public int getStatusDescription(Device d) {
-        if(d.getCalibration()) {
+        if(!d.getCalibration()) {
             return R.string.calibratingDeviceStatus;
         } else if(d.getStatus()) {
             return R.string.activeDeviceStatus;

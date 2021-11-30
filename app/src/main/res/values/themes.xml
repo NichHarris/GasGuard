@@ -39,7 +39,6 @@
         <item name="android:background">@drawable/button_custom</item>
     </style>
 
-
     <style name="RadioButton" parent="Widget.AppCompat.CompoundButton.RadioButton">
         <item name="android:background">@drawable/button</item>
         <item name="android:button">@null</item>

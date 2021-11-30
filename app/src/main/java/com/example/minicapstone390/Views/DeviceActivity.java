@@ -202,7 +202,9 @@ public class DeviceActivity extends AppCompatActivity {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 if (snapshot.exists()) {
-                                    dB.getDeviceChild(deviceId).child("CalibrationStatus").setValue(true);
+                                    // When CalibrationStatus = FALSE, Device is not calibrated
+                                    // When CalibrationStatus = TRUE, Device is calibrated
+                                    dB.getDeviceChild(deviceId).child("CalibrationStatus").setValue(false);
                                     Toast.makeText(DeviceActivity.this, "Calibration started, please leave device for 30 min", Toast.LENGTH_LONG).show();
 
                                     goToHomeActivity();
