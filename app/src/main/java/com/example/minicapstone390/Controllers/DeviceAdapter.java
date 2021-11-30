@@ -58,6 +58,7 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
             deleteIcon = (ImageView) v.findViewById(R.id.deviceDeleteIcon);
             calibrationIcon = (ImageView) v.findViewById(R.id.deviceCalibrationIcon);
 
+            // Verify if calibrating, if not open editor
             editIcon.setOnClickListener((view) -> {
                 if(!deviceStatus.getText().toString().contains("Calibrating")) {
                     callActivity(editDeviceFunction, EDIT, getAdapterPosition());
@@ -70,6 +71,7 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
                 callActivity(deleteDeviceFunction, DELETE, getAdapterPosition());
             });
 
+            // Call calibration
             calibrationIcon.setOnClickListener((view) -> {
                 callActivity(calibrateDeviceFunction, CALIBRATION, getAdapterPosition());
             });
@@ -87,6 +89,7 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
         }
     }
 
+    // Call device activity
     private void callActivity(String function, String type, int position) {
         Intent intent = new Intent(mContext, DeviceActivity.class);
         Bundle bundle = new Bundle();
@@ -122,11 +125,12 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
     }
 
     @Override
+    // Return Num Devices
     public int getItemCount() {
-        // Return Num Devices
         return devices.size();
     }
 
+    // Get the current device status
     public int getStatusDescription(Device d) {
         if(!d.getCalibration()) {
             return R.string.calibratingDeviceStatus;

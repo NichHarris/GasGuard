@@ -136,8 +136,8 @@ public class DeviceActivity extends AppCompatActivity {
         setTheme();
     }
 
+    // Set theme
     public void setTheme() {
-        // Set theme
         if (sharePreferenceHelper.getTheme()) {
             setTheme(R.style.NightMode);
         } else {
@@ -145,6 +145,7 @@ public class DeviceActivity extends AppCompatActivity {
         }
     }
 
+    // Update device info
     private void editDevice(String deviceId) {
         Bundle bundle = new Bundle();
         bundle.putString("id", deviceId);
@@ -189,6 +190,7 @@ public class DeviceActivity extends AppCompatActivity {
         }
     }
 
+    // Initialize device calibration
     public void calibrateDevice() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(true);
@@ -284,6 +286,7 @@ public class DeviceActivity extends AppCompatActivity {
                                 for (DataSnapshot ds : snapshot.getChildren()) {
                                     if (ds.exists()) {
                                         if (ds.getValue(String.class).equals(deviceId)) {
+                                            // Remove device from User
                                             ds.getRef().removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<Void> task) {
@@ -295,6 +298,7 @@ public class DeviceActivity extends AppCompatActivity {
                                                             @Override
                                                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                                                 if (snapshot.exists()) {
+                                                                    // Remove device from devices
                                                                     snapshot.getRef().removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
                                                                         @Override
                                                                         public void onComplete(@NonNull Task<Void> task) {
@@ -380,6 +384,7 @@ public class DeviceActivity extends AppCompatActivity {
             }
         });
 
+        // Get list of sensors from the device
         dB.getDeviceChild(deviceId).child(DEVICESENSORS).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -390,7 +395,7 @@ public class DeviceActivity extends AppCompatActivity {
                         Log.e(TAG, "Unable to locate sensor");
                     }
                 }
-                getSensorNames();
+                getSensors();
             }
 
             @Override
@@ -401,8 +406,8 @@ public class DeviceActivity extends AppCompatActivity {
         });
     }
 
-    // Get List of all sensor names
-    public void getSensorNames() {
+    // Get List of all sensors
+    public void getSensors() {
         ArrayList<Sensor> sensData = new ArrayList<>();
         Map<String, Sensor> sensorMap = new HashMap<String, Sensor>();
         for (String id: sensorIds) {
@@ -417,6 +422,7 @@ public class DeviceActivity extends AppCompatActivity {
                         boolean status = snapshot.child(SENSORSTATUS).exists() ? snapshot.child(SENSORSTATUS).getValue(Boolean.class): true;
                         double sensorScore = snapshot.child(SENSORSCORE).exists() ? snapshot.child(SENSORSCORE).getValue(Double.class) : 0.0;
 
+                        // Generate a notification is the sensor status changes to unsafe
                         if (sensorScore >= sensorThreshold(sensorType) && sensorThreshold(sensorType) != 0.0) {
                             Log.i(TAG,  String.format("Sensor Threshold reached: %d", sensorType));
                             // Ensures notification is only called when the status changes to unsafe
@@ -429,6 +435,7 @@ public class DeviceActivity extends AppCompatActivity {
                             status = true;
                         }
 
+                        // Verify sensor status
                         sensorRef.child(SENSORSTATUS).setValue(status).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
@@ -438,6 +445,7 @@ public class DeviceActivity extends AppCompatActivity {
                             }
                         });
 
+                        // Check if sensor is already in map (avoid duplicates)
                         if (!sensorMap.containsKey(id)) {
                             Sensor sensor = new Sensor(id, sensorType, sensorName, sensorValue, status, sensorScore);
                             sensData.add(sensor);
@@ -467,14 +475,16 @@ public class DeviceActivity extends AppCompatActivity {
         }
     }
 
+    // Create a notification when triggered
     public void notification(String sensorName, Double sensorScore) {
-
+        // Initialize channel
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel("Threshold Notification", "Threshold Notification", NotificationManager.IMPORTANCE_HIGH);
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
         }
 
+        // Build notification
         @SuppressLint("DefaultLocale") NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "Threshold Notification")
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setSmallIcon(R.drawable.gg_logo)
@@ -485,6 +495,7 @@ public class DeviceActivity extends AppCompatActivity {
         managerCompat.notify(1, builder.build());
     }
 
+    // Set threshold to compare against
     public double sensorThreshold(int type) {
         String strType = "MQ" + type;
         double threshold = 0.0;

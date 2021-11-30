@@ -1,5 +1,6 @@
 package com.example.minicapstone390.Models;
 
+// Contains list of gas types by sensor
 public enum GasType {
     MQ2GAS("Smoke, Combustible Gas"),
     MQ3GAS("Alcohol"),

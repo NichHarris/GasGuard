@@ -149,10 +149,12 @@ public class ProfileActivity extends AppCompatActivity {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 if (snapshot.exists()) {
+                                    // Remove User
                                     snapshot.getRef().removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
                                             if (task.isSuccessful()) {
+                                                // Delete user credentials from auth
                                                 dB.getUser().delete().addOnCompleteListener(new OnCompleteListener<Void>() {
                                                     @Override
                                                     public void onComplete(@NonNull Task<Void> task) {
@@ -221,6 +223,7 @@ public class ProfileActivity extends AppCompatActivity {
         dB.getUserChild(dB.getUserId()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                // Get current info
                 if (snapshot.exists()) {
                     userName = snapshot.child(USERNAME).exists() ? snapshot.child(USERNAME).getValue(String.class) : "";
                     userEmail = snapshot.child(USEREMAIL).exists() ? snapshot.child(USEREMAIL).getValue(String.class) : "";
@@ -239,6 +242,7 @@ public class ProfileActivity extends AppCompatActivity {
                 throw e.toException();
             }
 
+            // Update user profile
             private void updateProfile() {
                 profileName.setText(String.format("Username: %s", userName));
                 profileEmail.setText(String.format("Email: %s", userEmail));

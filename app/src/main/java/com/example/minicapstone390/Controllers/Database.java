@@ -6,6 +6,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+// Contains references and controls for all database objects
 public class Database {
     private static final String DEVICES = DatabaseEnv.DEVICES.getEnv();
     private static final String SENSORS = DatabaseEnv.SENSORS.getEnv();

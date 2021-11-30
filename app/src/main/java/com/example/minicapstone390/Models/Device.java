@@ -1,5 +1,6 @@
 package com.example.minicapstone390.Models;
 
+// Class defining structure of a Sensor
 public class Device {
     private String id;
     private String deviceName, location;

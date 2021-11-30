@@ -61,8 +61,8 @@ public class LoginActivity extends AppCompatActivity {
         setTheme();
     }
 
+    // Set theme
     public void setTheme() {
-        // Set theme
         if (sharePreferenceHelper.getTheme()) {
             setTheme(R.style.NightMode);
         } else {
@@ -70,9 +70,11 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    // Send an email password reset to the user
     private void sendReset() {
         String userEmail = userEmailET.getText().toString();
 
+        // Validate email
         if (userEmail.equals("")) {
             userEmailET.setError("Please enter email to send reset to");
             passwordET.setEnabled(false);
@@ -81,6 +83,7 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
+        // Sent reset
         dB.getAuth().sendPasswordResetEmail(userEmail).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
@@ -97,6 +100,7 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    // Handles user login
     private void userLogin() {
         String userEmail = userEmailET.getText().toString();
         String password = passwordET.getText().toString();
@@ -122,11 +126,13 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    // Navigate to home activity
     private void openHomeActivity() {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
 
+    // Reload page
     private void reload() {
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
@@ -135,6 +141,7 @@ public class LoginActivity extends AppCompatActivity {
         overridePendingTransition(0, 0);
     }
 
+    // Navigate to signup activity
     private void openSignupActivity() {
         Intent intent = new Intent(this, SignupActivity.class);
         startActivity(intent);

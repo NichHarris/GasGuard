@@ -1,5 +1,6 @@
 package com.example.minicapstone390.Models;
 
+// Contains dangerous threshold levels for sensors
 public enum Threshold {
     MQ2(100.0),
     MQ3(100.0),

@@ -1,5 +1,6 @@
 package com.example.minicapstone390.Models;
 
+// Contains names of database environment nodes
 public enum DatabaseEnv {
     DEVICES("Devices"),
     DEVICENAME("deviceName"),

@@ -38,8 +38,8 @@ public class MainActivity extends AppCompatActivity {
         loadAppContent();
     }
 
+    // Set theme
     public void setTheme() {
-        // Set theme
         if (sharePreferenceHelper.getTheme()) {
             setTheme(R.style.NightMode);
         } else {
@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 try {
-                    // Sleep Run for 5s (Delay Home/Main Screen Load)
+                    // Sleep Run for 1s (Delay Home/Main Screen Load)
                     super.run();
                     sleep(1000);
                 } catch (Exception e) {

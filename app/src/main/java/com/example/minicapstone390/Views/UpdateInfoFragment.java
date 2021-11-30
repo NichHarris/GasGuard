@@ -95,10 +95,12 @@ public class UpdateInfoFragment extends DialogFragment {
                             }
                         });
 
+                        // Validate entries
                         userPhone = userPhoneInput.getText().toString().equals("") ? (snapshot.child(USERPHONE).exists() ? snapshot.child(USERPHONE).getValue(String.class) : "") : userPhoneInput.getText().toString();
                         userFirstName = userFirstNameInput.getText().toString().equals("") ? (snapshot.child(USERFIRST).exists() ? snapshot.child(USERFIRST).getValue(String.class) : "") : userFirstNameInput.getText().toString();
                         userLastName = userLastNameInput.getText().toString().equals("") ? (snapshot.child(USERLAST).exists() ? snapshot.child(USERLAST).getValue(String.class) : "") : userLastNameInput.getText().toString();
 
+                        // Get user owned devices and update user
                         userRef.child(USERDEVICES).addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
