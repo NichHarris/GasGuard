@@ -422,4 +422,5 @@ public class DeviceActivity extends AppCompatActivity {
         goToHomeActivity();
         return true;
     }
+
 }

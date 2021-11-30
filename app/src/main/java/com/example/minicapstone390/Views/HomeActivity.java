@@ -159,8 +159,12 @@ public class HomeActivity extends AppCompatActivity {
 
     // TODO: IMPLEMENT DEVICE CONNECTION
     public void connectDevice() {
+
+        //goToBleScanner();
+
         DeviceFragment dialog = new DeviceFragment();
         dialog.show(getSupportFragmentManager(), "AddDeviceFragment");
+
 //        getIpAndPort();
 //        Socket_AsyncTask connect_device = new Socket_AsyncTask();
 //        connect_device.execute();
@@ -381,6 +385,11 @@ public class HomeActivity extends AppCompatActivity {
         intent.putExtra("deviceId", deviceId);
         startActivity(intent);
     }
+
+//    public void goToBleScanner() {
+//        Intent i = new Intent(this, RecyclerBleDeviceActivity.class);
+//       startActivity(i);
+//    }
 
     // Close app on back pressed
     private void closeApp() {

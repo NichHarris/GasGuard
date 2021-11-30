@@ -89,4 +89,15 @@
     <string name="connecting">Connecting...</string>
     <string name="error_bluetooth_not_supported">Bluetooth not supported</string>
     <string name="unknown_device">Unknown Device</string>
+
+    <!-- Bluetooth Information-->
+    <string name="menu_connect">Connect</string>
+    <string name="menu_disconnect">Disconnect</string>
+    <string name="menu_scan">Scan</string>
+    <string name="menu_stop">Stop</string>
+    <string name="device_connected">CONNECTED</string>
+    <string name="device_disconnected">DISCONNECTED</string>
+    <string name="ble_device_key">askljdgjKLSDGJlKJSgdlkd</string>
+    <string name="agm_key">KLAFDJGkljasdglJASFLDFKSJFLKASDJGK</string>
+
 </resources>

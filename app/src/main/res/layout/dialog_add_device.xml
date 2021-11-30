@@ -5,10 +5,9 @@
     android:background="@color/g_guard_theme">
 
     <RelativeLayout
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
         android:layout_width="250dp"
-        android:layout_height="200dp" >
+        android:layout_height="400dp"
+        android:layout_centerInParent="true">
 
         <EditText
             android:id="@+id/wifi_name"
@@ -18,7 +17,7 @@
             android:layout_marginTop="50dp"
             android:layout_marginEnd="20dp"
             android:ems="16"
-            android:hint="@string/wifi_name"/>
+            android:hint="@string/wifi_name" />
 
         <EditText
             android:id="@+id/wifi_password"
@@ -30,18 +29,27 @@
             android:ems="16"
             android:hint="@string/wifi_password" />
 
+<!--
+        <ListView
+            android:id="@+id/lv_paired_devices"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/save_add_device_button"
+            android:layout_weight="1"></ListView>
+-->
+
         <android.widget.Button
             android:id="@+id/save_add_device_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_alignParentBottom="true"
+            android:layout_marginVertical="10dp"
             android:layout_marginStart="140dp"
             android:background="@drawable/button_custom"
             android:text="@string/connect"
             android:textColor="@color/white"
-            android:textSize="14sp"
-            android:layout_marginVertical="10dp"/>
+            android:textSize="14sp" />
 
         <android.widget.Button
             android:id="@+id/cancel_add_device_button"
@@ -49,11 +57,11 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_alignParentBottom="true"
+            android:layout_marginVertical="10dp"
             android:layout_marginStart="20dp"
             android:background="@drawable/button_custom"
             android:text="@android:string/cancel"
             android:textColor="@color/white"
-            android:textSize="14sp"
-            android:layout_marginVertical="10dp"/>
+            android:textSize="14sp" />
     </RelativeLayout>
 </RelativeLayout>
