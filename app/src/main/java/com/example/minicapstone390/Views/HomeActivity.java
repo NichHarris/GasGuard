@@ -238,7 +238,7 @@ public class HomeActivity extends AppCompatActivity {
                             }
                             String devLocation = snapshot.child(DEVICELOC).exists() || snapshot.child(DEVICELOC).getValue().equals("") ? snapshot.child(DEVICELOC).getValue(String.class) : "No location set";
 
-                            boolean devCalibration = snapshot.child(DEVICECALIBRATION).exists() ? snapshot.child(DEVICECALIBRATION).getValue(Boolean.class) : false;
+                            boolean devCalibration = snapshot.child(DEVICECALIBRATION).exists() ? snapshot.child(DEVICECALIBRATION).getValue(Boolean.class) : true;
                             boolean devStatus = snapshot.child(DEVICESTATUS).exists() ? snapshot.child(DEVICESTATUS).getValue(Boolean.class) : true;
 
                             if (!deviceMap.containsKey(id)) {
