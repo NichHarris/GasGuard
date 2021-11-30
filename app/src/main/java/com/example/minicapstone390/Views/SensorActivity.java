@@ -22,6 +22,7 @@ import com.example.minicapstone390.Controllers.Database;
 import com.example.minicapstone390.Models.DatabaseEnv;
 import com.example.minicapstone390.Models.GasType;
 import com.example.minicapstone390.Controllers.SharedPreferenceHelper;
+import com.example.minicapstone390.Models.Graphing;
 import com.example.minicapstone390.Models.SensorData;
 import com.example.minicapstone390.R;
 import com.github.mikephil.charting.charts.LineChart;
@@ -102,9 +103,7 @@ public class SensorActivity extends AppCompatActivity {
         chartTitle = (TextView) findViewById(R.id.chart_title);
         sensorChart = (LineChart) findViewById(R.id.sensorChart);
 
-        // Disable legend and description
-        sensorChart.getLegend().setEnabled(false);
-        sensorChart.getDescription().setEnabled(false);
+        Graphing graphing = new Graphing(sensorChart);
 
         Bundle carryOver = getIntent().getExtras();
         if (carryOver != null) {
@@ -424,7 +423,7 @@ public class SensorActivity extends AppCompatActivity {
             xAxis.setValueFormatter(new IAxisValueFormatter() {
                 @Override
                 public String getFormattedValue(float value, AxisBase axis) {
-                    if (value < results.size()) {
+                    if (value < xAxisLabel.size()) {
                         return xAxisLabel.get((int) value);
                     }
                     return "";

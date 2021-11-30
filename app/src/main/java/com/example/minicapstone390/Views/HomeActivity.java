@@ -18,6 +18,7 @@ import com.example.minicapstone390.Models.DatabaseEnv;
 import com.example.minicapstone390.Controllers.SharedPreferenceHelper;
 import com.example.minicapstone390.Controllers.DeviceAdapter;
 import com.example.minicapstone390.Models.Device;
+import com.example.minicapstone390.Models.Graphing;
 import com.example.minicapstone390.R;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.AxisBase;
@@ -83,9 +84,7 @@ public class HomeActivity extends AppCompatActivity {
         // Initialize Layouts
         welcomeUserMessage = (TextView) findViewById(R.id.welcomeUserMessage);
         deviceChart = (BarChart) findViewById(R.id.deviceChart);
-        // Disable legend and description
-        deviceChart.getLegend().setEnabled(false);
-        deviceChart.getDescription().setEnabled(false);
+        Graphing graph = new Graphing(deviceChart);
 
         // Initialize Dev List and Ids
         devList = new ArrayList<>();
