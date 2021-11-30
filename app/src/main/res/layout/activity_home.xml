@@ -26,7 +26,7 @@
         android:layout_marginStart="20dp"
         android:layout_marginTop="56dp"
         android:paddingVertical="8dp"
-        android:text="@string/welcome_user"
+        android:text="@string/welcome_no_user"
         android:textColor="?attr/colorOnPrimary"
         android:textSize="25sp"
         android:textStyle="bold"

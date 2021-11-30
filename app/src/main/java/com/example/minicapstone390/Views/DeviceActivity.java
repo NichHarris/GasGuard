@@ -353,10 +353,8 @@ public class DeviceActivity extends AppCompatActivity {
 
                 String status = getResources().getString(R.string.inactiveDeviceStatus);
                 try {
-                    if (snapshot.child(DEVICECALIBRATION).exists()) {
-                        if (snapshot.child(DEVICECALIBRATION).getValue(Boolean.class)) {
+                    if (snapshot.child(DEVICECALIBRATION).exists() && snapshot.child(DEVICECALIBRATION).getValue(Boolean.class)) {
                             status = getResources().getString(R.string.calibratingDeviceStatus);
-                        }
                     } else if (snapshot.child(DEVICESTATUS).exists()) {
                         if (snapshot.child(DEVICESTATUS).getValue(Boolean.class)) {
                             status = getResources().getString(R.string.activeDeviceStatus);
