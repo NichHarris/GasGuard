@@ -27,7 +27,7 @@ out/
 .gradle
 .gradle/
 build/
-
+scrcpy/
 .Arduino/gasGuard/Config.h
 # Signing files
 .signing/
