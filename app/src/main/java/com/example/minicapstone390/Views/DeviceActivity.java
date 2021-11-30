@@ -23,10 +23,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.minicapstone390.Controllers.Database;
-import com.example.minicapstone390.Controllers.DatabaseEnv;
+import com.example.minicapstone390.Models.DatabaseEnv;
 import com.example.minicapstone390.Controllers.SharedPreferenceHelper;
 
-import com.example.minicapstone390.Controllers.Threshold;
+import com.example.minicapstone390.Models.Threshold;
 import com.example.minicapstone390.Models.Sensor;
 import com.example.minicapstone390.R;
 import com.example.minicapstone390.Controllers.SensorAdapter;

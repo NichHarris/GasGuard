@@ -1,5 +1,6 @@
 package com.example.minicapstone390.Controllers;
 
+import com.example.minicapstone390.Models.DatabaseEnv;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -28,7 +29,7 @@ public class Database {
 
     public DatabaseReference getUserRef() { return this.database.getReference(USERS); }
 
-    public DatabaseReference getUserChild() { return this.database.getReference(USERS).child(getUserId()); }
+    public DatabaseReference getUserChild() { return getUserRef().child(getUserId()); }
 
     public DatabaseReference getUserChild(String node) { return getUserRef().child(node); }
 

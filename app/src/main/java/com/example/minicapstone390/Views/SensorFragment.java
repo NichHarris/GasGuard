@@ -17,7 +17,7 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.example.minicapstone390.Controllers.Database;
-import com.example.minicapstone390.Controllers.DatabaseEnv;
+import com.example.minicapstone390.Models.DatabaseEnv;
 import com.example.minicapstone390.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;

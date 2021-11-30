@@ -1,4 +1,4 @@
-package com.example.minicapstone390.Controllers;
+package com.example.minicapstone390.Models;
 
 public enum DatabaseEnv {
     DEVICES("Devices"),
