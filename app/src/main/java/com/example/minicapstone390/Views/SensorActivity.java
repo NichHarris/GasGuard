@@ -250,15 +250,15 @@ public class SensorActivity extends AppCompatActivity {
                 switch (id) {
                     case R.id.weekButton:
                         graphTimeScale = 7;
-                        delta = 90;
+                        delta = 30;
                         break;
                     case R.id.weeksButton:
                         graphTimeScale = 14;
-                        delta = 180;
+                        delta = 60;
                         break;
                     case R.id.monthButton:
                         graphTimeScale = 28;
-                        delta = 360;
+                        delta = 120;
                         break;
                     default:
                         graphTimeScale = 0;
