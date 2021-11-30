@@ -19,10 +19,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.minicapstone390.Controllers.Database;
-import com.example.minicapstone390.Controllers.DatabaseEnv;
-import com.example.minicapstone390.Controllers.GasType;
+import com.example.minicapstone390.Models.DatabaseEnv;
+import com.example.minicapstone390.Models.GasType;
 import com.example.minicapstone390.Controllers.SharedPreferenceHelper;
-import com.example.minicapstone390.Controllers.Threshold;
 import com.example.minicapstone390.Models.SensorData;
 import com.example.minicapstone390.R;
 import com.github.mikephil.charting.charts.LineChart;
