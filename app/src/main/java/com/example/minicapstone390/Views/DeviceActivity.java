@@ -202,7 +202,7 @@ public class DeviceActivity extends AppCompatActivity {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 if (snapshot.exists()) {
-                                    dB.getDeviceChild(deviceId).child("CalibrationStatus").setValue(true);
+                                    dB.getDeviceChild(deviceId).child("CalibrationStatus").setValue(false);
                                     Toast.makeText(DeviceActivity.this, "Calibration started, please leave device for 30 min", Toast.LENGTH_LONG).show();
 
                                     goToHomeActivity();
@@ -353,7 +353,7 @@ public class DeviceActivity extends AppCompatActivity {
 
                 String status = getResources().getString(R.string.inactiveDeviceStatus);
                 try {
-                    if (snapshot.child(DEVICECALIBRATION).exists() && snapshot.child(DEVICECALIBRATION).getValue(Boolean.class)) {
+                    if (snapshot.child(DEVICECALIBRATION).exists() && !snapshot.child(DEVICECALIBRATION).getValue(Boolean.class)) {
                             status = getResources().getString(R.string.calibratingDeviceStatus);
                     } else if (snapshot.child(DEVICESTATUS).exists()) {
                         if (snapshot.child(DEVICESTATUS).getValue(Boolean.class)) {

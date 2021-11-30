@@ -124,7 +124,7 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
     }
 
     public int getStatusDescription(Device d) {
-        if(d.getCalibration()) {
+        if(!d.getCalibration()) {
             return R.string.calibratingDeviceStatus;
         } else if(d.getStatus()) {
             return R.string.activeDeviceStatus;
