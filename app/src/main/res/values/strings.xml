@@ -18,6 +18,7 @@
     <!-- Home Page -->
     <string name="welcome_message"> Welcome to gasGuard </string>
     <string name="welcome_user"> Welcome, {0}! </string>
+    <string name="welcome_no_user"> Welcome! </string>
     <string name="devices"> Devices </string>
     <string name="addDeviceButton">Add Device</string>
 
@@ -30,6 +31,7 @@
     <string name="device_id">Device Id</string>
     <string name="save">SAVE</string>
     <string name="cancel">CANCEL</string>
+    <string name="add_device_fragment">Add a New Device</string>
 
     <!-- Profile Page   -->
     <string name="profile">Profile</string>
@@ -43,6 +45,10 @@
     <string name="notifications">Notifications</string>
 
     <!-- Sensor Graph Page  -->
+    <string name="sensor_name">Sensor: </string>
+    <string name="sensor_type">Type: </string>
+    <string name="sensor_gas">Gas: </string>
+    <string name="sensor_graph_default">Readings History</string>
     <string name="sensor_graph">{0} Readings History</string>
     <string name="day">Day</string>
     <string name="week">Week</string>
@@ -55,6 +61,8 @@
     <string name="remove_device">Remove Device</string>
     <string name="disable_device">Disable Device</string>
     <string name="update_device_info">Update Device Info</string>
+    <string name="update_device_title">Update Device</string>
+    <string name="update_sensor_info">Update Sensor</string>
     <string name="device_names">Device Names</string>
 
     <!-- Notification and Dark Mode Features -->
@@ -64,6 +72,8 @@
     <!-- Device and Sensor Recycler View -->
     <string name="activeDeviceStatus">🟢 Active</string>
     <string name="inactiveDeviceStatus">🔴 Inactive</string>
+    <string name="calibrate_device">Calibrate Device</string>
+    <string name="calibratingDeviceStatus">🟠 Calibrating</string>
     <string name="safeSensorValue">🟢 Safe</string>
     <string name="unsafeSensorValue">🔴 Unsafe</string>
 
@@ -76,11 +86,12 @@
     <string name="pastValueData">Past: 2.0 ppm</string>
     <string name="sensorImageDescription"> MC Sensor Image </string>
     <string name="deleteIconDescription"> Delete Icon </string>
+    <string name="calibrationIconDescription"> Calibration Icon </string>
     <string name="editIconDescription"> Edit Icon </string>
     <string name="type">Type</string>
     <string name="gas">Gas</string>
     <string name="sensorname">SensorName</string>
     <string name="device_name">Device Name</string>
+    <string name="device_name_display"><b>Device: </b></string>
     <string name="device_ids">Device IDs</string>
-    <string name="calibrate_device">Calibrate Device</string>
 </resources>

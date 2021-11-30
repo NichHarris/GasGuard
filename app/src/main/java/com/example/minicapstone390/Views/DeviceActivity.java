@@ -48,6 +48,7 @@ public class DeviceActivity extends AppCompatActivity {
     private static final String DEVICES = DatabaseEnv.USERDEVICES.getEnv();
     private static final String DEVICENAME = DatabaseEnv.DEVICENAME.getEnv();
     private static final String DEVICESTATUS = DatabaseEnv.DEVICESTATUS.getEnv();
+    private static final String DEVICECALIBRATION = DatabaseEnv.DEVICECALIBRATION.getEnv();
     private static final String DEVICESENSORS = DatabaseEnv.DEVICESENSORS.getEnv();
     private static final String SENSORNAME = DatabaseEnv.SENSORNAME.getEnv();
     private static final String SENSORTYPE = DatabaseEnv.SENSORTYPE.getEnv();
@@ -112,17 +113,20 @@ public class DeviceActivity extends AppCompatActivity {
                 editDevice(deviceId);
             } else if (function.equals("deleteDevice()")) {
                 deleteDevice(deviceId);
+            } else if(function.equals("calibrateDevice()")) {
+                calibrateDevice();
             }
+
             if (deviceId != null) {
                 displayDeviceInfo(deviceId);
             } else {
                 Log.e(TAG, "Id is null");
-                openHomeActivity();
+                goToHomeActivity();
             }
         } else {
             Toast.makeText(this, "Error fetching device", Toast.LENGTH_LONG).show();
             Log.d(TAG, "No deviceId carry over, returning to HomeActivity");
-            openHomeActivity();
+            goToHomeActivity();
         }
     }
 
@@ -164,7 +168,7 @@ public class DeviceActivity extends AppCompatActivity {
         if(id == R.id.update_device) {
             editDevice(deviceId);
         } else if(id == R.id.calibrate_device) {
-            calibrateDevice(item);
+            calibrateDevice();
         } else if(id == R.id.disable_device) {
             disableDevice(item);
         } else if(id == R.id.remove_device) {
@@ -185,7 +189,7 @@ public class DeviceActivity extends AppCompatActivity {
         }
     }
 
-    public void calibrateDevice(MenuItem item) {
+    public void calibrateDevice() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(true);
         builder.setTitle("Calibrate Device Confirmation");
@@ -198,8 +202,12 @@ public class DeviceActivity extends AppCompatActivity {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 if (snapshot.exists()) {
+                                    // When CalibrationStatus = FALSE, Device is not calibrated
+                                    // When CalibrationStatus = TRUE, Device is calibrated
                                     dB.getDeviceChild(deviceId).child("CalibrationStatus").setValue(false);
                                     Toast.makeText(DeviceActivity.this, "Calibration started, please leave device for 30 min", Toast.LENGTH_LONG).show();
+
+                                    goToHomeActivity();
 
                                     // TODO: Clear all sensor values
                                 } else {
@@ -306,7 +314,7 @@ public class DeviceActivity extends AppCompatActivity {
                                                                 throw e.toException();
                                                             }
                                                         });
-                                                        openHomeActivity();
+                                                        goToHomeActivity();
                                                     }
                                                 }
                                             });
@@ -337,23 +345,19 @@ public class DeviceActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    // Navigate to the HomeActivity
-    private void openHomeActivity() {
-        Intent intent = new Intent(this, HomeActivity.class);
-        startActivity(intent);
-    }
-
     // Display relevant device information
     public void displayDeviceInfo(String deviceId) {
         dB.getDeviceChild(deviceId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 String devNameText = snapshot.child(DEVICENAME).exists() ? snapshot.child(DEVICENAME).getValue(String.class) : "0";
-                deviceName.setText("Device: " + devNameText);
+                deviceName.setText(getText(R.string.device_name_display) + devNameText);
 
                 String status = getResources().getString(R.string.inactiveDeviceStatus);
                 try {
-                    if (snapshot.child(DEVICESTATUS).exists()) {
+                    if (snapshot.child(DEVICECALIBRATION).exists() && !snapshot.child(DEVICECALIBRATION).getValue(Boolean.class)) {
+                            status = getResources().getString(R.string.calibratingDeviceStatus);
+                    } else if (snapshot.child(DEVICESTATUS).exists()) {
                         if (snapshot.child(DEVICESTATUS).getValue(Boolean.class)) {
                             status = getResources().getString(R.string.activeDeviceStatus);
                         }
@@ -365,7 +369,7 @@ public class DeviceActivity extends AppCompatActivity {
                     throw e;
                 }
 
-                String devStatusText = getResources().getString(R.string.status) +  status;
+                String devStatusText = getResources().getString(R.string.status) + " " + status;
                 deviceStatus.setText(devStatusText);
             }
 

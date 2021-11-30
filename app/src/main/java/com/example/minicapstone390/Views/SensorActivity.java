@@ -5,7 +5,6 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.NotificationCompat;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -21,7 +20,9 @@ import android.widget.Toast;
 
 import com.example.minicapstone390.Controllers.Database;
 import com.example.minicapstone390.Controllers.DatabaseEnv;
+import com.example.minicapstone390.Controllers.GasType;
 import com.example.minicapstone390.Controllers.SharedPreferenceHelper;
+import com.example.minicapstone390.Controllers.Threshold;
 import com.example.minicapstone390.Models.SensorData;
 import com.example.minicapstone390.R;
 import com.github.mikephil.charting.charts.LineChart;
@@ -52,19 +53,23 @@ public class SensorActivity extends AppCompatActivity {
     private static final String TAG = "SensorActivity";
     private static final String SENSORPAST = DatabaseEnv.SENSORPAST.getEnv();
     private static final String SENSORNAME = DatabaseEnv.SENSORNAME.getEnv();
-    private static final String VALUE = DatabaseEnv.VALUE.getEnv();
+    private static final String SENSORTYPE = DatabaseEnv.SENSORTYPE.getEnv();
     private static final String SENSORSTATUS = DatabaseEnv.SENSORSTATUS.getEnv();
     private static final String SENSORSCORE = DatabaseEnv.SENSORSCORE.getEnv();
+    private static final String VALUE = DatabaseEnv.VALUE.getEnv();
+
 
     // Declare variables
     private final Database dB = new Database();
     protected SharedPreferenceHelper sharePreferenceHelper;
     protected LineChart sensorChart;
-    protected TextView chartTitle;
+    protected TextView chartTitle, sensorName, sensorStatus, sensorType, sensorGas;
     protected RadioGroup graphTimesOptions;
     protected Toolbar toolbar;
     protected String sensorId;
     protected String function;
+
+    // Default Values
     protected double score = 0.0;
     public int graphTimeScale = 0;
     public long delta = 30;
@@ -74,6 +79,7 @@ public class SensorActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         // Initialize SharedPref and check theme
         sharePreferenceHelper = new SharedPreferenceHelper(SensorActivity.this);
+
         // Set theme
         setTheme();
 
@@ -87,8 +93,16 @@ public class SensorActivity extends AppCompatActivity {
         graphTimesOptions = (RadioGroup) findViewById(R.id.graphTimeOptions);
         graphTimesOptions.check(R.id.dayButton);
 
+        // Sensor Info
+        sensorName = (TextView) findViewById(R.id.sensor_name);
+        sensorStatus = (TextView) findViewById(R.id.sensor_status);
+        sensorType = (TextView) findViewById(R.id.sensor_type);
+        sensorGas = (TextView) findViewById(R.id.sensor_gas);
+
+        // Chart Info
         chartTitle = (TextView) findViewById(R.id.chart_title);
         sensorChart = (LineChart) findViewById(R.id.sensorChart);
+
         // Disable legend and description
         sensorChart.getLegend().setEnabled(false);
         sensorChart.getDescription().setEnabled(false);
@@ -202,6 +216,17 @@ public class SensorActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists() && snapshot.child(SENSORNAME).exists()) {
+                    sensorName.setText(getResources().getString(R.string.sensor_name) + " " + Objects.requireNonNull(snapshot.child(SENSORNAME).getValue(String.class)));
+
+                    String sensorStatusText = getResources().getString(R.string.unsafeSensorValue);
+                    if(snapshot.child(SENSORSTATUS).exists() && snapshot.child(SENSORSTATUS).getValue(Boolean.class))
+                        sensorStatusText = getResources().getString(R.string.safeSensorValue);
+                    sensorStatus.setText(getResources().getString(R.string.status) + " " + sensorStatusText);
+
+                    int sensorTypeValue = snapshot.child(SENSORTYPE).exists() ? snapshot.child(SENSORTYPE).getValue(Integer.class) : 1;
+                    sensorType.setText(getResources().getString(R.string.sensor_type) + " MQ" + sensorTypeValue);
+                    sensorGas.setText(getResources().getString(R.string.sensor_gas) + " " + getGasType(sensorTypeValue));
+
                     chartTitle.setText(getResources().getString(R.string.sensor_graph).replace("{0}", Objects.requireNonNull(snapshot.child(SENSORNAME).getValue(String.class))));
                 } else {
                     Log.d(TAG, "Unable to find sensor");
@@ -335,6 +360,30 @@ public class SensorActivity extends AppCompatActivity {
             }
         } else {            
             Log.d(TAG, "Data size is 0");
+        }
+    }
+
+    public String getGasType(int type) {
+        String strType = "MQ" + type;
+        switch (strType) {
+            case "MQ2":
+                return GasType.MQ2GAS.getGasType();
+            case "MQ3":
+               return GasType.MQ3GAS.getGasType();
+            case "MQ4":
+                return GasType.MQ4GAS.getGasType();
+            case "MQ6":
+                return GasType.MQ6GAS.getGasType();
+            case "MQ7":
+               return GasType.MQ7GAS.getGasType();
+            case "MQ8":
+                return GasType.MQ8GAS.getGasType();
+            case "MQ9":
+                return GasType.MQ9GAS.getGasType();
+            case "MQ135":
+                return GasType.MQ135GAS.getGasType();
+            default:
+                return "No Gas";
         }
     }
 
