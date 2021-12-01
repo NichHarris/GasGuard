@@ -3,6 +3,7 @@ package com.example.minicapstone390.Models;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
+// Contains sensor data
 public class SensorData {
     private ArrayList<Double> values;
     private ArrayList<LocalDateTime> times;

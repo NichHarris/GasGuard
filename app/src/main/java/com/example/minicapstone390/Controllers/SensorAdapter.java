@@ -33,10 +33,8 @@ public class SensorAdapter extends RecyclerView.Adapter<SensorAdapter.ViewHolder
     private final String editFunction = "editSensor()";
 
     // Define Context and ArrayList of Sensors
-    private final Database dB = new Database();
     private Context mContext;
     private final ArrayList<Sensor> sensors;
-    public double liveData = 0;
 
     // Define Single Device Holder
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -77,6 +75,7 @@ public class SensorAdapter extends RecyclerView.Adapter<SensorAdapter.ViewHolder
 
     }
 
+    // Call sensor activity with specified function to load
     private void callActivity(String function, String type, int position) {
         Intent intent = new Intent(mContext, SensorActivity.class);
         Bundle bundle = new Bundle();
@@ -121,8 +120,8 @@ public class SensorAdapter extends RecyclerView.Adapter<SensorAdapter.ViewHolder
     }
 
     @Override
+    // Return Num Sensors
     public int getItemCount() {
-        // Return Num Devices
         if (sensors != null) {
             return sensors.size();
         }

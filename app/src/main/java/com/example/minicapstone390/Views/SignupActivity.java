@@ -60,8 +60,8 @@ public class SignupActivity extends AppCompatActivity {
         setTheme();
     }
 
+    // Set theme
     public void setTheme() {
-        // Set theme
         if (sharePreferenceHelper.getTheme()) {
             setTheme(R.style.NightMode);
         } else {
@@ -78,64 +78,85 @@ public class SignupActivity extends AppCompatActivity {
 
         // Validation
         // (1) All Inputs Must Be Filled
-        if (username.equals("") || email.equals("") || password.equals("") || confirmPass.equals("")) {
-            Toast.makeText(getApplicationContext(), "All Inputs Must Be Filled!", Toast.LENGTH_LONG).show();
-            return;
+        boolean isValid = true;
+        if (username.equals("")) {
+            usernameET.setError("Username Must Be Entered!");
+            usernameET.requestFocus();
+            isValid = false;
         }
 
-        // (2) Email Must Be a Valid Email and Unique
-        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            emailET.setError("Email Must Be Valid!");
+        if (email.equals("")) {
+            emailET.setError("Email Must Be Entered!");
             emailET.requestFocus();
-            return;
+            isValid = false;
         }
 
-        // (3) Password Must Be at Least 8 Characters with at least one Capitalized, one Number, one Special Character
-        // Regex for Password: Must Contain At Least 1 Lower and 1 Upper Case Character, 1 Number, 1 Special Characters, and Be 8 Characters Long
-        String passwordRegex = "^(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[`~!@#$%^&*()\\-=_+\\[\\]\\\\{}|;:'\",.\\/<>? ]).{8,}$";
-        Pattern pattern = Pattern.compile(passwordRegex);
-        if (!pattern.matcher(password).matches()) {
-            passwordET.setError("Password Must Be Solid!");
+        if (password.equals("")) {
+            passwordET.setError("Password Must Be Entered!");
             passwordET.requestFocus();
-            return;
+            isValid = false;
         }
-
-        // (4) Password and Confirm Password Must Match
-        if (!password.equals(confirmPass)) {
-            confirmPasswordET.setError("Passwords Must Match!");
+        if (confirmPass.equals("")) {
+            confirmPasswordET.setError("Password Must Be Entered!");
             confirmPasswordET.requestFocus();
-            return;
+            isValid = false;
         }
 
-        // Create User using Firebase Auth
-        dB.getAuth().createUserWithEmailAndPassword(email, password)
-            .addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    User user = new User(username, email);
+        if (isValid) {
+            // (2) Email Must Be a Valid Email and Unique
+            if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                emailET.setError("Email Must Be Valid!");
+                emailET.requestFocus();
+                return;
+            }
 
-                    // Get current User Id
-                    String currentUserId = Objects.requireNonNull(dB.getAuth().getCurrentUser()).getUid();
+            // (3) Password Must Be at Least 8 Characters with at least one Capitalized, one Number, one Special Character
+            // Regex for Password: Must Contain At Least 1 Lower and 1 Upper Case Character, 1 Number, 1 Special Characters, and Be 8 Characters Long
+            String passwordRegex = "^(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[`~!@#$%^&*()\\-=_+\\[\\]\\\\{}|;:'\",.\\/<>? ]).{8,}$";
+            Pattern pattern = Pattern.compile(passwordRegex);
+            if (!pattern.matcher(password).matches()) {
+                passwordET.setError("Password Must Be Solid!");
+                passwordET.requestFocus();
+                return;
+            }
 
-                    DatabaseReference userRef = dB.getUserRef();
+            // (4) Password and Confirm Password Must Match
+            if (!password.equals(confirmPass)) {
+                confirmPasswordET.setError("Passwords Must Match!");
+                confirmPasswordET.requestFocus();
+                return;
+            }
 
-                    // Also Add User to Realtime DB And Open Home Activity on Success
-                    userRef.child(currentUserId).setValue(user)
-                            .addOnCompleteListener(t -> {
-                                if (t.isSuccessful()) {
-                                    Toast.makeText(getApplicationContext(), "User Registered Successfully!", Toast.LENGTH_SHORT).show();
-                                    Log.i(TAG, String.format("User: %s successfully registered.", username));
-                                    openHomeActivity();
-                                } else {
-                                    Log.e(TAG, "Failed to create user on database");
-                                    Toast.makeText(getApplicationContext(), "Failed to Register User!", Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                } else {
-                    Log.d(TAG, "Email is already registered");
-                    emailET.setError("Email is already registered!");
-                    emailET.requestFocus();
-                }
-            });
+            // Create User using Firebase Auth
+            dB.getAuth().createUserWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            User user = new User(username, email);
+
+                            // Get current User Id
+                            String currentUserId = Objects.requireNonNull(dB.getAuth().getCurrentUser()).getUid();
+
+                            DatabaseReference userRef = dB.getUserRef();
+
+                            // Also Add User to Realtime DB And Open Home Activity on Success
+                            userRef.child(currentUserId).setValue(user)
+                                    .addOnCompleteListener(t -> {
+                                        if (t.isSuccessful()) {
+                                            Toast.makeText(getApplicationContext(), "User Registered Successfully!", Toast.LENGTH_SHORT).show();
+                                            Log.i(TAG, String.format("User: %s successfully registered.", username));
+                                            openHomeActivity();
+                                        } else {
+                                            Log.e(TAG, "Failed to create user on database");
+                                            Toast.makeText(getApplicationContext(), "Failed to Register User!", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                        } else {
+                            Log.d(TAG, "Email is already registered");
+                            emailET.setError("Email is already registered!");
+                            emailET.requestFocus();
+                        }
+                    });
+        }
     }
 
     // Navigate to HomeActivity

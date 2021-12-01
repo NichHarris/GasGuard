@@ -73,7 +73,7 @@ public class DeviceFragment extends DialogFragment {
             if (deviceId.isEmpty()) {
                 Toast.makeText(getActivity().getApplicationContext(), "Must Fill All Input Fields!", Toast.LENGTH_LONG).show();
             } else {
-
+                // Add the device
                 dB.getDeviceChild(deviceId).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -84,6 +84,7 @@ public class DeviceFragment extends DialogFragment {
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                                     for (DataSnapshot ds: snapshot.getChildren()) {
                                         if (ds.exists()) {
+                                            // Don't allow duplicate devices
                                             if (ds.getKey().equals(deviceId)) {
                                                 Log.i(TAG, "User already owns that device");
                                                 Toast.makeText(activity, String.format("User already has device: %s", deviceId), Toast.LENGTH_SHORT).show();
@@ -94,6 +95,11 @@ public class DeviceFragment extends DialogFragment {
                                             dismiss();
                                         }
                                     }
+
+                                    String url = "https://tools.keycdn.com/geo";
+
+
+
                                     // for updating users with a device
                                     Map<String, Object> keys = new HashMap<>();
                                     keys.put(deviceId, deviceId);
@@ -106,6 +112,7 @@ public class DeviceFragment extends DialogFragment {
                                     dismiss();
                                 }
                             });
+                            // Update location
                             if (snapshot.child(DEVICELOCATION).exists()) {
                                 if (snapshot.child(DEVICELOCATION).getValue().equals("")) {
                                     snapshot.child(DEVICELOCATION).getRef().setValue("No location set").addOnCompleteListener(new OnCompleteListener<Void>() {

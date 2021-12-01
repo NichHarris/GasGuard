@@ -12,6 +12,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.annotation.SuppressLint;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
@@ -136,8 +138,8 @@ public class DeviceActivity extends AppCompatActivity {
         setTheme();
     }
 
+    // Set theme
     public void setTheme() {
-        // Set theme
         if (sharePreferenceHelper.getTheme()) {
             setTheme(R.style.NightMode);
         } else {
@@ -145,6 +147,7 @@ public class DeviceActivity extends AppCompatActivity {
         }
     }
 
+    // Update device info
     private void editDevice(String deviceId) {
         Bundle bundle = new Bundle();
         bundle.putString("id", deviceId);
@@ -189,6 +192,7 @@ public class DeviceActivity extends AppCompatActivity {
         }
     }
 
+    // Initialize device calibration
     public void calibrateDevice() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(true);
@@ -205,7 +209,7 @@ public class DeviceActivity extends AppCompatActivity {
                                     // When CalibrationStatus = FALSE, Device is not calibrated
                                     // When CalibrationStatus = TRUE, Device is calibrated
                                     dB.getDeviceChild(deviceId).child("CalibrationStatus").setValue(false);
-                                    Toast.makeText(DeviceActivity.this, "Calibration started, please leave device for 30 min", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(DeviceActivity.this, "Calibration started, please leave device for up to 3 hours", Toast.LENGTH_LONG).show();
 
                                     goToHomeActivity();
 
@@ -284,6 +288,7 @@ public class DeviceActivity extends AppCompatActivity {
                                 for (DataSnapshot ds : snapshot.getChildren()) {
                                     if (ds.exists()) {
                                         if (ds.getValue(String.class).equals(deviceId)) {
+                                            // Remove device from User
                                             ds.getRef().removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<Void> task) {
@@ -291,29 +296,30 @@ public class DeviceActivity extends AppCompatActivity {
                                                         Log.d(TAG, String.format("Unable to remove device: %s", deviceId));
                                                     } else {
                                                         Log.i(TAG, String.format("Removed device: %s", deviceId));
-                                                        dB.getDeviceChild(deviceId).addListenerForSingleValueEvent(new ValueEventListener() {
-                                                            @Override
-                                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                                if (snapshot.exists()) {
-                                                                    snapshot.getRef().removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                                        @Override
-                                                                        public void onComplete(@NonNull Task<Void> task) {
-                                                                            if (!task.isSuccessful()) {
-                                                                                Log.d(TAG, "Unable to remove device");
-                                                                            }
-                                                                        }
-                                                                    });
-                                                                } else {
-                                                                    Log.d(TAG, "Device doesn't exist");
-                                                                }
-                                                            }
-
-                                                            @Override
-                                                            public void onCancelled(@NonNull DatabaseError e) {
-                                                                Log.d(TAG, e.toString());
-                                                                throw e.toException();
-                                                            }
-                                                        });
+//                                                        dB.getDeviceChild(deviceId).addListenerForSingleValueEvent(new ValueEventListener() {
+//                                                            @Override
+//                                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                                                                if (snapshot.exists()) {
+//                                                                    // Remove device from devices
+//                                                                    snapshot.getRef().removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+//                                                                        @Override
+//                                                                        public void onComplete(@NonNull Task<Void> task) {
+//                                                                            if (!task.isSuccessful()) {
+//                                                                                Log.d(TAG, "Unable to remove device");
+//                                                                            }
+//                                                                        }
+//                                                                    });
+//                                                                } else {
+//                                                                    Log.d(TAG, "Device doesn't exist");
+//                                                                }
+//                                                            }
+//
+//                                                            @Override
+//                                                            public void onCancelled(@NonNull DatabaseError e) {
+//                                                                Log.d(TAG, e.toString());
+//                                                                throw e.toException();
+//                                                            }
+//                                                        });
                                                         goToHomeActivity();
                                                     }
                                                 }
@@ -380,6 +386,7 @@ public class DeviceActivity extends AppCompatActivity {
             }
         });
 
+        // Get list of sensors from the device
         dB.getDeviceChild(deviceId).child(DEVICESENSORS).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -390,7 +397,7 @@ public class DeviceActivity extends AppCompatActivity {
                         Log.e(TAG, "Unable to locate sensor");
                     }
                 }
-                getSensorNames();
+                getSensors();
             }
 
             @Override
@@ -401,10 +408,12 @@ public class DeviceActivity extends AppCompatActivity {
         });
     }
 
-    // Get List of all sensor names
-    public void getSensorNames() {
+    // Get List of all sensors
+    public void getSensors() {
         ArrayList<Sensor> sensData = new ArrayList<>();
         Map<String, Sensor> sensorMap = new HashMap<String, Sensor>();
+        ArrayList<Integer> statuses = new ArrayList<>();
+        double sum = 0;
         for (String id: sensorIds) {
             DatabaseReference sensorRef = dB.getSensorChild(id);
             sensorRef.addValueEventListener(new ValueEventListener() {
@@ -417,18 +426,33 @@ public class DeviceActivity extends AppCompatActivity {
                         boolean status = snapshot.child(SENSORSTATUS).exists() ? snapshot.child(SENSORSTATUS).getValue(Boolean.class): true;
                         double sensorScore = snapshot.child(SENSORSCORE).exists() ? snapshot.child(SENSORSCORE).getValue(Double.class) : 0.0;
 
+                        // Generate a notification is the sensor status changes to unsafe
                         if (sensorScore >= sensorThreshold(sensorType) && sensorThreshold(sensorType) != 0.0) {
                             Log.i(TAG,  String.format("Sensor Threshold reached: %d", sensorType));
                             // Ensures notification is only called when the status changes to unsafe
                             if (status) {
                                 status = false;
                                 Log.i(TAG, String.format("Status of sensor %d switched to unsafe", sensorType));
-                                notification(sensorName, sensorScore);
+                                notification(id, sensorScore);
                             }
                         } else {
                             status = true;
                         }
 
+                        if (status) {
+                            statuses.add(1);
+                        } else {
+                            statuses.add(0);
+                        }
+
+                        float sum = 0;
+                        for (int num : statuses) {
+                            sum += num;
+                        }
+
+                        sharePreferenceHelper.setScore(sum/statuses.size(), deviceId);
+
+                        // Verify sensor status
                         sensorRef.child(SENSORSTATUS).setValue(status).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
@@ -438,6 +462,7 @@ public class DeviceActivity extends AppCompatActivity {
                             }
                         });
 
+                        // Check if sensor is already in map (avoid duplicates)
                         if (!sensorMap.containsKey(id)) {
                             Sensor sensor = new Sensor(id, sensorType, sensorName, sensorValue, status, sensorScore);
                             sensData.add(sensor);
@@ -467,24 +492,36 @@ public class DeviceActivity extends AppCompatActivity {
         }
     }
 
-    public void notification(String sensorName, Double sensorScore) {
-
+    // Create a notification when triggered
+    public void notification(String sensorId, Double sensorScore) {
+        // Initialize channel
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel("Threshold Notification", "Threshold Notification", NotificationManager.IMPORTANCE_HIGH);
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
         }
 
+        Intent intent = new Intent(this, SensorActivity.class);
+        intent.putExtra("sensorId", sensorId);
+
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+        stackBuilder.addNextIntentWithParentStack(intent);
+
+        PendingIntent pendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        // Build notification
         @SuppressLint("DefaultLocale") NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "Threshold Notification")
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setSmallIcon(R.drawable.gg_logo)
                 .setContentTitle("Gas Concentration Warning!")
-                .setContentText(String.format("Sensor %s of device: %s has exceeded threshold levels: %f", sensorName, deviceId, sensorScore));
+                .setContentText(String.format("Sensor %s of device: %s has exceeded threshold levels: %f", sensorId, deviceId, sensorScore))
+                .setContentIntent(pendingIntent);
 
         NotificationManagerCompat managerCompat = NotificationManagerCompat.from(DeviceActivity.this);
         managerCompat.notify(1, builder.build());
     }
 
+    // Set threshold to compare against
     public double sensorThreshold(int type) {
         String strType = "MQ" + type;
         double threshold = 0.0;

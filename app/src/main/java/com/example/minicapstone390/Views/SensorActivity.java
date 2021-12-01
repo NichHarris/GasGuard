@@ -22,6 +22,7 @@ import com.example.minicapstone390.Controllers.Database;
 import com.example.minicapstone390.Models.DatabaseEnv;
 import com.example.minicapstone390.Models.GasType;
 import com.example.minicapstone390.Controllers.SharedPreferenceHelper;
+import com.example.minicapstone390.Models.Graphing;
 import com.example.minicapstone390.Models.SensorData;
 import com.example.minicapstone390.R;
 import com.github.mikephil.charting.charts.LineChart;
@@ -56,7 +57,6 @@ public class SensorActivity extends AppCompatActivity {
     private static final String SENSORSTATUS = DatabaseEnv.SENSORSTATUS.getEnv();
     private static final String SENSORSCORE = DatabaseEnv.SENSORSCORE.getEnv();
     private static final String VALUE = DatabaseEnv.VALUE.getEnv();
-
 
     // Declare variables
     private final Database dB = new Database();
@@ -101,21 +101,23 @@ public class SensorActivity extends AppCompatActivity {
         // Chart Info
         chartTitle = (TextView) findViewById(R.id.chart_title);
         sensorChart = (LineChart) findViewById(R.id.sensorChart);
-
-        // Disable legend and description
         sensorChart.getLegend().setEnabled(false);
         sensorChart.getDescription().setEnabled(false);
+//        Graphing graphing = new Graphing(sensorChart);
 
         Bundle carryOver = getIntent().getExtras();
         if (carryOver != null) {
             sensorId = carryOver.getString("sensorId");
             function = carryOver.getString("callFunction", "");
 
+            // Check if function was called outside of activity
             if(function.equals("editSensor()")) {
                 editSensor(sensorId);
             } else if (function.equals("deleteSensor()")) {
                 deleteSensorData(sensorId);
             }
+
+            // Verify id exists
             if (sensorId != null) {
                 displaySensorInfo(sensorId);
                 getAllSensorData();
@@ -139,8 +141,8 @@ public class SensorActivity extends AppCompatActivity {
         setGraphScale();
     }
 
+    // Set theme
     public void setTheme() {
-        // Set theme
         if (sharePreferenceHelper.getTheme()) {
             setTheme(R.style.NightMode);
         } else {
@@ -148,6 +150,7 @@ public class SensorActivity extends AppCompatActivity {
         }
     }
 
+    // Remove all sensor past data
     public void deleteSensorData(String sensorId) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(true);
@@ -199,6 +202,7 @@ public class SensorActivity extends AppCompatActivity {
         dialog.show();
     }
 
+    // Open edit sensor dialog
     public void editSensor(String sensorId) {
         Bundle bundle = new Bundle();
         bundle.putString("id", sensorId);
@@ -288,6 +292,7 @@ public class SensorActivity extends AppCompatActivity {
         return new ArrayList<>(history);
     }
 
+    // Get the past values for the current sensor
     public void getAllSensorData() {
         ArrayList<SensorData> validData = new ArrayList<>();
         dB.getSensorChild(sensorId).child(SENSORPAST).addValueEventListener(new ValueEventListener() {
@@ -304,6 +309,7 @@ public class SensorActivity extends AppCompatActivity {
                 for (DataSnapshot ds : snapshot.getChildren()) {
                     if (ds.exists()) {
                         LocalDateTime time = LocalDateTime.parse(ds.getKey(), DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+                        // Only add those within the selected time range
                         if (start.isBefore(time) && end.isAfter(time)) {
                             if (ds.child(VALUE).exists()) {
                                 values.add(ds.child(VALUE).getValue(Double.class));
@@ -318,7 +324,7 @@ public class SensorActivity extends AppCompatActivity {
                 }
                 validData.add(new SensorData(values, times));
                 calculateThreshold(validData);
-                producer(history, validData.get(0));
+                formatData(history, validData.get(0));
                 validData.clear();
             }
 
@@ -330,6 +336,7 @@ public class SensorActivity extends AppCompatActivity {
         });
     }
 
+    // Calculate if threshold has been exceeded
     public void calculateThreshold(ArrayList<SensorData> data) {
         if (data.size() != 0) {
             if (data.get(0).getValues().size() != 0) {
@@ -362,59 +369,37 @@ public class SensorActivity extends AppCompatActivity {
         }
     }
 
-    public String getGasType(int type) {
-        String strType = "MQ" + type;
-        switch (strType) {
-            case "MQ2":
-                return GasType.MQ2GAS.getGasType();
-            case "MQ3":
-               return GasType.MQ3GAS.getGasType();
-            case "MQ4":
-                return GasType.MQ4GAS.getGasType();
-            case "MQ6":
-                return GasType.MQ6GAS.getGasType();
-            case "MQ7":
-               return GasType.MQ7GAS.getGasType();
-            case "MQ8":
-                return GasType.MQ8GAS.getGasType();
-            case "MQ9":
-                return GasType.MQ9GAS.getGasType();
-            case "MQ135":
-                return GasType.MQ135GAS.getGasType();
-            default:
-                return "No Gas";
-        }
-    }
-
+    // Format number of entries to XAxis
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public void producer(List<LocalDateTime> history, SensorData data) {
+    public void formatData(List<LocalDateTime> history, SensorData data) {
         if (data.getValues().size() != 0) {
             LocalDateTime start = history.get(0);
             LocalDateTime end = history.get(history.size() - 1);
-            long duration = Duration.between(start, end).getSeconds();
-            long size = duration / delta;
-            ArrayList<LocalDateTime> results = new ArrayList<>();
-            for (int i = 0; i < size; i++) {
-                results.add(start.plusSeconds(i * delta));
+            long cuts = Duration.between(start, end).getSeconds() / data.getValues().size();
+            ArrayList<LocalDateTime> xAxisTimes = new ArrayList<>();
+            for (int i = 0; i < data.getValues().size(); i++) {
+                xAxisTimes.add(start.plusSeconds(i * cuts));
             }
-            setXAxisLabels(history, data, results);
+            setXAxis(history, data, xAxisTimes);
         }
     }
 
-    // Setting LineChart
+    // Format XAxis
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public void setXAxisLabels(List<LocalDateTime> history, SensorData data, ArrayList<LocalDateTime> results) {
-        if (results.size() != 0) {
-            ArrayList<String> xAxisLabel = new ArrayList<>(results.size());
+    public void setXAxis(List<LocalDateTime> history, SensorData data, ArrayList<LocalDateTime> xAxisTimes) {
+        if (xAxisTimes.size() != 0) {
+            ArrayList<String> xAxisLabel = new ArrayList<>(xAxisTimes.size());
             DateTimeFormatter format;
+
+            // Format by time or by date
             if (graphTimesOptions.getCheckedRadioButtonId() == R.id.dayButton) {
                 format = DateTimeFormatter.ofPattern("HH:mm");
             } else {
                 format = DateTimeFormatter.ofPattern("MM/dd");
             }
 
-            for (int i = 0; i < results.size(); i++) {
-                xAxisLabel.add(results.get(i).format(format));
+            for (int i = 0; i < xAxisTimes.size(); i++) {
+                xAxisLabel.add(xAxisTimes.get(i).format(format));
             }
 
             XAxis xAxis = sensorChart.getXAxis();
@@ -424,19 +409,20 @@ public class SensorActivity extends AppCompatActivity {
             xAxis.setValueFormatter(new IAxisValueFormatter() {
                 @Override
                 public String getFormattedValue(float value, AxisBase axis) {
-                    if (value < results.size()) {
+                    if (value < xAxisLabel.size()) {
                         return xAxisLabel.get((int) value);
                     }
                     return "";
                 }
             });
             setYAxis();
-            setData(data, results);
+            setGraphData(data, xAxisTimes);
         } else {
             Log.d(TAG, "Result is empty");
         }
     }
 
+    // Format YAxis
     public void setYAxis() {
         YAxis leftAxis = sensorChart.getAxisLeft();
         leftAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
@@ -450,16 +436,21 @@ public class SensorActivity extends AppCompatActivity {
         rightAxis.setEnabled(false);
     }
 
+    // Set the formatted data on the sensor graph
     @RequiresApi(api = Build.VERSION_CODES.O)
-    protected void setData(SensorData data, ArrayList<LocalDateTime> results) {
-        
+    protected void setGraphData(SensorData data, ArrayList<LocalDateTime> xAxisTimes) {
+
+        // Verify if data exists
         if (data.getValues().size() != 0) {
             ArrayList<Entry> values = new ArrayList<>();
             int i = 0;
-            for (int x = 1; x < results.size() - 1; x++) {
+            for (int x = 1; x < xAxisTimes.size() - 1; x++) {
+                // Get the start time and end time of the first and last registered data
                 LocalDateTime start = data.getTimes().get(0);
                 LocalDateTime end = data.getTimes().get(data.getTimes().size() - 1);
-                if (results.get(x).isBefore(start) || results.get(x).isAfter(end) || i >= data.getValues().size()) {
+
+                // If the data is out the time range append -1 else add to graph
+                if (xAxisTimes.get(x).isBefore(start) || xAxisTimes.get(x).isAfter(end) || i >= data.getValues().size()) {
                     values.add(new Entry(x, -1));
                 } else {
                     values.add(new Entry(x, data.getValues().get(i).floatValue()));
@@ -467,6 +458,7 @@ public class SensorActivity extends AppCompatActivity {
                 }
             }
 
+            // Verify data was added
             if (values.size() != 0) {
                 LineDataSet set = new LineDataSet(values, "SensorGraph");
                 set.setDrawValues(false);
@@ -485,6 +477,31 @@ public class SensorActivity extends AppCompatActivity {
         }
     }
 
+    // Return the type of gas the sensor measures
+    public String getGasType(int type) {
+        String strType = "MQ" + type;
+        switch (strType) {
+            case "MQ2":
+                return GasType.MQ2GAS.getGasType();
+            case "MQ3":
+                return GasType.MQ3GAS.getGasType();
+            case "MQ4":
+                return GasType.MQ4GAS.getGasType();
+            case "MQ6":
+                return GasType.MQ6GAS.getGasType();
+            case "MQ7":
+                return GasType.MQ7GAS.getGasType();
+            case "MQ8":
+                return GasType.MQ8GAS.getGasType();
+            case "MQ9":
+                return GasType.MQ9GAS.getGasType();
+            case "MQ135":
+                return GasType.MQ135GAS.getGasType();
+            default:
+                return "No Gas";
+        }
+    }
+
     // Display options menu in task-bar
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -496,46 +513,13 @@ public class SensorActivity extends AppCompatActivity {
     @Override
     public  boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if(id == R.id.disable_sensor) {
-            Log.d(TAG, "Disable sensor called but not implemented");
-//            disableSensor();
-        } else if (id == R.id.delete_sensor_data) {
+        if (id == R.id.delete_sensor_data) {
             deleteSensorData(sensorId);
         } else {
             return super.onOptionsItemSelected(item);
         }
 
         return true;
-    }
-
-    // Deprecated
-    public void disableSensor() {
-        dB.getSensorChild(sensorId).child(SENSORSTATUS).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                try {
-                    if (snapshot.exists()) {
-                        if (snapshot.getValue(Boolean.class)) {
-                            snapshot.getRef().setValue(false);
-                        } else {
-                            snapshot.getRef().setValue(true);
-                        }
-                    } else {
-                        Log.e(TAG, "Error retrieving sensor status from DB");
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Log.d(TAG, e.toString());
-                    throw e;
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError e) {
-                Log.d(TAG, e.toString());
-                throw e.toException();
-            }
-        });
     }
 
     // Navigate back to Home Activity

@@ -18,6 +18,7 @@ import com.example.minicapstone390.Models.DatabaseEnv;
 import com.example.minicapstone390.Controllers.SharedPreferenceHelper;
 import com.example.minicapstone390.Controllers.DeviceAdapter;
 import com.example.minicapstone390.Models.Device;
+import com.example.minicapstone390.Models.Graphing;
 import com.example.minicapstone390.R;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.AxisBase;
@@ -83,14 +84,15 @@ public class HomeActivity extends AppCompatActivity {
         // Initialize Layouts
         welcomeUserMessage = (TextView) findViewById(R.id.welcomeUserMessage);
         deviceChart = (BarChart) findViewById(R.id.deviceChart);
-        // Disable legend and description
         deviceChart.getLegend().setEnabled(false);
         deviceChart.getDescription().setEnabled(false);
+//        Graphing graph = new Graphing(deviceChart);
 
         // Initialize Dev List and Ids
         devList = new ArrayList<>();
         deviceIds = new ArrayList<>();
         deviceData = new ArrayList<>();
+
         // Update page info
         updatePage();
 
@@ -108,8 +110,8 @@ public class HomeActivity extends AppCompatActivity {
         updatePage();
     }
 
+    // Set theme
     public void setTheme() {
-        // Set theme
         if (sharePreferenceHelper.getTheme()) {
             setTheme(R.style.NightMode);
         } else {
@@ -154,6 +156,7 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
+    // Open connect a device dialog
     public void connectDevice() {
         DeviceFragment dialog = new DeviceFragment();
         dialog.show(getSupportFragmentManager(), "AddDeviceFragment");
@@ -241,6 +244,7 @@ public class HomeActivity extends AppCompatActivity {
                             boolean devCalibration = snapshot.child(DEVICECALIBRATION).exists() ? snapshot.child(DEVICECALIBRATION).getValue(Boolean.class) : true;
                             boolean devStatus = snapshot.child(DEVICESTATUS).exists() ? snapshot.child(DEVICESTATUS).getValue(Boolean.class) : true;
 
+                            // Verify if device is already in the map
                             if (!deviceMap.containsKey(id)) {
                                 Device device = new Device(id, devName, devLocation, devStatus, devCalibration);
                                 devData.add(device);
@@ -276,11 +280,11 @@ public class HomeActivity extends AppCompatActivity {
     private void setDeviceList(ArrayList<Device> devData) {
         deviceAdapter = new DeviceAdapter(devData);
         deviceListView.setAdapter(deviceAdapter);
-        setXAxisLabels(devData);
+        setXAxis(devData);
     }
 
-    // Setting BarChart
-    private void setXAxisLabels(ArrayList<Device> deviceData) {
+    // Format XAxis
+    private void setXAxis(ArrayList<Device> deviceData) {
         ArrayList<String> xAxisLabel = new ArrayList<>(deviceData.size());
         for (int i = 0; i < deviceData.size(); i++) {
             if (!xAxisLabel.contains(deviceData.get(i).getDeviceName())) {
@@ -303,27 +307,32 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
         setYAxis();
-        setData(deviceData);
+        setGraphData(deviceData);
     }
 
+    // Format YAxis
     private void setYAxis() {
         YAxis leftAxis = deviceChart.getAxisLeft();
         leftAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
         leftAxis.setTextColor(Color.BLACK);
         leftAxis.setGranularityEnabled(true);
         leftAxis.setAxisMinimum(0f);
-        leftAxis.setAxisMaximum(1.1f);
-        leftAxis.setGranularity(0.1f);
+        leftAxis.setAxisMaximum(100f);
+        leftAxis.setGranularity(10f);
 
         YAxis rightAxis = deviceChart.getAxisRight();
         rightAxis.setEnabled(false);
     }
 
-    protected void setData(ArrayList<Device> devices) {
+    // Set the devices on the device graph
+    protected void setGraphData(ArrayList<Device> devices) {
         deviceChart.clear();
         List<BarEntry> values = new ArrayList<>();
+        int i = 0;
         for (int x = 1; x < devices.size() + 1; x++) {
-            long y = 1;
+            float y =(float) sharePreferenceHelper.getScore(devices.get(i).getId()) * 100;
+            i++;
+
             values.add(new BarEntry(x, y));
         }
         BarDataSet set = new BarDataSet(values, "DeviceGraph");

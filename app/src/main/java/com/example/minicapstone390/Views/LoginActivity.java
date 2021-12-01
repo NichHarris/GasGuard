@@ -61,8 +61,8 @@ public class LoginActivity extends AppCompatActivity {
         setTheme();
     }
 
+    // Set theme
     public void setTheme() {
-        // Set theme
         if (sharePreferenceHelper.getTheme()) {
             setTheme(R.style.NightMode);
         } else {
@@ -70,9 +70,11 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    // Send an email password reset to the user
     private void sendReset() {
         String userEmail = userEmailET.getText().toString();
 
+        // Validate email
         if (userEmail.equals("")) {
             userEmailET.setError("Please enter email to send reset to");
             passwordET.setEnabled(false);
@@ -81,6 +83,7 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
+        // Sent reset
         dB.getAuth().sendPasswordResetEmail(userEmail).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
@@ -97,36 +100,48 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    // Handles user login
     private void userLogin() {
         String userEmail = userEmailET.getText().toString();
         String password = passwordET.getText().toString();
 
         // Validation
         // (1) All Inputs Must Be Filled
-        if (userEmail.equals("") || password.equals("")) {
-            Toast.makeText(getApplicationContext(), "All Inputs Must Be Filled!", Toast.LENGTH_LONG).show();
-            return;
+        boolean isValid = true;
+        if (userEmail.equals("")) {
+            userEmailET.setError("Email Must Be Entered!");
+            userEmailET.requestFocus();
+            isValid = false;
         }
 
-        // Login User Using Firebase Auth
-        dB.getAuth().signInWithEmailAndPassword(userEmail, password)
-            .addOnCompleteListener(this, task -> {
-                if (!task.isSuccessful()) {
-                    Log.i(TAG,"Login attempt failed");
-                    Toast.makeText(getApplicationContext(), "Login failed. Try again!", Toast.LENGTH_LONG).show();
-                } else {
-                    Log.i(TAG,String.format("Successfully logged in user: %s", userEmail));
-                    Toast.makeText(getApplicationContext(), "Successfully Logged In!", Toast.LENGTH_SHORT).show();
-                    openHomeActivity();
-                }
-        });
+        if (password.equals("")) {
+            passwordET.setError("Password Must Be Entered!");
+            passwordET.requestFocus();
+            isValid = false;
+        }
+        if (isValid) {
+            // Login User Using Firebase Auth
+            dB.getAuth().signInWithEmailAndPassword(userEmail, password)
+                    .addOnCompleteListener(this, task -> {
+                        if (!task.isSuccessful()) {
+                            Log.i(TAG, "Login attempt failed");
+                            Toast.makeText(getApplicationContext(), "Login failed. Try again!", Toast.LENGTH_LONG).show();
+                        } else {
+                            Log.i(TAG, String.format("Successfully logged in user: %s", userEmail));
+                            Toast.makeText(getApplicationContext(), "Successfully Logged In!", Toast.LENGTH_SHORT).show();
+                            openHomeActivity();
+                        }
+                    });
+        }
     }
 
+    // Navigate to home activity
     private void openHomeActivity() {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
 
+    // Reload page
     private void reload() {
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
@@ -135,6 +150,7 @@ public class LoginActivity extends AppCompatActivity {
         overridePendingTransition(0, 0);
     }
 
+    // Navigate to signup activity
     private void openSignupActivity() {
         Intent intent = new Intent(this, SignupActivity.class);
         startActivity(intent);

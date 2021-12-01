@@ -6,9 +6,4 @@
         android:id="@+id/delete_sensor_data"
         android:title="@string/delete_sensor_data"
         app:showAsAction="never" />
-
-    <item
-        android:id="@+id/disable_sensor"
-        android:title="@string/disable_sensor"
-        app:showAsAction="never" />
 </menu>

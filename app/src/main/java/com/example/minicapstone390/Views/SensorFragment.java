@@ -66,6 +66,7 @@ public class SensorFragment extends DialogFragment {
         return view;
     }
 
+    // Update the sensor info
     private void updateSensor(String name) {
         dB.getSensorChild(sensorId).child(SENSORNAME).setValue(name).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override

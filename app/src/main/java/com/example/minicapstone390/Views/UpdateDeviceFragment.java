@@ -61,13 +61,13 @@ public class UpdateDeviceFragment extends DialogFragment {
         return view;
     }
 
-
+    // Update the device name
     private void updateDevice(String deviceName) {
         dB.getDeviceChild(deviceId).child(DEVICENAME).setValue(deviceName).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (!task.isSuccessful()) {
-                    Log.d(TAG, "Sensor name was not able to be updated");
+                    Log.d(TAG, "Device name was not able to be updated");
                 }
             }
         });
