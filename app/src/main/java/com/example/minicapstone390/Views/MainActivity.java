@@ -1,5 +1,6 @@
 package com.example.minicapstone390.Views;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
@@ -8,6 +9,11 @@ import android.util.Log;
 import com.example.minicapstone390.R;
 import com.example.minicapstone390.Controllers.Database;
 import com.example.minicapstone390.Controllers.SharedPreferenceHelper;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
@@ -78,6 +84,27 @@ public class MainActivity extends AppCompatActivity {
                         Log.i(TAG, "User Not Authenticated, sending to login page.");
                         openLoginActivity();
                     } else {
+                        dB.getUserChild().addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if (!snapshot.exists()) {
+                                    dB.getUser().delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (!task.isSuccessful()) {
+                                                Log.d(TAG, "Delete unsuccessful");
+                                            }
+                                        }
+                                    });
+                                    openLoginActivity();
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError e) {
+                                Log.d(TAG, "Logout cancelled");
+                            }
+                        });
                         Log.i(TAG, "User Authenticated, sending to home page");
                         openHomeActivity();
                     }

@@ -57,7 +57,7 @@ public class SensorActivity extends AppCompatActivity {
     private static final String SENSORSTATUS = DatabaseEnv.SENSORSTATUS.getEnv();
     private static final String SENSORSCORE = DatabaseEnv.SENSORSCORE.getEnv();
     private static final String VALUE = DatabaseEnv.VALUE.getEnv();
-    
+
     // Declare variables
     private final Database dB = new Database();
     protected SharedPreferenceHelper sharePreferenceHelper;

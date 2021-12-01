@@ -23,6 +23,6 @@
 
 // Total time for calibration is CalDelay*CalNum
 // Number of samples used for calibration
-#define CalNum 1440
+#define CalNum 100
 // delay between each calibration sample (in ms)
 #define CalDelay 5000 

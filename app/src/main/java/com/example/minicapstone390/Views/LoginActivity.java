@@ -107,23 +107,32 @@ public class LoginActivity extends AppCompatActivity {
 
         // Validation
         // (1) All Inputs Must Be Filled
-        if (userEmail.equals("") || password.equals("")) {
-            Toast.makeText(getApplicationContext(), "All Inputs Must Be Filled!", Toast.LENGTH_LONG).show();
-            return;
+        boolean isValid = true;
+        if (userEmail.equals("")) {
+            userEmailET.setError("Email Must Be Entered!");
+            userEmailET.requestFocus();
+            isValid = false;
         }
 
-        // Login User Using Firebase Auth
-        dB.getAuth().signInWithEmailAndPassword(userEmail, password)
-            .addOnCompleteListener(this, task -> {
-                if (!task.isSuccessful()) {
-                    Log.i(TAG,"Login attempt failed");
-                    Toast.makeText(getApplicationContext(), "Login failed. Try again!", Toast.LENGTH_LONG).show();
-                } else {
-                    Log.i(TAG,String.format("Successfully logged in user: %s", userEmail));
-                    Toast.makeText(getApplicationContext(), "Successfully Logged In!", Toast.LENGTH_SHORT).show();
-                    openHomeActivity();
-                }
-        });
+        if (password.equals("")) {
+            passwordET.setError("Password Must Be Entered!");
+            passwordET.requestFocus();
+            isValid = false;
+        }
+        if (isValid) {
+            // Login User Using Firebase Auth
+            dB.getAuth().signInWithEmailAndPassword(userEmail, password)
+                    .addOnCompleteListener(this, task -> {
+                        if (!task.isSuccessful()) {
+                            Log.i(TAG, "Login attempt failed");
+                            Toast.makeText(getApplicationContext(), "Login failed. Try again!", Toast.LENGTH_LONG).show();
+                        } else {
+                            Log.i(TAG, String.format("Successfully logged in user: %s", userEmail));
+                            Toast.makeText(getApplicationContext(), "Successfully Logged In!", Toast.LENGTH_SHORT).show();
+                            openHomeActivity();
+                        }
+                    });
+        }
     }
 
     // Navigate to home activity

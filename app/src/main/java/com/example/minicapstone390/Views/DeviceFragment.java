@@ -95,6 +95,11 @@ public class DeviceFragment extends DialogFragment {
                                             dismiss();
                                         }
                                     }
+
+                                    String url = "https://tools.keycdn.com/geo";
+
+
+
                                     // for updating users with a device
                                     Map<String, Object> keys = new HashMap<>();
                                     keys.put(deviceId, deviceId);

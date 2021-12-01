@@ -317,8 +317,8 @@ public class HomeActivity extends AppCompatActivity {
         leftAxis.setTextColor(Color.BLACK);
         leftAxis.setGranularityEnabled(true);
         leftAxis.setAxisMinimum(0f);
-        leftAxis.setAxisMaximum(1.1f);
-        leftAxis.setGranularity(0.1f);
+        leftAxis.setAxisMaximum(100f);
+        leftAxis.setGranularity(10f);
 
         YAxis rightAxis = deviceChart.getAxisRight();
         rightAxis.setEnabled(false);
@@ -328,8 +328,11 @@ public class HomeActivity extends AppCompatActivity {
     protected void setGraphData(ArrayList<Device> devices) {
         deviceChart.clear();
         List<BarEntry> values = new ArrayList<>();
+        int i = 0;
         for (int x = 1; x < devices.size() + 1; x++) {
-            long y = 1;
+            float y =(float) sharePreferenceHelper.getScore(devices.get(i).getId()) * 100;
+            i++;
+
             values.add(new BarEntry(x, y));
         }
         BarDataSet set = new BarDataSet(values, "DeviceGraph");

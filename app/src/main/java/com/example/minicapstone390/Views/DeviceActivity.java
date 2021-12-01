@@ -207,7 +207,7 @@ public class DeviceActivity extends AppCompatActivity {
                                     // When CalibrationStatus = FALSE, Device is not calibrated
                                     // When CalibrationStatus = TRUE, Device is calibrated
                                     dB.getDeviceChild(deviceId).child("CalibrationStatus").setValue(false);
-                                    Toast.makeText(DeviceActivity.this, "Calibration started, please leave device for 30 min", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(DeviceActivity.this, "Calibration started, please leave device for up to 3 hours", Toast.LENGTH_LONG).show();
 
                                     goToHomeActivity();
 
@@ -294,30 +294,30 @@ public class DeviceActivity extends AppCompatActivity {
                                                         Log.d(TAG, String.format("Unable to remove device: %s", deviceId));
                                                     } else {
                                                         Log.i(TAG, String.format("Removed device: %s", deviceId));
-                                                        dB.getDeviceChild(deviceId).addListenerForSingleValueEvent(new ValueEventListener() {
-                                                            @Override
-                                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                                if (snapshot.exists()) {
-                                                                    // Remove device from devices
-                                                                    snapshot.getRef().removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                                        @Override
-                                                                        public void onComplete(@NonNull Task<Void> task) {
-                                                                            if (!task.isSuccessful()) {
-                                                                                Log.d(TAG, "Unable to remove device");
-                                                                            }
-                                                                        }
-                                                                    });
-                                                                } else {
-                                                                    Log.d(TAG, "Device doesn't exist");
-                                                                }
-                                                            }
-
-                                                            @Override
-                                                            public void onCancelled(@NonNull DatabaseError e) {
-                                                                Log.d(TAG, e.toString());
-                                                                throw e.toException();
-                                                            }
-                                                        });
+//                                                        dB.getDeviceChild(deviceId).addListenerForSingleValueEvent(new ValueEventListener() {
+//                                                            @Override
+//                                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                                                                if (snapshot.exists()) {
+//                                                                    // Remove device from devices
+//                                                                    snapshot.getRef().removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+//                                                                        @Override
+//                                                                        public void onComplete(@NonNull Task<Void> task) {
+//                                                                            if (!task.isSuccessful()) {
+//                                                                                Log.d(TAG, "Unable to remove device");
+//                                                                            }
+//                                                                        }
+//                                                                    });
+//                                                                } else {
+//                                                                    Log.d(TAG, "Device doesn't exist");
+//                                                                }
+//                                                            }
+//
+//                                                            @Override
+//                                                            public void onCancelled(@NonNull DatabaseError e) {
+//                                                                Log.d(TAG, e.toString());
+//                                                                throw e.toException();
+//                                                            }
+//                                                        });
                                                         goToHomeActivity();
                                                     }
                                                 }
@@ -410,6 +410,8 @@ public class DeviceActivity extends AppCompatActivity {
     public void getSensors() {
         ArrayList<Sensor> sensData = new ArrayList<>();
         Map<String, Sensor> sensorMap = new HashMap<String, Sensor>();
+        ArrayList<Integer> statuses = new ArrayList<>();
+        double sum = 0;
         for (String id: sensorIds) {
             DatabaseReference sensorRef = dB.getSensorChild(id);
             sensorRef.addValueEventListener(new ValueEventListener() {
@@ -434,6 +436,19 @@ public class DeviceActivity extends AppCompatActivity {
                         } else {
                             status = true;
                         }
+
+                        if (status) {
+                            statuses.add(1);
+                        } else {
+                            statuses.add(0);
+                        }
+
+                        float sum = 0;
+                        for (int num : statuses) {
+                            sum += num;
+                        }
+
+                        sharePreferenceHelper.setScore(sum/statuses.size(), deviceId);
 
                         // Verify sensor status
                         sensorRef.child(SENSORSTATUS).setValue(status).addOnCompleteListener(new OnCompleteListener<Void>() {
