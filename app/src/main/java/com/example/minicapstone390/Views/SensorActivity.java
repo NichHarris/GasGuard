@@ -375,10 +375,10 @@ public class SensorActivity extends AppCompatActivity {
         if (data.getValues().size() != 0) {
             LocalDateTime start = history.get(0);
             LocalDateTime end = history.get(history.size() - 1);
-            long size = Duration.between(start, end).getSeconds() / delta;
+            long cuts = Duration.between(start, end).getSeconds() / data.getValues().size();
             ArrayList<LocalDateTime> xAxisTimes = new ArrayList<>();
-            for (int i = 0; i < size; i++) {
-                xAxisTimes.add(start.plusSeconds(i * delta));
+            for (int i = 0; i < data.getValues().size(); i++) {
+                xAxisTimes.add(start.plusSeconds(i * cuts));
             }
             setXAxis(history, data, xAxisTimes);
         }
