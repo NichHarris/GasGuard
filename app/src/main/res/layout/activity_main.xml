@@ -25,21 +25,23 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <!-- Loading...   -->
+
     <TextView
         android:id="@+id/textView"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="300dp"
+        android:layout_marginTop="324dp"
         android:gravity="center"
         android:paddingHorizontal="15dp"
         android:paddingTop="200dp"
-        android:translationZ="1dp"
         android:text="@string/loading"
         android:textColor="?attr/colorOnPrimary"
         android:textSize="25sp"
         android:textStyle="bold"
+        android:translationZ="1dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -59,19 +61,20 @@
     <!-- added line android:contentDescription="@null" to fix warning -->
 
     <!-- Gas Guard Logo  -->
+
     <ImageView
-        android:contentDescription="@null"
         android:id="@+id/GasGuard_logo"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_marginStart="500dp"
         android:layout_marginBottom="200dp"
+        android:contentDescription="@null"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="10"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@+id/textView"
         app:layout_constraintTop_toBottomOf="@+id/textView2"
-        app:layout_constraintVertical_bias="0.44"
+        app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@drawable/gg_logo_no_background" />
 
     <ImageView
