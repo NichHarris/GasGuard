@@ -12,6 +12,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.annotation.SuppressLint;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
@@ -431,7 +433,7 @@ public class DeviceActivity extends AppCompatActivity {
                             if (status) {
                                 status = false;
                                 Log.i(TAG, String.format("Status of sensor %d switched to unsafe", sensorType));
-                                notification(sensorName, sensorScore);
+                                notification(id, sensorScore);
                             }
                         } else {
                             status = true;
@@ -491,7 +493,7 @@ public class DeviceActivity extends AppCompatActivity {
     }
 
     // Create a notification when triggered
-    public void notification(String sensorName, Double sensorScore) {
+    public void notification(String sensorId, Double sensorScore) {
         // Initialize channel
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel("Threshold Notification", "Threshold Notification", NotificationManager.IMPORTANCE_HIGH);
@@ -499,12 +501,21 @@ public class DeviceActivity extends AppCompatActivity {
             notificationManager.createNotificationChannel(channel);
         }
 
+        Intent intent = new Intent(this, SensorActivity.class);
+        intent.putExtra("sensorId", sensorId);
+
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+        stackBuilder.addNextIntentWithParentStack(intent);
+
+        PendingIntent pendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+
         // Build notification
         @SuppressLint("DefaultLocale") NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "Threshold Notification")
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setSmallIcon(R.drawable.gg_logo)
                 .setContentTitle("Gas Concentration Warning!")
-                .setContentText(String.format("Sensor %s of device: %s has exceeded threshold levels: %f", sensorName, deviceId, sensorScore));
+                .setContentText(String.format("Sensor %s of device: %s has exceeded threshold levels: %f", sensorId, deviceId, sensorScore))
+                .setContentIntent(pendingIntent);
 
         NotificationManagerCompat managerCompat = NotificationManagerCompat.from(DeviceActivity.this);
         managerCompat.notify(1, builder.build());
