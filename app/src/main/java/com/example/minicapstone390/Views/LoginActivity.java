@@ -119,6 +119,7 @@ public class LoginActivity extends AppCompatActivity {
             passwordET.requestFocus();
             isValid = false;
         }
+
         if (isValid) {
             // Login User Using Firebase Auth
             dB.getAuth().signInWithEmailAndPassword(userEmail, password)

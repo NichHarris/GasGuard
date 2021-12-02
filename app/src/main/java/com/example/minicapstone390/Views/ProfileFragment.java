@@ -62,10 +62,8 @@ public class ProfileFragment extends DialogFragment {
         cancelButton.setOnClickListener(v -> dismiss());
 
         saveButton.setOnClickListener(view1 -> {
-
-            DatabaseReference userRef = dB.getUserChild(dB.getUserId());
-
-            userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            // Update user info
+            dB.getUserChild().addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if (snapshot.exists()) {
@@ -101,7 +99,7 @@ public class ProfileFragment extends DialogFragment {
                         userLastName = userLastNameInput.getText().toString().equals("") ? (snapshot.child(USERLAST).exists() ? snapshot.child(USERLAST).getValue(String.class) : "") : userLastNameInput.getText().toString();
 
                         // Get user owned devices and update user
-                        userRef.child(USERDEVICES).addListenerForSingleValueEvent(new ValueEventListener() {
+                        dB.getUserChild().child(USERDEVICES).addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 Map<String, Object> devices = new HashMap<>();
@@ -113,7 +111,7 @@ public class ProfileFragment extends DialogFragment {
                                     }
                                 }
 
-                                // Can add validation after
+                                // Update user with fetched info
                                 Map<String, Object> userInfo = new HashMap<>();
                                 userInfo.put(USERNAME, userName);
                                 userInfo.put(USEREMAIL, userEmail);
@@ -121,7 +119,7 @@ public class ProfileFragment extends DialogFragment {
                                 userInfo.put(USERFIRST, userFirstName);
                                 userInfo.put(USERLAST, userLastName);
                                 userInfo.put(USERDEVICES, devices);
-                                userRef.updateChildren(userInfo);
+                                dB.getUserChild().updateChildren(userInfo);
 
                                 ((ProfileActivity) getActivity()).updateAllInfo();
                                 dismiss();

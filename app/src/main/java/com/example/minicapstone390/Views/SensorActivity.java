@@ -69,8 +69,7 @@ public class SensorActivity extends AppCompatActivity {
 
     // Default Values
     protected double score = 0.0;
-    public int graphTimeScale = 0;
-    public long delta = 30;
+    protected int graphTimeScale = 0;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -212,9 +211,7 @@ public class SensorActivity extends AppCompatActivity {
 
     // Display basic info of the sensor
     public void displaySensorInfo(String sensorId) {
-        DatabaseReference sensorRef = dB.getSensorChild(sensorId);
-
-        sensorRef.addValueEventListener(new ValueEventListener() {
+        dB.getSensorChild(sensorId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists() && snapshot.child(SENSORNAME).exists()) {
@@ -253,19 +250,15 @@ public class SensorActivity extends AppCompatActivity {
                 switch (id) {
                     case R.id.weekButton:
                         graphTimeScale = 7;
-                        delta = 30;
                         break;
                     case R.id.weeksButton:
                         graphTimeScale = 14;
-                        delta = 60;
                         break;
                     case R.id.monthButton:
                         graphTimeScale = 28;
-                        delta = 120;
                         break;
                     default:
                         graphTimeScale = 0;
-                        delta = 30;
                 }
                 getAllSensorData();
             }
@@ -374,10 +367,11 @@ public class SensorActivity extends AppCompatActivity {
         if (data.getValues().size() != 0) {
             LocalDateTime start = history.get(0);
             LocalDateTime end = history.get(history.size() - 1);
-            long cuts = Duration.between(start, end).getSeconds() / data.getValues().size();
+            long offset = Duration.between(start, end).getSeconds() / data.getValues().size();
             ArrayList<LocalDateTime> xAxisTimes = new ArrayList<>();
+            // Create X axis entries
             for (int i = 0; i < data.getValues().size(); i++) {
-                xAxisTimes.add(start.plusSeconds(i * cuts));
+                xAxisTimes.add(start.plusSeconds(i * offset));
             }
             setXAxis(history, data, xAxisTimes);
         }

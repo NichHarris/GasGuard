@@ -329,7 +329,7 @@ public class HomeActivity extends AppCompatActivity {
         List<BarEntry> values = new ArrayList<>();
         int i = 0;
         for (int x = 1; x < devices.size() + 1; x++) {
-            float y =(float) sharePreferenceHelper.getScore(devices.get(i).getId()) * 100;
+            float y = sharePreferenceHelper.getScore(devices.get(i).getId()) * 100;
             i++;
 
             values.add(new BarEntry(x, y));

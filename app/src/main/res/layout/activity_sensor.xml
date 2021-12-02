@@ -118,7 +118,7 @@
             style="@style/RadioButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:button="@drawable/button_selected"
+            android:button="@drawable/button_graph"
             android:textColor="?attr/colorOnSecondary"
             android:text="@string/day" />
 

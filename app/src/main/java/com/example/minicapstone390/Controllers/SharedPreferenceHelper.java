@@ -19,8 +19,10 @@ public class SharedPreferenceHelper {
         editor.apply();
     }
 
+    // Get theme mode
     public Boolean getTheme() { return sharedPreferences.getBoolean("themeMode", false); }
 
+    // Set score for a device
     public void setScore(float score, String id) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         assert editor != null;
@@ -28,5 +30,6 @@ public class SharedPreferenceHelper {
         editor.apply();
     }
 
-    public double getScore(String id) { return sharedPreferences.getFloat(id, 1); }
+    // Get score for a device
+    public float getScore(String id) { return sharedPreferences.getFloat(id, 1); }
 }

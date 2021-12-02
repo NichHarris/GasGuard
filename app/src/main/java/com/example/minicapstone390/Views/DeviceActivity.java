@@ -79,11 +79,7 @@ public class DeviceActivity extends AppCompatActivity {
         sharePreferenceHelper = new SharedPreferenceHelper(DeviceActivity.this);
 
         // Set theme
-        if (sharePreferenceHelper.getTheme()) {
-            setTheme(R.style.NightMode);
-        } else {
-            setTheme(R.style.LightMode);
-        }
+        setTheme();
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_device);
@@ -212,8 +208,6 @@ public class DeviceActivity extends AppCompatActivity {
                                     Toast.makeText(DeviceActivity.this, "Calibration started, please leave device for up to 3 hours", Toast.LENGTH_LONG).show();
 
                                     goToHomeActivity();
-
-                                    // TODO: Clear all sensor values
                                 } else {
                                     Log.e(TAG, "Unable to get calibration status");
                                 }
@@ -296,30 +290,6 @@ public class DeviceActivity extends AppCompatActivity {
                                                         Log.d(TAG, String.format("Unable to remove device: %s", deviceId));
                                                     } else {
                                                         Log.i(TAG, String.format("Removed device: %s", deviceId));
-//                                                        dB.getDeviceChild(deviceId).addListenerForSingleValueEvent(new ValueEventListener() {
-//                                                            @Override
-//                                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                                                                if (snapshot.exists()) {
-//                                                                    // Remove device from devices
-//                                                                    snapshot.getRef().removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
-//                                                                        @Override
-//                                                                        public void onComplete(@NonNull Task<Void> task) {
-//                                                                            if (!task.isSuccessful()) {
-//                                                                                Log.d(TAG, "Unable to remove device");
-//                                                                            }
-//                                                                        }
-//                                                                    });
-//                                                                } else {
-//                                                                    Log.d(TAG, "Device doesn't exist");
-//                                                                }
-//                                                            }
-//
-//                                                            @Override
-//                                                            public void onCancelled(@NonNull DatabaseError e) {
-//                                                                Log.d(TAG, e.toString());
-//                                                                throw e.toException();
-//                                                            }
-//                                                        });
                                                         goToHomeActivity();
                                                     }
                                                 }
@@ -501,6 +471,7 @@ public class DeviceActivity extends AppCompatActivity {
             notificationManager.createNotificationChannel(channel);
         }
 
+        // Create intent to open sensor activity when notification is clicked
         Intent intent = new Intent(this, SensorActivity.class);
         intent.putExtra("sensorId", sensorId);
 

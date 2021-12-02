@@ -96,10 +96,6 @@ public class AddDeviceFragment extends DialogFragment {
                                         }
                                     }
 
-                                    String url = "https://tools.keycdn.com/geo";
-
-
-
                                     // for updating users with a device
                                     Map<String, Object> keys = new HashMap<>();
                                     keys.put(deviceId, deviceId);
@@ -112,6 +108,7 @@ public class AddDeviceFragment extends DialogFragment {
                                     dismiss();
                                 }
                             });
+
                             // Update location
                             if (snapshot.child(DEVICELOCATION).exists()) {
                                 if (snapshot.child(DEVICELOCATION).getValue().equals("")) {

@@ -110,7 +110,5 @@
             android:textColor="@color/white"
             android:textSize="14sp"
             android:layout_marginVertical="10dp"/>
-
     </RelativeLayout>
-
 </RelativeLayout>

@@ -29,6 +29,7 @@ public class SensorAdapter extends RecyclerView.Adapter<SensorAdapter.ViewHolder
     private static final String EDIT = "EDIT ";
     private static final String ACCESS = "ACCESS ";
 
+    // Function call names
     private final String deleteFunction = "deleteSensor()";
     private final String editFunction = "editSensor()";
 

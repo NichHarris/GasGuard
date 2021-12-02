@@ -35,10 +35,6 @@
         <item name="windowActionBar">false</item>
     </style>
 
-    <style name="NewButton" parent="Widget.AppCompat.Button">
-        <item name="android:background">@drawable/button_custom</item>
-    </style>
-
     <style name="RadioButton" parent="Widget.AppCompat.CompoundButton.RadioButton">
         <item name="android:background">@drawable/button</item>
         <item name="android:button">@null</item>
@@ -56,5 +52,4 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:src">@drawable/gg_logo_no_background</item>
     </style>
-
 </resources>
