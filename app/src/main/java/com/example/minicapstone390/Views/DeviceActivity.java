@@ -151,7 +151,7 @@ public class DeviceActivity extends AppCompatActivity {
     private void editDevice(String deviceId) {
         Bundle bundle = new Bundle();
         bundle.putString("id", deviceId);
-        UpdateDeviceFragment dialog = new UpdateDeviceFragment();
+        DeviceFragment dialog = new DeviceFragment();
         dialog.setArguments(bundle);
         dialog.show(getSupportFragmentManager(), "UpdateDeviceFragment");
     }
