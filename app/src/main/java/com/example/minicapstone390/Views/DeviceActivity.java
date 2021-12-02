@@ -433,7 +433,7 @@ public class DeviceActivity extends AppCompatActivity {
                             if (status) {
                                 status = false;
                                 Log.i(TAG, String.format("Status of sensor %d switched to unsafe", sensorType));
-                                notification(id, sensorScore);
+                                notification(id, sensorName, sensorScore);
                             }
                         } else {
                             status = true;
@@ -493,7 +493,7 @@ public class DeviceActivity extends AppCompatActivity {
     }
 
     // Create a notification when triggered
-    public void notification(String sensorId, Double sensorScore) {
+    public void notification(String sensorId, String sensorName, Double sensorScore) {
         // Initialize channel
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel("Threshold Notification", "Threshold Notification", NotificationManager.IMPORTANCE_HIGH);
@@ -514,7 +514,7 @@ public class DeviceActivity extends AppCompatActivity {
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setSmallIcon(R.drawable.gg_logo)
                 .setContentTitle("Gas Concentration Warning!")
-                .setContentText(String.format("Sensor %s of device: %s has exceeded threshold levels: %f", sensorId, deviceId, sensorScore))
+                .setContentText(String.format("Sensor %s of device: %s has exceeded threshold levels: %f", sensorName, deviceId, sensorScore))
                 .setContentIntent(pendingIntent);
 
         NotificationManagerCompat managerCompat = NotificationManagerCompat.from(DeviceActivity.this);
