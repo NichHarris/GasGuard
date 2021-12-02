@@ -92,7 +92,7 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentBottom="true"
             android:layout_marginStart="140dp"
-            style="@style/NewButton"
+            style="@style/Button"
             android:text="@string/save"
             android:textColor="@color/white"
             android:textSize="14sp"
@@ -100,7 +100,7 @@
 
         <android.widget.Button
             android:id="@+id/cancel_add_device_button"
-            style="@style/NewButton"
+            style="@style/Button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
