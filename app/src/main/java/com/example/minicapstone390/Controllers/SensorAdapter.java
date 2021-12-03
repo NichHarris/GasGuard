@@ -17,7 +17,6 @@ import com.example.minicapstone390.Models.Sensor;
 import com.example.minicapstone390.R;
 import com.example.minicapstone390.Views.DeviceActivity;
 import com.example.minicapstone390.Views.SensorActivity;
-import com.example.minicapstone390.Views.SensorFragment;
 
 import java.util.ArrayList;
 
