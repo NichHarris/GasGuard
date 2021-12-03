@@ -25,7 +25,6 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <!-- Loading...   -->
-
     <TextView
         android:id="@+id/textView"
         android:layout_width="fill_parent"
@@ -61,7 +60,6 @@
     <!-- added line android:contentDescription="@null" to fix warning -->
 
     <!-- Gas Guard Logo  -->
-
     <ImageView
         android:id="@+id/GasGuard_logo"
         android:layout_width="wrap_content"
@@ -77,6 +75,7 @@
         app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@drawable/gg_logo_no_background" />
 
+    <!--  Gas Guard Banner -->
     <ImageView
         android:id="@+id/gg_cloud_no_bg"
         android:layout_width="361dp"
@@ -87,7 +86,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"/>
-    
-    <!--  Gas Guard Banner -->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

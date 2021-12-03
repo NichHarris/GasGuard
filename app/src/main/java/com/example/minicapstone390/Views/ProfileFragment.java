@@ -20,15 +20,14 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 import java.util.Map;
 
 // Device Fragment
-public class UpdateInfoFragment extends DialogFragment {
-    private static final String TAG = "UpdateInfoFragment";
+public class ProfileFragment extends DialogFragment {
+    private static final String TAG = "ProfileFragment";
     private static final String USERNAME = DatabaseEnv.USERNAME.getEnv();
     private static final String USEREMAIL = DatabaseEnv.USEREMAIL.getEnv();
     private static final String USERPHONE = DatabaseEnv.USERPHONE.getEnv();
@@ -62,10 +61,8 @@ public class UpdateInfoFragment extends DialogFragment {
         cancelButton.setOnClickListener(v -> dismiss());
 
         saveButton.setOnClickListener(view1 -> {
-
-            DatabaseReference userRef = dB.getUserChild(dB.getUserId());
-
-            userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            // Update user info
+            dB.getUserChild().addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if (snapshot.exists()) {
@@ -101,7 +98,7 @@ public class UpdateInfoFragment extends DialogFragment {
                         userLastName = userLastNameInput.getText().toString().equals("") ? (snapshot.child(USERLAST).exists() ? snapshot.child(USERLAST).getValue(String.class) : "") : userLastNameInput.getText().toString();
 
                         // Get user owned devices and update user
-                        userRef.child(USERDEVICES).addListenerForSingleValueEvent(new ValueEventListener() {
+                        dB.getUserChild().child(USERDEVICES).addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 Map<String, Object> devices = new HashMap<>();
@@ -113,7 +110,7 @@ public class UpdateInfoFragment extends DialogFragment {
                                     }
                                 }
 
-                                // Can add validation after
+                                // Update user with fetched info
                                 Map<String, Object> userInfo = new HashMap<>();
                                 userInfo.put(USERNAME, userName);
                                 userInfo.put(USEREMAIL, userEmail);
@@ -121,7 +118,7 @@ public class UpdateInfoFragment extends DialogFragment {
                                 userInfo.put(USERFIRST, userFirstName);
                                 userInfo.put(USERLAST, userLastName);
                                 userInfo.put(USERDEVICES, devices);
-                                userRef.updateChildren(userInfo);
+                                dB.getUserChild().updateChildren(userInfo);
 
                                 ((ProfileActivity) getActivity()).updateAllInfo();
                                 dismiss();

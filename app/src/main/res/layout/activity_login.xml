@@ -44,10 +44,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/gg_logo_no_background" />
 
-    <!-- Login & Sign Up Switch -->
-
-    <!--  Login Form: Input Fields & Login Button  -->
-
     <LinearLayout
         android:id="@+id/navbar"
         android:layout_width="wrap_content"
@@ -96,7 +92,6 @@
             app:layout_constraintTop_toTopOf="parent" />
     </LinearLayout>
 
-    <!-- Gas Guard Logo  -->
     <LinearLayout
         android:id="@+id/login_form"
         android:layout_width="match_parent"

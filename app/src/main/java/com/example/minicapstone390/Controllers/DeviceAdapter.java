@@ -30,6 +30,7 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
     private static final String CALIBRATION = "CALIBRATE ";
     private static final String ACCESS = "ACCESS ";
 
+    // Function call names
     private final String deleteDeviceFunction = "deleteDevice()";
     private final String editDeviceFunction = "editDevice()";
     private final String calibrateDeviceFunction = "calibrateDevice()";
@@ -89,7 +90,7 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
         }
     }
 
-    // Call device activity
+    // Call device activity with specified function
     private void callActivity(String function, String type, int position) {
         Intent intent = new Intent(mContext, DeviceActivity.class);
         Bundle bundle = new Bundle();

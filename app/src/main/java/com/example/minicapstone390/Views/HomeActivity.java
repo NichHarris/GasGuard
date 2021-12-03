@@ -18,7 +18,6 @@ import com.example.minicapstone390.Models.DatabaseEnv;
 import com.example.minicapstone390.Controllers.SharedPreferenceHelper;
 import com.example.minicapstone390.Controllers.DeviceAdapter;
 import com.example.minicapstone390.Models.Device;
-import com.example.minicapstone390.Models.Graphing;
 import com.example.minicapstone390.R;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.AxisBase;
@@ -158,7 +157,7 @@ public class HomeActivity extends AppCompatActivity {
 
     // Open connect a device dialog
     public void connectDevice() {
-        DeviceFragment dialog = new DeviceFragment();
+        AddDeviceFragment dialog = new AddDeviceFragment();
         dialog.show(getSupportFragmentManager(), "AddDeviceFragment");
     }
 
@@ -330,7 +329,7 @@ public class HomeActivity extends AppCompatActivity {
         List<BarEntry> values = new ArrayList<>();
         int i = 0;
         for (int x = 1; x < devices.size() + 1; x++) {
-            float y =(float) sharePreferenceHelper.getScore(devices.get(i).getId()) * 100;
+            float y = sharePreferenceHelper.getScore(devices.get(i).getId()) * 100;
             i++;
 
             values.add(new BarEntry(x, y));

@@ -1,5 +1,6 @@
 package com.example.minicapstone390.Models;
 
+// Class defining structure of a user
 public class User {
     private String userName, userEmail, userPhone, userFirstName, userLastName;
 

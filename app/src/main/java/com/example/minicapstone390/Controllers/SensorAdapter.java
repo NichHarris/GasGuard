@@ -17,7 +17,6 @@ import com.example.minicapstone390.Models.Sensor;
 import com.example.minicapstone390.R;
 import com.example.minicapstone390.Views.DeviceActivity;
 import com.example.minicapstone390.Views.SensorActivity;
-import com.example.minicapstone390.Views.SensorFragment;
 
 import java.util.ArrayList;
 
@@ -29,6 +28,7 @@ public class SensorAdapter extends RecyclerView.Adapter<SensorAdapter.ViewHolder
     private static final String EDIT = "EDIT ";
     private static final String ACCESS = "ACCESS ";
 
+    // Function call names
     private final String deleteFunction = "deleteSensor()";
     private final String editFunction = "editSensor()";
 

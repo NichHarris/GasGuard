@@ -27,10 +27,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/logo1" />
 
-    <!-- Login & Sign Up Switch -->
-
-    <!--  Signup Form: Input Fields & Signup Button  -->
-
     <ImageView
         android:id="@+id/logo1"
         android:layout_width="314dp"

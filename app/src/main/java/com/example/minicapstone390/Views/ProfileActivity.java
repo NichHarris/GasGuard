@@ -104,7 +104,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         switch (item.getItemId()) {
             case R.id.update_info:
-                UpdateInfoFragment infoFragment = new UpdateInfoFragment();
+                ProfileFragment infoFragment = new ProfileFragment();
                 infoFragment.show(getSupportFragmentManager(), "UpdateInfoFragment");
                 updateAllInfo();
                 break;

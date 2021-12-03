@@ -35,7 +35,7 @@
         <item name="windowActionBar">false</item>
     </style>
 
-    <style name="NewButton" parent="Widget.AppCompat.Button">
+    <style name="Button" parent="Widget.AppCompat.Button">
         <item name="android:background">@drawable/button_custom</item>
     </style>
 
@@ -56,5 +56,4 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:src">@drawable/gg_logo_no_background</item>
     </style>
-
 </resources>

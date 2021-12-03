@@ -16,6 +16,7 @@
         android:paddingBottom="10dp"
         android:orientation="vertical"
         android:background="@drawable/list_view_shape">
+
         <TextView
             android:id="@+id/deviceListName"
             android:layout_width="275dp"

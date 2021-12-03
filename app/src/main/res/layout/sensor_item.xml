@@ -103,5 +103,4 @@
             app:srcCompat="@drawable/mc_2"
             tools:visibility="visible" />
     </RelativeLayout>
-
 </androidx.constraintlayout.widget.ConstraintLayout>
