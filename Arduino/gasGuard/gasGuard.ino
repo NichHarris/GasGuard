@@ -10,13 +10,6 @@
 #define TIME_HEADER  "T"   // Header tag for serial time sync message
 #define TIME_REQUEST  7    // ASCII bell character requests a time sync message 
 
-// UUid for Service
-const char* UUID_serv = "84582cd0-3df0-4e73-9496-29010d7445dd";
-
-// UUids for WiFi status 
-const char* UUID_status   = "84582cd1-3df0-4e73-9496-29010d7445dd";
-BLEService myService(UUID_serv); 
-BLEFloatCharacteristic  WiFi_status(UUID_status,  BLERead|BLENotify);
 bool calibrationStatus = false;
 FirebaseData fbdo;
 
@@ -32,7 +25,6 @@ void setup() {
   delay(100);
   Serial.println();
   
-  // setBLE();
   setFirebase();
   
   setTime(WiFi.getTime()); 
@@ -59,7 +51,7 @@ void processSyncMessage() {
   const unsigned long DEFAULT_TIME = WiFi.getTime(); // Jan 1 2013
   if (Serial.find(TIME_HEADER)) {
     pctime = Serial.parseInt();
-    if ( pctime >= DEFAULT_TIME) { // check the integer is a valid time (greater than Jan 1 2013)
+    if (pctime >= DEFAULT_TIME) { // check the integer is a valid time (greater than Jan 1 2013)
       setTime(pctime); // Sync Arduino clock to the time received on the serial port
     }
   }
@@ -69,7 +61,6 @@ time_t requestSync(){
   Serial.write(TIME_REQUEST);
   return 0; // the time will be sent later in response to serial mesg
 }
-
 
 void sendData(){
   Firebase.getBool(fbdo, "Devices/" + String(DeviceID) + "/status");
@@ -85,25 +76,6 @@ void sendData(){
       Firebase.setFloat(fbdo, "Sensors/" + String(DeviceID)+"-" + String(i) + "/SensorPastValues/" + Timestamp() + "/Value", SensorValue/0.75);
     }
   }
-}
-void setBLE(){
-  
-  Serial.print("Connecting to BLE");
-  while (!BLE.begin()) {
-    Serial.println("starting BLE failed!");
-  }
-  
-  BLE.setLocalName("GasGuard");
-  BLE.setDeviceName("GasGuard"); // Arduino is the default value on this module
-  
-  // Set advertised Service
-  BLE.setAdvertisedService(myService);
-  
-  // Add characteristics to the Service
-  myService.addCharacteristic(WiFi_status);
-  
-  BLE.addService(myService);
-  
 }
 
 void Calibrate(){

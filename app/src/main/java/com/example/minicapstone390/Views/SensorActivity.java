@@ -63,6 +63,7 @@ public class SensorActivity extends AppCompatActivity {
     protected TextView chartTitle, sensorName, sensorStatus, sensorType, sensorGas;
     protected RadioGroup graphTimesOptions;
     protected Toolbar toolbar;
+    protected String deviceId;
     protected String sensorId;
     protected String function;
 
@@ -106,6 +107,7 @@ public class SensorActivity extends AppCompatActivity {
         if (carryOver != null) {
             sensorId = carryOver.getString("sensorId");
             function = carryOver.getString("callFunction", "");
+            deviceId = carryOver.getString("deviceId");
 
             // Check if function was called outside of activity
             if(function.equals("editSensor()")) {
@@ -514,6 +516,18 @@ public class SensorActivity extends AppCompatActivity {
         return true;
     }
 
+    // Navigation to Device Activity
+    public void goToDeviceActivity() {
+        if (deviceId == null) {
+            openHomeActivity();
+        } else {
+            //Pass Device Id to Get Data for Device Page
+            Intent intent = new Intent(this, DeviceActivity.class);
+            intent.putExtra("deviceId", deviceId);
+            startActivity(intent);
+        }
+    }
+
     // Navigate back to Home Activity
     public void openHomeActivity() {
         Intent intent = new Intent(this, HomeActivity.class);
@@ -523,7 +537,7 @@ public class SensorActivity extends AppCompatActivity {
     // Navigate back to device page on task-bar return
     @Override
     public boolean onSupportNavigateUp() {
-        finish();
+        goToDeviceActivity();
         return true;
     }
 }

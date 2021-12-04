@@ -474,6 +474,7 @@ public class DeviceActivity extends AppCompatActivity {
         // Create intent to open sensor activity when notification is clicked
         Intent intent = new Intent(this, SensorActivity.class);
         intent.putExtra("sensorId", sensorId);
+        intent.putExtra("deviceId", deviceId);
 
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
         stackBuilder.addNextIntentWithParentStack(intent);
@@ -537,6 +538,7 @@ public class DeviceActivity extends AppCompatActivity {
         String sensorId = sensorIds.get(sensorIndex);
         Intent intent = new Intent(this, SensorActivity.class);
         intent.putExtra("sensorId", sensorId);
+        intent.putExtra("deviceId", deviceId);
         startActivity(intent);
     }
 
