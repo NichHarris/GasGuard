@@ -64,7 +64,7 @@ public class AddDeviceFragment extends DialogFragment {
 
         cancelButton.setOnClickListener(v -> dismiss());
 
-        saveButton.setOnClickListener(view1 -> {
+        saveButton.setOnClickListener(v -> {
             // Get Input Responses
             String deviceId = deviceIdInput.getText().toString();
 

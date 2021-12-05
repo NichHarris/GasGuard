@@ -37,7 +37,7 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
 
 
     // Define Context and ArrayList of Devices
-    private Context mContext;
+    private Context context;
     private final ArrayList<Device> devices;
 
     // Define Single Device Holder
@@ -49,7 +49,7 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
             super(v);
 
             // Get Context to Call Function in HomeActivity
-            mContext = v.getContext();
+            context = v.getContext();
 
             // Initialize Values
             deviceName = (TextView) v.findViewById(R.id.deviceListName);
@@ -64,7 +64,7 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
                 if(!deviceStatus.getText().toString().contains("Calibrating")) {
                     callActivity(editDeviceFunction, EDIT, getAdapterPosition());
                 } else {
-                    Toast.makeText(mContext, "Device is Calibrating! Wait for Calibration to End Before Accessing Device.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, "Device is Calibrating! Wait for Calibration to End Before Accessing Device.", Toast.LENGTH_LONG).show();
                 }
             });
 
@@ -82,9 +82,9 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
                 Log.d(TAG,ACCESS + deviceIndex);
 
                 if(!deviceStatus.getText().toString().contains("Calibrating")) {
-                    ((HomeActivity) mContext).goToDeviceActivity(deviceIndex);
+                    ((HomeActivity) context).goToDeviceActivity(deviceIndex);
                 } else {
-                    Toast.makeText(mContext, "Device is Calibrating! Wait for Calibration to End Before Accessing Device.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, "Device is Calibrating! Wait for Calibration to End Before Accessing Device.", Toast.LENGTH_LONG).show();
                 }
             });
         }
@@ -92,13 +92,13 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
 
     // Call device activity with specified function
     private void callActivity(String function, String type, int position) {
-        Intent intent = new Intent(mContext, DeviceActivity.class);
+        Intent intent = new Intent(context, DeviceActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString(deviceIdCall, devices.get(position).getId());
         bundle.putString(callFunction, function);
         intent.putExtras(bundle);
         Log.i(TAG,type + position);
-        mContext.startActivity(intent);
+        context.startActivity(intent);
     }
 
     // Define Adapter for Device List

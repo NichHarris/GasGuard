@@ -47,6 +47,9 @@ import java.util.Objects;
 
 public class DeviceActivity extends AppCompatActivity {
     private static final String TAG = "DeviceActivity";
+    private static final String sensorIdCall = "sensorId";
+    private static final String deviceIdCall = "deviceId";
+    private static final String callFunction = "callFunction";
     private static final String DEVICES = DatabaseEnv.USERDEVICES.getEnv();
     private static final String DEVICENAME = DatabaseEnv.DEVICENAME.getEnv();
     private static final String DEVICESTATUS = DatabaseEnv.DEVICESTATUS.getEnv();
@@ -107,6 +110,7 @@ public class DeviceActivity extends AppCompatActivity {
         if (carryOver != null) {
             deviceId = carryOver.getString("deviceId");
             function = carryOver.getString("callFunction", "");
+            // If defined, call specified function
             if (function.equals("editDevice()")) {
                 editDevice(deviceId);
             } else if (function.equals("deleteDevice()")) {
@@ -526,20 +530,26 @@ public class DeviceActivity extends AppCompatActivity {
         return threshold;
     }
 
+    // Call sensor activity with specified function to load
+    public void goToSensorActivity(String function, int position) {
+        Intent intent = new Intent(this, SensorActivity.class);
+        
+        Bundle bundle = new Bundle();
+        bundle.putString(sensorIdCall, sensorIds.get(position));
+        bundle.putString(callFunction, function);
+        bundle.putString(deviceIdCall, deviceId);
+        
+        intent.putExtras(bundle);
+        startActivity(intent);
+    }
+
     // Set ListView of sensors
     public void setSensorList(ArrayList<Sensor> sensData) {
         // Recycler View for Sensors
         sensorAdapter = new SensorAdapter(sensData);
+        Bundle bundle = new Bundle();
+        bundle.putString("deviceId", deviceId);
         sensorListView.setAdapter(sensorAdapter);
-    }
-
-    // Open sensor activity for selected sensor
-    public void goToSensorActivity(int sensorIndex) {
-        String sensorId = sensorIds.get(sensorIndex);
-        Intent intent = new Intent(this, SensorActivity.class);
-        intent.putExtra("sensorId", sensorId);
-        intent.putExtra("deviceId", deviceId);
-        startActivity(intent);
     }
 
     // Open sensor activity for selected sensor
