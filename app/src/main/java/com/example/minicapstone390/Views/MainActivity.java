@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Add 5 Second Delay Before Reaching Home or Login Screens
+        // Add 1 Second Delay Before Reaching Home or Login Screens
         loadAppContent();
     }
 
@@ -65,9 +65,9 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    // Add Delay to See Launcher Screen for 5s
+    // Add Delay to See Launcher Screen for 1s
     private void loadAppContent() {
-        // Add 5 Second Delay Before Reaching Home or Login Screens
+        // Add 1 Second Delay Before Reaching Home or Login Screens
         Thread loadingScreenThread = new Thread() {
             @Override
             public void run() {

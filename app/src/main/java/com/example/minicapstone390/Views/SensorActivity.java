@@ -63,9 +63,7 @@ public class SensorActivity extends AppCompatActivity {
     protected TextView chartTitle, sensorName, sensorStatus, sensorType, sensorGas;
     protected RadioGroup graphTimesOptions;
     protected Toolbar toolbar;
-    protected String deviceId;
-    protected String sensorId;
-    protected String function;
+    protected String deviceId, sensorId, function;
 
     // Default Values
     protected double score = 0.0;
@@ -101,7 +99,6 @@ public class SensorActivity extends AppCompatActivity {
         sensorChart = (LineChart) findViewById(R.id.sensorChart);
         sensorChart.getLegend().setEnabled(false);
         sensorChart.getDescription().setEnabled(false);
-//        Graphing graphing = new Graphing(sensorChart);
 
         Bundle carryOver = getIntent().getExtras();
         if (carryOver != null) {

@@ -85,7 +85,6 @@ public class HomeActivity extends AppCompatActivity {
         deviceChart = (BarChart) findViewById(R.id.deviceChart);
         deviceChart.getLegend().setEnabled(false);
         deviceChart.getDescription().setEnabled(false);
-//        Graphing graph = new Graphing(deviceChart);
 
         // Initialize Dev List and Ids
         devList = new ArrayList<>();

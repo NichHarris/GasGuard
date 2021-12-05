@@ -22,8 +22,6 @@ import java.util.ArrayList;
 
 public class SensorAdapter extends RecyclerView.Adapter<SensorAdapter.ViewHolder> {
     private static final String TAG = "SensorAdapter";
-    private static final String sensorIdCall = "sensorId";
-    private static final String callFunction = "callFunction";
     private static final String DELETE = "DELETE ";
     private static final String EDIT = "EDIT ";
     private static final String ACCESS = "ACCESS ";
@@ -33,7 +31,7 @@ public class SensorAdapter extends RecyclerView.Adapter<SensorAdapter.ViewHolder
     private final String editFunction = "editSensor()";
 
     // Define Context and ArrayList of Sensors
-    private Context mContext;
+    private Context context;
     private final ArrayList<Sensor> sensors;
 
     // Define Single Device Holder
@@ -45,8 +43,10 @@ public class SensorAdapter extends RecyclerView.Adapter<SensorAdapter.ViewHolder
             super(v);
 
             // Get Context to Call Function in HomeActivity
-            mContext = v.getContext();
+            context = v.getContext();
 
+            // GET DEVICE ID IN SENSOR Adapter
+            
             // Initialize Values
             sensorName = (TextView) v.findViewById(R.id.sensorListName);
             sensorStatus = (TextView) v.findViewById(R.id.sensorListStatus);
@@ -67,23 +67,15 @@ public class SensorAdapter extends RecyclerView.Adapter<SensorAdapter.ViewHolder
             });
 
             v.setOnClickListener((view) -> {
-                int sensorIndex = getAdapterPosition();
-                Log.i(TAG,ACCESS + sensorIndex);
-                ((DeviceActivity)mContext).goToSensorActivity(sensorIndex);
+                callActivity("", ACCESS, getAdapterPosition());
             });
         }
-
     }
 
     // Call sensor activity with specified function to load
     private void callActivity(String function, String type, int position) {
-        Intent intent = new Intent(mContext, SensorActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putString(sensorIdCall, sensors.get(position).getId());
-        bundle.putString(callFunction, function);
-        intent.putExtras(bundle);
-        Log.i(TAG,type + position);
-        mContext.startActivity(intent);
+        Log.i(TAG, type + position);
+        ((DeviceActivity) context).goToSensorActivity(function, position);
     }
 
     // Define Adapter for Device List
