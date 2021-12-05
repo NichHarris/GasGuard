@@ -100,10 +100,10 @@ public class SensorAdapter extends RecyclerView.Adapter<SensorAdapter.ViewHolder
         String sensorTypeText = "Sensor: MQ" + type;
         String liveDataText = String.format("Live: %.3f", s.getSensorValue());
         String pastDataText = String.format("Avg: %.3f", s.getSensorScore());
+
         holder.sensorName.setText(s.getSensorName());
         holder.sensorStatus.setText(s.getStatus() ? R.string.safeSensorValue : R.string.unsafeSensorValue);
         holder.sensorType.setText(sensorTypeText);
-
         holder.sensorCurrValue.setText(liveDataText);
         holder.sensorPrevValue.setText(pastDataText);
 

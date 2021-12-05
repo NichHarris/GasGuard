@@ -110,6 +110,7 @@ public class DeviceActivity extends AppCompatActivity {
         if (carryOver != null) {
             deviceId = carryOver.getString("deviceId");
             function = carryOver.getString("callFunction", "");
+            // If defined, call specified function
             if (function.equals("editDevice()")) {
                 editDevice(deviceId);
             } else if (function.equals("deleteDevice()")) {
