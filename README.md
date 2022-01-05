@@ -4,8 +4,6 @@ Android Application that uses a network of devices to analyze the air quality an
 
 Users concerned with lung conditions, workplaces involving hazardous or dusty conditions, or otherwise curious individuals will be able to see the tracking and graphing of these levels through the application on a visually appealing and easily navigable display.
 
-Displays the data on the database in a user-friendly way. It also sets some data on the database, including the user authentication and the device status. An MVC structure is used as shown in Figure 2. Classes were created as models that combine certain information. Controllers were used to set the recycler views and set and get data from the database. Views were set for each page on the app. Combined together with the Firebase database and Arduino, GasGaurd was created.
-
 ## Application Wireframe
 
 ![image](https://user-images.githubusercontent.com/48420387/141717250-6f8b5a6b-42bf-48fd-bac4-5cb7475d6b64.png)
@@ -20,19 +18,14 @@ Displays the data on the database in a user-friendly way. It also sets some data
 
 - Powered via the breadboard power rail using a barrel jack converter to a USB 3 connected to an A/C wall wort power adapter
 
-- Arduino receives analog inputs via gas sensors.
-
-- Arduino microcontroller obtains sensors data and sends it to the database.
-
-- Android app displays the data on the database in a user-friendly way.
-
-- Arduino then takes the values read by the Arduino and uploads the difference between that value and the calibrated value to the database via Wi-Fi connection that is pre-established. Once this connection is established, values can then be sent to the cloud to a pre-existing Firebase Realtime Database. More information on the Firebase to follow.
+- Receives analog inputs via gas sensors and sends sesnor data to Firebase Database over Wi-Fi Connection.
 
 - Arduino and Firebase will communicate via library commands that will create devices and sensors, as well as issue commands to halt and/or turn off the process of collecting and sending data.
 
 ### Arduino Libraries
 
 - Firebase_Arduino_WiFiNINA - Connect to the obtained WiFi and the database in firebase used for this project and then send/receive the float values obtained by the sensors directly to the database and tag a timestamp along with it.
+
 - TimeLib library - Track the date and time, formatted as YYYY/MM/DD”T”hh:mm:ss and sent to the database with the sensor data.
 
 ## Firebase
