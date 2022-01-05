@@ -1,42 +1,53 @@
 # GasGuard
 
-Android app and arduino device used to measure and track air quality.
-
-### Application Wireframe
-
-![image](https://user-images.githubusercontent.com/48420387/141717250-6f8b5a6b-42bf-48fd-bac4-5cb7475d6b64.png)
-
-## GasGuard
-
-Application that uses a network of devices to analyze the air quality and the ambient concentration of harmful gases in various locations
+Android Application that uses a network of devices to analyze the air quality and the ambient concentration of harmful gases in various locations
 
 Users concerned with lung conditions, workplaces involving hazardous or dusty conditions, or otherwise curious individuals will be able to see the tracking and graphing of these levels through the application on a visually appealing and easily navigable display.
 
-## Arduino Nano
-
-Powered via the breadboard power rail using a barrel jack converter to a USB 3 connected to an A/C wall wort power adapter
-
-Obtains sensors data and sends it to the database.
-
 Displays the data on the database in a user-friendly way. It also sets some data on the database, including the user authentication and the device status. An MVC structure is used as shown in Figure 2. Classes were created as models that combine certain information. Controllers were used to set the recycler views and set and get data from the database. Views were set for each page on the app. Combined together with the Firebase database and Arduino, GasGaurd was created.
 
-Arduino receives analog inputs via gas sensors. Each Arduino contains an identification number that sets it apart from other arduinos, and each sensor adds a 1-digit ID to the device ID as the maximum number of sensors is 8.
+## Application Wireframe
 
-The Arduino then takes the values read by the Arduino and uploads the difference between that value and the calibrated value to the database via Wi-Fi connection that is pre-established. Once this connection is established, values can then be sent to the cloud to a pre-existing Firebase Realtime Database. More information on the Firebase to follow. The Arduino and Firebase will communicate via library commands that will create devices and sensors, as well as issue commands to halt and/or turn off the process of collecting and sending data.
+![image](https://user-images.githubusercontent.com/48420387/141717250-6f8b5a6b-42bf-48fd-bac4-5cb7475d6b64.png)
 
-Firebase_Arduino_WiFiNINA library is used to connect to the obtained WiFi and the database in firebase used for this project. The library is also used to send the float values obtained by the sensors directly to the database and tag a timestamp along with it. The TimeLib library is used to track the date and time, which is then formatted as YYYY/MM/DD”T”hh:mm:ss and sent to the database with the sensor data. It also sets the status of the devices and sensors.
+## System Architecture
 
-Arduino microcontroller obtains sensors data and sends it to the database.
+## Hardware Architecture
 
-The Android app displays the data on the database in a user-friendly way. It also sets some data on the database, including the user authentication and the device status. An MVC structure is used as shown in Figure 2. Classes were created as models that combine certain information. Controllers were used to set the recycler views and set and get data from the database. Views were set for each page on the app. Combined together with the Firebase database and Arduino, GasGaurd was created.
+## Software Architecture
+
+## Arduino Nano 33 IOT
+
+- Powered via the breadboard power rail using a barrel jack converter to a USB 3 connected to an A/C wall wort power adapter
+
+- Arduino receives analog inputs via gas sensors.
+
+- Arduino microcontroller obtains sensors data and sends it to the database.
+
+- Android app displays the data on the database in a user-friendly way.
+
+- Arduino then takes the values read by the Arduino and uploads the difference between that value and the calibrated value to the database via Wi-Fi connection that is pre-established. Once this connection is established, values can then be sent to the cloud to a pre-existing Firebase Realtime Database. More information on the Firebase to follow.
+
+- Arduino and Firebase will communicate via library commands that will create devices and sensors, as well as issue commands to halt and/or turn off the process of collecting and sending data.
+
+### Arduino Libraries
+
+- Firebase_Arduino_WiFiNINA - Connect to the obtained WiFi and the database in firebase used for this project and then send/receive the float values obtained by the sensors directly to the database and tag a timestamp along with it.
+- TimeLib library - Track the date and time, formatted as YYYY/MM/DD”T”hh:mm:ss and sent to the database with the sensor data.
 
 ## Firebase
 
-The Firebase Authentication provides an authentication service, handling both the creation of users and storing their passwords securely. Additionally, it can send emails to notify the user of a successful creation of an account and allow the user to reset his or her password using a one-time reset password link.
+### Firebase Authentication
 
-> Firebase Real Time Database
+Provides an authentication service, handling both the creation of users and storing their passwords securely. \
+Send emails to notify the user of a successful creation of an account and allow the user to reset his or her password using a one-time reset password link.
 
-The Firebase Real Time Database provides real time access to and storage of data. Using a real time database is necessary due to the severity of the health consequences if a leak or an unsafe environment is detected but the user is not warned in time. The following branches have been created in our database design:
+### Firebase Real Time Database
+
+Provides real time access to and storage of data. \
+Using a real time database is necessary due to the severity of the health consequences if a leak or an unsafe environment is detected but the user is not warned in time.
+
+#### Database Schema
 
 “Users”: {
 
@@ -87,7 +98,41 @@ The Firebase Real Time Database provides real time access to and storage of data
 
 }
 
-## Sensors
+“Sensors”: {
+
+    “$sid”:  {
+
+        CalibratedValue: {“.validate”: “newData.isDouble()”},
+
+        SensorScore: {“.validate”: “newData.isDouble()”},
+
+        SensorValue: {“.validate”: “newData.isDouble()”},
+
+        SensorName: {".validate": "newData.isString()"},
+
+        SensorType: {".validate": "newData.isLong()"},
+
+        status: {".validate": "newData.isBoolean()"},
+
+        // Dictionary of Past Sensor Data
+
+        SensorPastValues: {
+
+            $i” : {
+
+                “data”: {".validate": "newData.isString()"},
+
+                “timeStamp”: {".validate": "newData.isString()"}
+
+            }
+
+        }
+
+    }
+
+}
+
+## Gas Sensors
 
 **MQ-2**: Combustible gas, Smoke \
 **MQ-3**: Alcohol \
@@ -98,7 +143,7 @@ The Firebase Real Time Database provides real time access to and storage of data
 **MQ-9**: Carbon Monoxide, Methane \
 **MQ-135**: Ammonia sulfide, Benzene Vapor
 
-## App Activities
+## App Screens
 
 MainActivity: Is the launcher screen, used as a loading screen to check whether the user is authenticated and direct the user either to LoginActivity to authenticate or HomeActivity if already authenticated.
 
@@ -114,8 +159,6 @@ SensorActivity: Is the sensor screen where the sensor name, sensor type, gases m
 
 ProfileActivity: Is the profile screen where the user can add or edit the basic account information, change the current displayed theme from dark mode to light mode, log out, or completely remove the user's account.
 
-### Missing: Software, Mvc, and Sequence Diagrams
-
 ## Team Members
 
 [Nicholas Harris](https://github.com/NichHarris)
@@ -130,6 +173,4 @@ ProfileActivity: Is the profile screen where the user can add or edit the basic 
 
 ## Dependencies
 
-Used Firebase Authentication and Real Time Database to Store User, Device and Sensor Data,
-MPAndroidChart to Display Live Sensor Data in Graphs and Bar Charts,
-Gradle to Build the Java Project
+Used Firebase Authentication and Real Time Database to Obtain/Store User, Device and Sensor Data, MPAndroidChart to Display Live Real Time Sensor Data in Graphs and Bar Charts, and Gradle to Build the Java Project
