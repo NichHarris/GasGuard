@@ -6,13 +6,17 @@ Users concerned with lung conditions, workplaces involving hazardous or dusty co
 
 ## Application Wireframe
 
-![image](https://user-images.githubusercontent.com/48420387/141717250-6f8b5a6b-42bf-48fd-bac4-5cb7475d6b64.png)
+<!-- ![image](https://user-images.githubusercontent.com/48420387/141717250-6f8b5a6b-42bf-48fd-bac4-5cb7475d6b64.png) -->
+![wireframes](https://user-images.githubusercontent.com/68450354/148159616-e68d4b48-f621-4fa9-bcea-a3bdb433d1dd.png)
 
 ## System Architecture
+![systemArchitecture](https://user-images.githubusercontent.com/68450354/148159626-dcb3d03f-8145-4dfb-9d52-0044dcb5c5ef.png)
 
 ## Hardware Architecture
+![hardwareArchitecture](https://user-images.githubusercontent.com/68450354/148159640-16a604d5-b7a2-4ece-bb68-244560559fd8.png)
 
 ## Software Architecture
+![sofwareClass](https://user-images.githubusercontent.com/68450354/148159636-bb7dd9be-1015-429b-a21a-81a68ccd41e9.png)
 
 ## Arduino Nano 33 IOT
 
