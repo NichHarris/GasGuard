@@ -5,12 +5,10 @@ Android Application that uses a network of devices to analyze the air quality an
 Users concerned with lung conditions, workplaces involving hazardous or dusty conditions, or otherwise curious individuals will be able to see the tracking and graphing of these levels through the application on a visually appealing and easily navigable display.
 
 ## Application Wireframe
-
-<!-- ![image](https://user-images.githubusercontent.com/48420387/141717250-6f8b5a6b-42bf-48fd-bac4-5cb7475d6b64.png) -->
 ![wireframes](https://user-images.githubusercontent.com/68450354/148159616-e68d4b48-f621-4fa9-bcea-a3bdb433d1dd.png)
 
 ## System Architecture
-![systemArchitecture](https://user-images.githubusercontent.com/68450354/148159626-dcb3d03f-8145-4dfb-9d52-0044dcb5c5ef.png)
+![systemArchitecture](https://user-images.githubusercontent.com/68450354/148159892-d37bb26d-8508-42f0-b74e-e5546178f722.png)
 
 ## Hardware Architecture
 ![hardwareArchitecture](https://user-images.githubusercontent.com/68450354/148159640-16a604d5-b7a2-4ece-bb68-244560559fd8.png)
